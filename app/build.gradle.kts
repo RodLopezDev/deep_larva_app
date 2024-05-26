@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.rodrigo.deeplarva"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.rodrigo.deeplarva"
