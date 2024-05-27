@@ -10,8 +10,9 @@ import android.widget.TextView
 
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
+import com.rodrigo.deeplarva.ui.listener.ListEventListener
 
-class SubSampleAdapterList (context: Context, private val dataList: List<SubSampleItemList>) :
+class SubSampleAdapterList (context: Context, private val dataList: List<SubSampleItemList>, private val listener: ListEventListener<SubSampleItemList>) :
     ArrayAdapter<SubSampleItemList>(context, R.layout.item_list_subsample, dataList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -37,9 +38,13 @@ class SubSampleAdapterList (context: Context, private val dataList: List<SubSamp
         }
 
         itemView.setOnClickListener {
-//            val intent = Intent(context, Presenter::class.java)
-//            intent.putExtra("subSampleId", currentItem.id)
-//            context.startActivity(intent)
+            listener.onClick(currentItem, position)
+        }
+
+
+        itemView.setOnLongClickListener() {
+            listener.onLongClick(currentItem, position)
+            true
         }
 
         return itemView

@@ -11,7 +11,7 @@ import com.rodrigo.deeplarva.domain.entity.Picture
 
 @Dao
 interface PictureDAO {
-    @Query("SELECT * FROM picture where id = :id")
+    @Query("SELECT * FROM picture where id = :id ")
     fun getById(id: Long): List<Picture>
 
     @Query("SELECT * FROM picture")
