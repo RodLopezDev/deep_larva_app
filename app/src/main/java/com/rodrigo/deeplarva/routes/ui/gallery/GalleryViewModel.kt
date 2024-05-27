@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.gallery
+package com.rodrigo.deeplarva.routes.ui.gallery
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

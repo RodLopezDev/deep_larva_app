@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.slideshow
+package com.rodrigo.deeplarva.routes.ui.slideshow
 
 import android.os.Bundle
 import android.view.LayoutInflater
