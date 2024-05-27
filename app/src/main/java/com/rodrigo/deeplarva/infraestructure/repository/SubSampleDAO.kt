@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.rodrigo.deeplarva.domain.entity.SubSample
+import com.rodrigo.deeplarva.domain.view.SubSampleItemList
 
 @Dao
 interface SubSampleDAO {
@@ -15,8 +16,8 @@ interface SubSampleDAO {
     @Query("SELECT * FROM sub_sample")
     fun getAllSubSamples(): List<SubSample>
 
-    //@Query("SELECT ss.id, ss.is_training as isTraining, ss.mean, ss.min, ss.max, (SELECT count(p.id) FROM pictures as p WHERE p.sub_sample_id = ss.id) as counts FROM sub_sample as ss")
-    //fun getAllSubSamplesForUIList(): List<SubSampleItemList>
+    @Query("SELECT ss.id, ss.is_training as isTraining, ss.mean, ss.min, ss.max, (SELECT count(p.id) FROM picture as p WHERE p.sub_sample_id = ss.id) as counts FROM sub_sample as ss")
+    fun getAllSubSamplesForUIList(): List<SubSampleItemList>
 
     @Insert
     fun insert(user: SubSample)
