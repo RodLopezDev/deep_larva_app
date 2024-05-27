@@ -11,4 +11,19 @@ data class SubSample (
 
     @ColumnInfo(name = "name")
     val name: String,
+
+    @ColumnInfo(name = "is_training")
+    val isTraining: Boolean,
+
+    @ColumnInfo(name = "mean")
+    val mean: Float,
+
+    @ColumnInfo(name = "average")
+    val average: Float,
+
+    @ColumnInfo(name = "min")
+    val min: Float,
+
+    @ColumnInfo(name = "max")
+    val max: Float
 )

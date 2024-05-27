@@ -5,15 +5,13 @@ import androidx.room.RoomDatabase
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.entity.SubSample
-import com.rodrigo.deeplarva.domain.entity.SubSampleStatistics
-import com.rodrigo.deeplarva.infraestructure.repository.PictureDAO
 
+import com.rodrigo.deeplarva.infraestructure.repository.PictureDAO
 import com.rodrigo.deeplarva.infraestructure.repository.SubSampleDAO
 
 @Database(
     entities = [
         SubSample::class,
-        SubSampleStatistics::class,
         Picture::class
    ],
     version = 1
