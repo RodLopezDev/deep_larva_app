@@ -1,15 +1,12 @@
 package com.rodrigo.deeplarva.routes
 
-import android.app.Notification
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.ui.AppBarConfiguration
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivitySubsamplesBinding
-import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
 import com.rodrigo.deeplarva.infraestructure.Builder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
@@ -17,11 +14,6 @@ import com.rodrigo.deeplarva.services.SubSampleServices
 import com.rodrigo.deeplarva.ui.adapter.SubSampleAdapterList
 import com.rodrigo.deeplarva.ui.listener.ListEventListener
 import com.rodrigo.deeplarva.utils.Notifications
-
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SubSampleActivity : AppCompatActivity() {
 
@@ -41,7 +33,7 @@ class SubSampleActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener { view ->
             services.save {
-                services.load { subSamples -> loadSubsamplesUI(subSamples) }
+                services.findAll { subSamples -> loadSubsamplesUI(subSamples) }
             }
         }
 
@@ -50,7 +42,7 @@ class SubSampleActivity : AppCompatActivity() {
         db = Builder.getInstance(this)
         services = SubSampleServices(db)
 
-        services.load { subSamples -> loadSubsamplesUI(subSamples) }
+        services.findAll { subSamples -> loadSubsamplesUI(subSamples) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

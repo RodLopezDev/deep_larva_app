@@ -9,11 +9,24 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SubSampleServices(private val db: AppDatabase) {
-    fun load(callback: (subSamples: List<SubSampleItemList>) -> Unit) {
+    fun findAll(callback: (subSamples: List<SubSampleItemList>) -> Unit) {
         GlobalScope.launch {
             var subSamples = db.subSample().getAllSubSamplesForUIList()
             withContext(Dispatchers.Main) {
                 callback(subSamples)
+            }
+        }
+    }
+
+    fun findOne(subSampleId: Long, callback: (subSample: SubSample?) -> Unit){
+        GlobalScope.launch {
+            var subsamples = db.subSample().getById(subSampleId)
+            withContext(Dispatchers.Main) {
+                if (subsamples.isNotEmpty()) {
+                    callback(subsamples[0])
+                } else {
+                    callback(null)
+                }
             }
         }
     }
@@ -30,6 +43,15 @@ class SubSampleServices(private val db: AppDatabase) {
                     name = "Pruebas"
                 )
             )
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    fun update(subSample: SubSample, callback: () -> Unit){
+        GlobalScope.launch {
+            db.subSample().update(subSample)
             withContext(Dispatchers.Main) {
                 callback()
             }
