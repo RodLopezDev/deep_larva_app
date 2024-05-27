@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.gallery
+package com.rodrigo.deeplarva.routes.ui.gallery
 
 import android.os.Bundle
 import android.view.LayoutInflater
