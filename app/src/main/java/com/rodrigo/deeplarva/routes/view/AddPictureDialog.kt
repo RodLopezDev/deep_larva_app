@@ -18,17 +18,18 @@ import com.rodrigo.deeplarva.utils.image.ImageHandler
 class AddPictureDialog(private val context: AppCompatActivity) {
 
     private val handler: ImageHandler
-    private var dialog: Dialog? = null
+    private var dialog: AlertDialog
 
-    private lateinit var dialogView: View
-    private lateinit var builder: AlertDialog.Builder
+    private var dialogView: View
 
     init {
         handler = ImageHandler(context)
         dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_picture, null)
-        builder = AlertDialog.Builder(context)
+
+        dialog = AlertDialog.Builder(context)
             .setView(dialogView)
             .setTitle("Nueva imagen")
+            .create()
 
         val btnLoadPic: Button = dialogView.findViewById(R.id.btn_load_pic)
         val btnCamera: Button = dialogView.findViewById(R.id.btn_camera)
@@ -38,15 +39,11 @@ class AddPictureDialog(private val context: AppCompatActivity) {
     }
 
     fun show() {
-        if(dialog != null) {
-            dialog?.show()
-        }else {
-            dialog = builder.show()
-        }
+        dialog?.show()
     }
 
     fun hide() {
-        dialog?.hide()
+        dialog?.dismiss()
     }
 
     fun resolve(requestCode: Int, resultCode: Int, data: Intent?): Bitmap {
