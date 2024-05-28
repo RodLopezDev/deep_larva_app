@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".routes.DrawerviewActivity">
+    tools:context=".routes.SubSampleActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarSubSample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.DeepLarva.AppBarOverlay">
@@ -15,12 +16,17 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.DeepLarva.PopupOverlay" />
+            android:background="@color/white"
+            app:popupTheme="@style/Theme.DeepLarva.PopupOverlay"
+            app:titleTextColor="@color/black" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <ListView
+        android:id="@+id/lv_subsample"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -29,6 +35,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
