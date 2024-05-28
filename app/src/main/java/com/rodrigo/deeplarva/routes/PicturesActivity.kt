@@ -103,11 +103,12 @@ class PicturesActivity: AppCompatActivity()  {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(data == null) return
         view.getDialog().hide()
 
+        if(data == null) return
+        var bitmap = view.getDialog().resolve(requestCode, resultCode, data)
+
         GlobalScope.launch {
-            var bitmap = view.getDialog().resolve(requestCode, resultCode, data)
             var thumbnail = ImageProcessor.scale(bitmap)
 
             var bitmapFileName = BitmapUtils.getRandomBitmapName()

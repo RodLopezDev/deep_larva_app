@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="CustomFloatingActionButton" parent="Widget.Design.FloatingActionButton">
-        <item name="backgroundTint">@color/white</item>
-<!--        <item name="fabSize">mini</item>-->
-<!--        <item name="elevation">8dp</item>-->
-        <item name="rippleColor">@color/gray100</item>
-    </style>
-</resources>
