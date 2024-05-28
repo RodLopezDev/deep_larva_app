@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.domain.entity.Picture
 
@@ -21,11 +22,11 @@ class PictureRecyclerViewAdapter (private val dataList: List<Picture>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataList[position]
-//        holder.textView.text = if (item.hasMetadata) {
-//            "Procesado"
-//        } else {
-//            "No Procesado"
-//        }
+        holder.textView.text = if (item.hasMetadata) {
+            "Procesado"
+        } else {
+            "No Procesado"
+        }
         holder.textView.text = if(item.hasMetadata) { "Procesado" } else { "Pendiente" }
 
         var imgPath = if (item.hasMetadata && item.processedFilePath != "") {
@@ -36,9 +37,9 @@ class PictureRecyclerViewAdapter (private val dataList: List<Picture>) :
         val bitmap = BitmapFactory.decodeFile(imgPath)
         holder.imgView.setImageBitmap(bitmap)
         if (item.filePath != null) {
-//            Glide.with(holder.itemView)
-//                .load(item.filePath)
-//                .into(holder.imgView)
+            Glide.with(holder.itemView)
+                .load(item.thumbnailPath)
+                .into(holder.imgView)
         }
     }
 

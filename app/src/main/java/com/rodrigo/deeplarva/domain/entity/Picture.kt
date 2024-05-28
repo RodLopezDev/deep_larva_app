@@ -26,8 +26,8 @@ data class Picture(
     @ColumnInfo(name = "file_path")
     val filePath: String,
 
-    @ColumnInfo(name = "thumb_path")
-    val thumbFilePath: String,
+    @ColumnInfo(name = "thumbnail_path")
+    val thumbnailPath: String,
 
     @ColumnInfo(name = "processed_path")
     val processedFilePath: String,

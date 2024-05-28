@@ -89,94 +89,6 @@
 
         </LinearLayout>
 
-
-        <RelativeLayout
-            android:id="@+id/rl_panel_new_picture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:visibility="invisible">
-
-            <Button
-                android:id="@+id/btn_hide_panel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hide Panel"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true" />
-
-            <TextView
-                android:id="@+id/tv_title_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Subir imagenes"
-                android:layout_below="@id/btn_hide_panel"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp" />
-
-            <TextView
-                android:id="@+id/tv_title_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sube un archivo o tome una foto con la cámara"
-                android:layout_below="@id/tv_title_1"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp" />
-
-            <Button
-                android:id="@+id/btn_load_pic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Subir archivo"
-                android:layout_below="@id/tv_title_2"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true" />
-
-            <Button
-                android:id="@+id/btn_camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Capturar"
-                android:layout_below="@id/btn_load_pic"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true" />
-
-        </RelativeLayout>
-
-
-
-        <RelativeLayout
-            android:id="@+id/rl_progress_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:elevation="12dp"
-            android:visibility="invisible">
-
-            <TextView
-                android:text="Procesando"
-                android:id="@+id/tv_progress_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:text="50%"
-                android:id="@+id/tv_counter"
-                android:textSize="24dp"
-                android:textColor="@color/purple_700"
-                android:layout_below="@+id/tv_progress_title"
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -193,17 +105,33 @@
 
         </RelativeLayout>
 
-
-
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:paddingBottom="16dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabNewPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            app:srcCompat="@android:drawable/ic_input_add"
+            android:layout_marginBottom="16dp"
+            style="@style/CustomFloatingActionButton"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabPredict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            app:srcCompat="@android:drawable/ic_media_play" />
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
