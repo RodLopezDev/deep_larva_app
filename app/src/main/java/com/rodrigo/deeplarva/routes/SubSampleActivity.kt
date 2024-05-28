@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivitySubsamplesBinding
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
-import com.rodrigo.deeplarva.infraestructure.Builder
+import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.services.SubSampleServices
 import com.rodrigo.deeplarva.ui.adapter.SubSampleAdapterList
@@ -39,7 +39,7 @@ class SubSampleActivity : AppCompatActivity() {
 
         lvSubSample = binding.lvSubsample
 
-        db = Builder.getInstance(this)
+        db = DbBuilder.getInstance(this)
         services = SubSampleServices(db)
 
         services.findAll { subSamples -> loadSubsamplesUI(subSamples) }

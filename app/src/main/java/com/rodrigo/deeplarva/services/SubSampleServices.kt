@@ -3,10 +3,13 @@ package com.rodrigo.deeplarva.services
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlin.system.measureTimeMillis
 
 class SubSampleServices(private val db: AppDatabase) {
     fun findAll(callback: (subSamples: List<SubSampleItemList>) -> Unit) {
@@ -22,11 +25,7 @@ class SubSampleServices(private val db: AppDatabase) {
         GlobalScope.launch {
             var subsamples = db.subSample().getById(subSampleId)
             withContext(Dispatchers.Main) {
-                if (subsamples.isNotEmpty()) {
-                    callback(subsamples[0])
-                } else {
-                    callback(null)
-                }
+                callback(if (subsamples.isNotEmpty()) subsamples[0] else null)
             }
         }
     }
