@@ -6,7 +6,7 @@ import androidx.annotation.NonNull
 
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 
-class Builder {
+class DbBuilder {
     companion object {
         fun getInstance(@NonNull ctx: Context): AppDatabase {
             val dbName = "deep-larva-db"
