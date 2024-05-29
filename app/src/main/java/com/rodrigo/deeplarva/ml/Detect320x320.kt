@@ -387,17 +387,18 @@ class Detect320x320(private val activity: Context) {
             // La variable total_predictions es igual a cero
             println("No hay predicciones disponibles.")
             // Puedes poner aquí cualquier otra acción que desees realizar cuando total_predictions sea igual a cero
-            toast = Toast.makeText(activity, "No se ha detectado ningún objeto.", Toast.LENGTH_LONG)
-            throw Exception("NO SE ENCONTRARON NADA")
+//            toast = Toast.makeText(activity, "No se ha detectado ningún objeto.", Toast.LENGTH_LONG)
+//            throw Exception("NO SE ENCONTRARON NADA")
+            return FinalResult(null, 0)
         }
 
         val timer = object : CountDownTimer(4000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                toast.show()
+//                toast.show()
             }
 
             override fun onFinish() {
-                toast.cancel()
+//                toast.cancel()
             }
         }
 

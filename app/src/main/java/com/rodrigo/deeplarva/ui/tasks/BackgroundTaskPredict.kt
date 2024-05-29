@@ -69,9 +69,12 @@ class BackgroundTaskPredict(activity: Context) {
 
         predictBitmapCOROUTINE(bitmap) {
                 processedBitmap, counter, processedFile -> run {
-            var processedFilePath =
+            var processedFilePath = if(processedBitmap != null) {
                 BitmapUtils.saveBitmapToStorage(my, processedBitmap, processedFile)
                     ?: throw IllegalArgumentException("FILE_PROCESSED_NOT_SAVED: $processingIndex")
+            } else {
+                ""
+            }
 
             processingIndex++
             if(processingIndex != processingList.size - 1) {
@@ -80,8 +83,7 @@ class BackgroundTaskPredict(activity: Context) {
             updateEntity(currentItem.id, counter, processedFilePath) {
                 recursivePredictionCOROUTINE(subSampleId)
             }
-        }
-        }
+        }}
     }
 
     private fun finishPrediction(subSampleId: Long) {
@@ -91,7 +93,7 @@ class BackgroundTaskPredict(activity: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap, counter: Int, fileName: String) -> Unit) {
+    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, fileName: String) -> Unit) {
         GlobalScope.launch {
             var result = model.iniciarProcesoGlobalPrediction(
                 bitmap,
