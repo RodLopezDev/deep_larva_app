@@ -3,16 +3,10 @@ package com.rodrigo.deeplarva.routes
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
@@ -22,11 +16,12 @@ import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.routes.services.SubSampleServices
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
 import com.rodrigo.deeplarva.routes.view.PictureViewListener
-import com.rodrigo.deeplarva.services.PredictionBoundService
-import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
-import com.rodrigo.deeplarva.services.PredictionService
 import com.rodrigo.deeplarva.utils.BitmapUtils
 import com.rodrigo.deeplarva.utils.ImageProcessor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PicturesActivity: BoundedActivity()  {
 
@@ -37,7 +32,7 @@ class PicturesActivity: BoundedActivity()  {
 
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
-    private lateinit var subsampleService: SubSampleServices
+    private lateinit var subSampleService: SubSampleServices
     private lateinit var viewModel: PictureActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +42,7 @@ class PicturesActivity: BoundedActivity()  {
         db = DbBuilder.getInstance(this)
 
         pictureService = PicturesServices(db)
-        subsampleService = SubSampleServices(db)
+        subSampleService = SubSampleServices(db)
 
         view = PictureActivityView(this, binding, subSampleId)
         viewModel = ViewModelProvider(this)[PictureActivityViewModel::class.java]
@@ -62,11 +57,7 @@ class PicturesActivity: BoundedActivity()  {
                     Toast.makeText(applicationContext, "Service is running", Toast.LENGTH_SHORT).show()
                     return
                 }
-
-                var intent = Intent(applicationContext, PredictionService::class.java)
-                intent.putExtra("subSampleId", subSampleId)
-                Toast.makeText(applicationContext, "Service launched", Toast.LENGTH_SHORT).show()
-                startService(intent)
+                launchService(subSampleId)
             }
             override fun onAddPicture() {
                 view.getDialog().show()
@@ -74,6 +65,7 @@ class PicturesActivity: BoundedActivity()  {
         })
         viewModel.subSample.observe(this) {
             loadPictures(it)
+            view.refreshResults(it)
         }
         viewModel.pictures.observe(this) {
             view.loadPictures(it)
@@ -90,7 +82,7 @@ class PicturesActivity: BoundedActivity()  {
     }
 
     fun loadSubSample(subSampleId: Long) {
-        subsampleService.findOne(subSampleId) { subSample -> run {
+        subSampleService.findOne(subSampleId) { subSample -> run {
             if (subSample == null) {
                 Toast.makeText(this, "SubSample Not Found", Toast.LENGTH_SHORT).show()
                 finish()
@@ -146,8 +138,14 @@ class PicturesActivity: BoundedActivity()  {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("Rodrigo", "onResume")
+    override fun onStartService() {
+        super.onStartService()
+        Toast.makeText(this, "onStartService", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onFinishService() {
+        super.onFinishService()
+        Toast.makeText(this, "onFinishService", Toast.LENGTH_SHORT).show()
+        loadSubSample(subSampleId)
     }
 }

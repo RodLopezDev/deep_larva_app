@@ -1,9 +1,11 @@
 package com.rodrigo.deeplarva.routes.view
 
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.entity.Picture
+import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.ui.adapter.PictureRecyclerViewAdapter
 
 class PictureActivityView(
@@ -13,6 +15,9 @@ class PictureActivityView(
 ) {
     private var gridLayoutManager: GridLayoutManager
     private var dialog: AddPictureDialog
+
+
+    private var tvResults: TextView
 
     init {
         activity.setContentView(binding.root)
@@ -26,6 +31,8 @@ class PictureActivityView(
         gridLayoutManager = GridLayoutManager(activity, 2)
 
         dialog = AddPictureDialog(activity)
+
+        tvResults = binding.tvResultsContent
     }
 
     fun addViewListener(listener: PictureViewListener){
@@ -44,4 +51,8 @@ class PictureActivityView(
     }
 
 
+    fun refreshResults(subSample: SubSample?) {
+        if(subSample == null) return
+        tvResults.text = "Moda : ${subSample.mean} individuos\nMax : ${subSample.min} individuos\nMin : ${subSample.max} individuos"
+    }
 }

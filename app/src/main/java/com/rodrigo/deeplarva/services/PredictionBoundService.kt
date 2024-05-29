@@ -7,7 +7,7 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
 
-class PredictionBoundService(private val activity:AppCompatActivity) {
+class PredictionBoundService(private val activity:AppCompatActivity, listener: OnServiceListener?) {
 
     private lateinit var predictionService: PredictionService
     private var mBound: Boolean = false
@@ -16,13 +16,17 @@ class PredictionBoundService(private val activity:AppCompatActivity) {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             val binder = service as PredictionService.LocalBinder
             predictionService = binder.getService()
+
+            if(listener != null)
+                predictionService.addListeners(listener)
+
             mBound = true
         }
         override fun onServiceDisconnected(arg0: ComponentName) {
             mBound = false
         }
     }
-
+    
     fun bind() {
         Intent(activity, PredictionService::class.java).also { intent ->
             activity.bindService(intent, connection, Context.BIND_AUTO_CREATE)
