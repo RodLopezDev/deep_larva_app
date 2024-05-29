@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.services
+package com.rodrigo.deeplarva.routes.services
 
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
