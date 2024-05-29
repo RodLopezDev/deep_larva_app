@@ -3,16 +3,10 @@ package com.rodrigo.deeplarva.routes
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
@@ -24,6 +18,10 @@ import com.rodrigo.deeplarva.routes.view.PictureActivityView
 import com.rodrigo.deeplarva.routes.view.PictureViewListener
 import com.rodrigo.deeplarva.utils.BitmapUtils
 import com.rodrigo.deeplarva.utils.ImageProcessor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PicturesActivity: BoundedActivity()  {
 
@@ -67,6 +65,7 @@ class PicturesActivity: BoundedActivity()  {
         })
         viewModel.subSample.observe(this) {
             loadPictures(it)
+            view.refreshResults(it)
         }
         viewModel.pictures.observe(this) {
             view.loadPictures(it)
@@ -147,5 +146,6 @@ class PicturesActivity: BoundedActivity()  {
     override fun onFinishService() {
         super.onFinishService()
         Toast.makeText(this, "onFinishService", Toast.LENGTH_SHORT).show()
+        loadSubSample(subSampleId)
     }
 }
