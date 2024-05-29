@@ -22,9 +22,6 @@ import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.routes.services.SubSampleServices
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
 import com.rodrigo.deeplarva.routes.view.PictureViewListener
-import com.rodrigo.deeplarva.services.PredictionBoundService
-import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
-import com.rodrigo.deeplarva.services.PredictionService
 import com.rodrigo.deeplarva.utils.BitmapUtils
 import com.rodrigo.deeplarva.utils.ImageProcessor
 
@@ -37,7 +34,7 @@ class PicturesActivity: BoundedActivity()  {
 
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
-    private lateinit var subsampleService: SubSampleServices
+    private lateinit var subSampleService: SubSampleServices
     private lateinit var viewModel: PictureActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +44,7 @@ class PicturesActivity: BoundedActivity()  {
         db = DbBuilder.getInstance(this)
 
         pictureService = PicturesServices(db)
-        subsampleService = SubSampleServices(db)
+        subSampleService = SubSampleServices(db)
 
         view = PictureActivityView(this, binding, subSampleId)
         viewModel = ViewModelProvider(this)[PictureActivityViewModel::class.java]
@@ -62,11 +59,7 @@ class PicturesActivity: BoundedActivity()  {
                     Toast.makeText(applicationContext, "Service is running", Toast.LENGTH_SHORT).show()
                     return
                 }
-
-                var intent = Intent(applicationContext, PredictionService::class.java)
-                intent.putExtra("subSampleId", subSampleId)
-                Toast.makeText(applicationContext, "Service launched", Toast.LENGTH_SHORT).show()
-                startService(intent)
+                launchService(subSampleId)
             }
             override fun onAddPicture() {
                 view.getDialog().show()
@@ -90,7 +83,7 @@ class PicturesActivity: BoundedActivity()  {
     }
 
     fun loadSubSample(subSampleId: Long) {
-        subsampleService.findOne(subSampleId) { subSample -> run {
+        subSampleService.findOne(subSampleId) { subSample -> run {
             if (subSample == null) {
                 Toast.makeText(this, "SubSample Not Found", Toast.LENGTH_SHORT).show()
                 finish()
@@ -146,8 +139,13 @@ class PicturesActivity: BoundedActivity()  {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("Rodrigo", "onResume")
+    override fun onStartService() {
+        super.onStartService()
+        Toast.makeText(this, "onStartService", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onFinishService() {
+        super.onFinishService()
+        Toast.makeText(this, "onFinishService", Toast.LENGTH_SHORT).show()
     }
 }

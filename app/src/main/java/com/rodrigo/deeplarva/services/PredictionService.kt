@@ -26,6 +26,7 @@ class PredictionService: Service() {
     private val TAG = "DEEP_LARVA::PredictionService"
 
     var isRunning = false
+    private lateinit var listener: OnServiceListener
     private val binder = LocalBinder()
     private val sender = PredictionBroadcastSender(this)
 
@@ -45,17 +46,21 @@ class PredictionService: Service() {
         Log.d(TAG, "Service Started")
         var subSampleId = intent?.getLongExtra("subSampleId", 0)
         Log.d(TAG, "onStartCommand: ${subSampleId}")
+        if(subSampleId?.toInt() == 0){
+            this.onDestroy()
+            return START_STICKY
+        }
         isRunning = true
-
-        // Do background work here
+        this.listener?.onStartService()
 
         val notificationIntent = Intent(this, PicturesActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+        notificationIntent.putExtra("subSampleId", subSampleId)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("DeepLarva")
-            .setContentText("Service is running...")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentText("Service is running... $subSampleId")
+            .setSmallIcon(R.drawable.deep_larva_icon)
             .setContentIntent(pendingIntent)
             .build()
 
@@ -83,8 +88,15 @@ class PredictionService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Service Destroyed")
+
         isRunning = false
+        this.listener?.onFinishService()
+
         stopForeground(STOP_FOREGROUND_REMOVE)
+    }
+
+    fun addListeners (listener: OnServiceListener) {
+        this.listener = listener
     }
 
     private fun createNotificationChannel() {
