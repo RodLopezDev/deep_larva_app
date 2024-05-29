@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
@@ -30,17 +31,13 @@ import kotlinx.coroutines.withContext
 
 class PredictionService: Service() {
 
-    private val CHANNEL_ID = "MyServiceChannel"
-    private val NOTIFICATION_ID = 1
     private val TAG = "DEEP_LARVA::PredictionService"
 
     var isRunning = false
     private val binder = LocalBinder()
     private val sender = PredictionBroadcastSender(this)
 
-
     private var backgroundTask = BackgroundTaskPredict(this)
-
 
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
@@ -84,14 +81,14 @@ class PredictionService: Service() {
             notificationIntent.putExtra("subSampleId", subSample.id)
             val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
 
-            val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            val notification: Notification = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("DeepLarva")
                 .setContentText("Processing SubSample: ${subSample.id}")
                 .setSmallIcon(R.drawable.deep_larva_icon)
                 .setContentIntent(pendingIntent)
                 .build()
 
-            startForeground(NOTIFICATION_ID, notification)
+            startForeground(Constants.NOTIFICATION_ID, notification)
 
             eventPredict(subSampleId)
         }}
@@ -188,7 +185,7 @@ class PredictionService: Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                CHANNEL_ID,
+                Constants.NOTIFICATION_CHANNEL_ID,
                 "My Background Service Channel",
                 NotificationManager.IMPORTANCE_DEFAULT
             )

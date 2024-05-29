@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.rodrigo.deeplarva.domain.Constants
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.ml.Detect320x320
@@ -107,7 +108,7 @@ class BackgroundTaskPredict(activity: Context) {
             withContext(Dispatchers.Main) {
                 val uuid: UUID = UUID.randomUUID()
                 val uuidString: String = uuid.toString()
-                val filename = "$uuidString-processed.png"
+                val filename = "$uuidString-processed.${Constants.IMAGE_EXTENSION}"
                 callback(result.finalBitmap, result.counter, filename)
             }
         }

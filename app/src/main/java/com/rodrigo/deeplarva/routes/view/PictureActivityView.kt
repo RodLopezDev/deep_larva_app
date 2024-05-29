@@ -3,10 +3,14 @@ package com.rodrigo.deeplarva.routes.view
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.ui.adapter.PictureRecyclerViewAdapter
+import com.rodrigo.deeplarva.ui.decorator.SpaceItemDecoration
+
 
 class PictureActivityView(
     private val activity: AppCompatActivity,
@@ -42,7 +46,11 @@ class PictureActivityView(
 
     fun loadPictures(pictures: List<Picture>) {
         val adapter = PictureRecyclerViewAdapter(pictures)
+
+        val spaceInPixels: Int = activity.resources.getDimensionPixelSize(R.dimen.recycler_view_item_spacing)
+
         binding.rvPictures.adapter = adapter
+        binding.rvPictures.addItemDecoration(SpaceItemDecoration(spaceInPixels))
         binding.rvPictures.layoutManager = gridLayoutManager
     }
 
@@ -53,6 +61,6 @@ class PictureActivityView(
 
     fun refreshResults(subSample: SubSample?) {
         if(subSample == null) return
-        tvResults.text = "Moda : ${subSample.mean} individuos\nMax : ${subSample.min} individuos\nMin : ${subSample.max} individuos"
+        tvResults.text = Constants.getResultsView(subSample)
     }
 }
