@@ -5,16 +5,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-import com.rodrigo.deeplarva.services.OnServiceListener
 import com.rodrigo.deeplarva.services.PredictionBoundService
 import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
 import com.rodrigo.deeplarva.services.PredictionService
 
-open class BoundedActivity: AppCompatActivity(), OnServiceListener {
+open class BoundedActivity: AppCompatActivity() {
 
     private var percentage = 0
     private var receiver = PredictionBroadcastReceiver(this)
-    private var boundService = PredictionBoundService(this, this)
+    private var boundService = PredictionBoundService(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,11 +54,5 @@ open class BoundedActivity: AppCompatActivity(), OnServiceListener {
 
     protected fun servicePercentage(): Int {
         return percentage
-    }
-
-    override fun onStartService() {
-    }
-
-    override fun onFinishService() {
     }
 }

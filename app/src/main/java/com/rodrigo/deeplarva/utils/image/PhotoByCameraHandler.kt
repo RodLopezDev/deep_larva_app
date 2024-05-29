@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import com.rodrigo.deeplarva.domain.Constants
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -30,7 +31,7 @@ class PhotoByCameraHandler(override val activity: Activity): IPhotoHandler {
 
         // Continuar solo si el archivo se creó correctamente
         photoFile?.also {
-            val photoURI: Uri = FileProvider.getUriForFile(activity, "com.rodrigo.deeplarva.fileProvider", it)
+            val photoURI: Uri = FileProvider.getUriForFile(activity, Constants.FILE_PROVIDER, it)
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
             activity.startActivityForResult(takePictureIntent, REQUESTCODE)
         }
@@ -49,7 +50,7 @@ class PhotoByCameraHandler(override val activity: Activity): IPhotoHandler {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val imageFileName = "JPEG_${timeStamp}_"
         val storageDir: File? = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(imageFileName, ".jpg", storageDir).apply {
+        return File.createTempFile(imageFileName, Constants.IMAGE_EXTENSION, storageDir).apply {
             currentPhotoPath = absolutePath
         }
     }

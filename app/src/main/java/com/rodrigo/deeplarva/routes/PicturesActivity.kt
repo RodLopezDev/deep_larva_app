@@ -137,15 +137,4 @@ class PicturesActivity: BoundedActivity()  {
             }
         }
     }
-
-    override fun onStartService() {
-        super.onStartService()
-        Toast.makeText(this, "onStartService", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onFinishService() {
-        super.onFinishService()
-        Toast.makeText(this, "onFinishService", Toast.LENGTH_SHORT).show()
-        loadSubSample(subSampleId)
-    }
 }
