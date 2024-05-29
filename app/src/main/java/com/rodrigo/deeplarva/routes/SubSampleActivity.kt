@@ -10,7 +10,7 @@ import com.rodrigo.deeplarva.databinding.ActivitySubsamplesBinding
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
-import com.rodrigo.deeplarva.services.SubSampleServices
+import com.rodrigo.deeplarva.routes.services.SubSampleServices
 import com.rodrigo.deeplarva.ui.adapter.SubSampleAdapterList
 import com.rodrigo.deeplarva.ui.listener.ListEventListener
 import com.rodrigo.deeplarva.utils.Notifications

@@ -3,34 +3,32 @@ package com.rodrigo.deeplarva.routes
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
-import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.domain.entity.SubSample
-import com.rodrigo.deeplarva.infraestructure.DbBuilder
-import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
-import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
-import com.rodrigo.deeplarva.routes.ui.gallery.GalleryViewModel
-import com.rodrigo.deeplarva.routes.view.AddPictureDialog
-import com.rodrigo.deeplarva.routes.view.PictureActivityView
-import com.rodrigo.deeplarva.routes.view.PictureViewListener
-import com.rodrigo.deeplarva.services.PicturesServices
-import com.rodrigo.deeplarva.services.SubSampleServices
-import com.rodrigo.deeplarva.ui.adapter.PictureRecyclerViewAdapter
-import com.rodrigo.deeplarva.utils.BitmapUtils
-import com.rodrigo.deeplarva.utils.ImageProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PicturesActivity: AppCompatActivity()  {
+import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
+import com.rodrigo.deeplarva.domain.entity.SubSample
+import com.rodrigo.deeplarva.infraestructure.DbBuilder
+import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
+import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
+import com.rodrigo.deeplarva.routes.services.PicturesServices
+import com.rodrigo.deeplarva.routes.services.SubSampleServices
+import com.rodrigo.deeplarva.routes.view.PictureActivityView
+import com.rodrigo.deeplarva.routes.view.PictureViewListener
+import com.rodrigo.deeplarva.services.PredictionBoundService
+import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
+import com.rodrigo.deeplarva.services.PredictionService
+import com.rodrigo.deeplarva.utils.BitmapUtils
+import com.rodrigo.deeplarva.utils.ImageProcessor
+
+class PicturesActivity: BoundedActivity()  {
 
     private var subSampleId: Long = 0
 
@@ -56,6 +54,19 @@ class PicturesActivity: AppCompatActivity()  {
 
         view.addViewListener(object: PictureViewListener {
             override fun onPredict() {
+                if(!isServiceBounded()) {
+                    Toast.makeText(applicationContext, "Bound services not completed", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                if(isServiceRunning()){
+                    Toast.makeText(applicationContext, "Service is running", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                var intent = Intent(applicationContext, PredictionService::class.java)
+                intent.putExtra("subSampleId", subSampleId)
+                Toast.makeText(applicationContext, "Service launched", Toast.LENGTH_SHORT).show()
+                startService(intent)
             }
             override fun onAddPicture() {
                 view.getDialog().show()
@@ -133,6 +144,10 @@ class PicturesActivity: AppCompatActivity()  {
                 }
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d("Rodrigo", "onResume")
     }
 }
