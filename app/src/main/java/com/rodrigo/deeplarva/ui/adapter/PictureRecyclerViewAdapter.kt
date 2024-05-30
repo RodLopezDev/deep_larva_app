@@ -1,7 +1,6 @@
 package com.rodrigo.deeplarva.ui.adapter
 
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.utils.Colors
 
 class PictureRecyclerViewAdapter (private val dataList: List<Picture>) :
     RecyclerView.Adapter<PictureRecyclerViewAdapter.ViewHolder>() {
