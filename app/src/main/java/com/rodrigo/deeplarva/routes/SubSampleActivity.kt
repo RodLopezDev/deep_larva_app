@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivitySubsamplesBinding
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
@@ -62,7 +63,7 @@ class SubSampleActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, PicturesActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                intent.putExtra("subSampleId", item.id)
+                intent.putExtra(Constants.INTENT_SUB_SAMPLE_FLAG, item.id)
                 applicationContext.startActivity(intent, )
             }
         })

@@ -44,7 +44,7 @@ class PredictionService: Service() {
     private lateinit var subSampleService: SubSampleServices
 
     override fun onBind(intent: Intent?): IBinder? {
-        var subSampleId = intent?.getLongExtra("subSampleId", 0)
+        var subSampleId = intent?.getLongExtra(Constants.INTENT_SUB_SAMPLE_FLAG, 0)
         Log.d(TAG, "onBind: ${subSampleId}")
         return binder
     }
@@ -63,7 +63,7 @@ class PredictionService: Service() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "Service Started")
-        var subSampleId = intent?.getLongExtra("subSampleId", 0) ?: 0
+        var subSampleId = intent?.getLongExtra(Constants.INTENT_SUB_SAMPLE_FLAG, 0) ?: 0
         Log.d(TAG, "onStartCommand: ${subSampleId}")
         if(subSampleId?.toInt() == 0){
             this.onDestroy()
@@ -78,7 +78,7 @@ class PredictionService: Service() {
             }
 
             val notificationIntent = Intent(this, PicturesActivity::class.java)
-            notificationIntent.putExtra("subSampleId", subSample.id)
+            notificationIntent.putExtra(Constants.INTENT_SUB_SAMPLE_FLAG, subSample.id)
             val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
 
             val notification: Notification = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)

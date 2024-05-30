@@ -14,22 +14,16 @@ class Constants {
 
         const val IMAGE_EXTENSION =".png"
 
+        const val INTENT_SUB_SAMPLE_FLAG = "subSampleId"
 
         const val NOTIFICATION_CHANNEL_ID = "MyServiceChannel"
         const val NOTIFICATION_ID = 1
 
         const val BROADCAST_ACTION = "com.deeplarva.broadcast.NOTIFICATION"
 
-        fun getSubSampleName(): String {
-            return "Pruebas"
-        }
-
-        fun getResultsView(subSample: SubSample): String {
-            return "Moda : ${subSample.mean} individuos\nMax : ${subSample.min} individuos\nMin : ${subSample.max} individuos"
-        }
-
-        fun getPictureResults(hasResult: Boolean, count: Int): String {
-            return "Conteo: ${count}\nTiempo: 00:00:00\nPred: ${if(hasResult){"SI"}else{"NO"}}"
-        }
+        const val MESSAGE_SERVICE_STARTED = "Ejecutando conteo"
+        const val MESSAGE_SERVICE_DISCONNECTED = "Servicio sin comunicación"
+        const val MESSAGE_SERVICE_RUNNING = "Procesamiento en ejecución"
+        const val MESSAGE_ERROR_LOADING_IMAGE = "Error al cargar imagen"
     }
 }

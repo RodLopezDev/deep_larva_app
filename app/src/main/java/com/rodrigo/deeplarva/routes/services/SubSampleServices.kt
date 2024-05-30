@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.routes.services
 
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.MessageFactory
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.domain.view.SubSampleItemList
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
@@ -40,7 +41,7 @@ class SubSampleServices(private val db: AppDatabase) {
                     mean = 0f,
                     min = 0f,
                     average = 0f,
-                    name = Constants.getSubSampleName()
+                    name = MessageFactory.getSubSampleName()
                 )
             )
             withContext(Dispatchers.Main) {

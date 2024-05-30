@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.MessageFactory
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.ui.adapter.PictureRecyclerViewAdapter
@@ -61,6 +62,6 @@ class PictureActivityView(
 
     fun refreshResults(subSample: SubSample?) {
         if(subSample == null) return
-        tvResults.text = Constants.getResultsView(subSample)
+        tvResults.text = MessageFactory.getResultsView(subSample)
     }
 }

@@ -4,21 +4,32 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.rodrigo.deeplarva.domain.Constants
 
 import com.rodrigo.deeplarva.services.PredictionBoundService
 import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
 import com.rodrigo.deeplarva.services.PredictionService
+import com.rodrigo.deeplarva.services.ServiceChangesListener
 
-open class BoundedActivity: AppCompatActivity() {
+open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
 
-    private var percentage = 0
     private var receiver = PredictionBroadcastReceiver(this)
     private var boundService = PredictionBoundService(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         receiver.register {
-            percentage = it
+            when (it) {
+                0 -> {
+                    onStartService()
+                }
+                100 -> {
+                    onEndService()
+                }
+                else -> {
+                    updateServiceValue(it)
+                }
+            }
         }
     }
 
@@ -39,8 +50,8 @@ open class BoundedActivity: AppCompatActivity() {
 
     protected fun launchService(subSampleId: Long){
         var intent = Intent(applicationContext, PredictionService::class.java)
-        intent.putExtra("subSampleId", subSampleId)
-        Toast.makeText(applicationContext, "Service launched", Toast.LENGTH_SHORT).show()
+        intent.putExtra(Constants.INTENT_SUB_SAMPLE_FLAG, subSampleId)
+        Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_STARTED, Toast.LENGTH_SHORT).show()
         startService(intent)
     }
 
@@ -52,7 +63,13 @@ open class BoundedActivity: AppCompatActivity() {
         return boundService.isBounded()
     }
 
-    protected fun servicePercentage(): Int {
-        return percentage
+    protected fun updateServiceValue(percentage: Int) {
+
+    }
+
+    override fun onStartService() {
+    }
+
+    override fun onEndService() {
     }
 }

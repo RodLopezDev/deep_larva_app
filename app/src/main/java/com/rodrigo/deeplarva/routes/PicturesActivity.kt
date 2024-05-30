@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
@@ -37,7 +38,7 @@ class PicturesActivity: BoundedActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        subSampleId = intent.getLongExtra("subSampleId", 0)
+        subSampleId = intent.getLongExtra(Constants.INTENT_SUB_SAMPLE_FLAG, 0)
         binding = ActivityPicturesBinding.inflate(layoutInflater)
         db = DbBuilder.getInstance(this)
 
@@ -50,11 +51,11 @@ class PicturesActivity: BoundedActivity()  {
         view.addViewListener(object: PictureViewListener {
             override fun onPredict() {
                 if(!isServiceBounded()) {
-                    Toast.makeText(applicationContext, "Bound services not completed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_DISCONNECTED, Toast.LENGTH_SHORT).show()
                     return
                 }
                 if(isServiceRunning()){
-                    Toast.makeText(applicationContext, "Service is running", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_RUNNING, Toast.LENGTH_SHORT).show()
                     return
                 }
                 launchService(subSampleId)
@@ -122,11 +123,11 @@ class PicturesActivity: BoundedActivity()  {
 
             withContext(Dispatchers.Main) {
                 if (filePath == null) {
-                    Toast.makeText(applicationContext, "ERROR AL CARGAR IMAGEN", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, Constants.MESSAGE_ERROR_LOADING_IMAGE, Toast.LENGTH_LONG).show()
                     return@withContext
                 }
                 if (thumbnailPath == null) {
-                    Toast.makeText(applicationContext, "ERROR AL CARGAR IMAGEN", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, Constants.MESSAGE_ERROR_LOADING_IMAGE, Toast.LENGTH_LONG).show()
                     return@withContext
                 }
                 pictureService.save(subSampleId, filePath, thumbnailPath) {
@@ -136,5 +137,10 @@ class PicturesActivity: BoundedActivity()  {
                 }
             }
         }
+    }
+
+    override fun onEndService() {
+        super.onEndService()
+        loadSubSample(subSampleId)
     }
 }

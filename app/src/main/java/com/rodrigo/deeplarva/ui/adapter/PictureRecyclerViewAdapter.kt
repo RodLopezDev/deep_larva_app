@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.MessageFactory
 import com.rodrigo.deeplarva.domain.entity.Picture
 
 class PictureRecyclerViewAdapter (private val dataList: List<Picture>) :
@@ -24,7 +25,7 @@ class PictureRecyclerViewAdapter (private val dataList: List<Picture>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataList[position]
-        holder.textView.text = Constants.getPictureResults(item.hasMetadata, item.count)
+        holder.textView.text = MessageFactory.getPictureResults(item.hasMetadata, item.count)
         holder.shadow.setBackgroundColor(if(item.hasMetadata) {Constants.OPACITY_GREEN} else {Constants.OPACITY_RED})
 
         var imgPath = if (item.hasMetadata && item.processedFilePath != "") {
