@@ -64,4 +64,8 @@ class PictureActivityView(
         if(subSample == null) return
         tvResults.text = MessageFactory.getResultsView(subSample)
     }
+
+    fun onRequestCameraResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        return dialog.onRequestCameraResult(requestCode, permissions, grantResults)
+    }
 }

@@ -32,4 +32,8 @@ class ImageHandler(private val activity: AppCompatActivity) {
             ?: throw Exception("HANDLER_NOT_FOUND")
         return selected.getBitmap(requestCode, resultCode, data)
     }
+
+    fun onRequestComplete(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        return camera.onRequestComplete(requestCode, permissions, grantResults)
+    }
 }

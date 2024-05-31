@@ -49,4 +49,8 @@ class AddPictureDialog(private val context: AppCompatActivity) {
     fun resolve(requestCode: Int, resultCode: Int, data: Intent?): Bitmap {
         return handler.resolve(requestCode, resultCode, data)
     }
+
+    fun onRequestCameraResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        return handler.onRequestComplete(requestCode, permissions, grantResults)
+    }
 }
