@@ -109,7 +109,7 @@ class PicturesActivity: BoundedActivity()  {
         super.onActivityResult(requestCode, resultCode, data)
         view.getDialog().hide()
 
-        if(data == null) return
+        if(data == null || resultCode == 0) return
         var bitmap = view.getDialog().resolve(requestCode, resultCode, data)
 
         GlobalScope.launch {

@@ -104,6 +104,7 @@ class PredictionService: Service() {
         pictureService.findUnprocessedBySubSampleId(subSampleId) {
                 pictures ->
             if (pictures.isNotEmpty()){
+                sender.notify(0)
                 backgroundTask.predictBatchCOROUTINE(
                     subSampleId,
                     pictures,
