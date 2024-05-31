@@ -139,6 +139,15 @@ class PicturesActivity: BoundedActivity()  {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        view.onRequestCameraResult(requestCode, permissions, grantResults)
+    }
+
     override fun onEndService() {
         super.onEndService()
         loadSubSample(subSampleId)
