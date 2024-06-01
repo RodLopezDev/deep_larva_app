@@ -25,7 +25,7 @@ class PictureRecyclerViewAdapter (private val dataList: List<Picture>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataList[position]
-        holder.textView.text = MessageFactory.getPictureResults(item.hasMetadata, item.count)
+        holder.textView.text = MessageFactory.getPictureResults(item.hasMetadata, item.count, item.time)
         holder.shadow.setBackgroundColor(if(item.hasMetadata) {Constants.OPACITY_GREEN} else {Constants.OPACITY_RED})
 
         var imgPath = if (item.hasMetadata && item.processedFilePath != "") {

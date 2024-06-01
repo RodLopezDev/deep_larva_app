@@ -123,7 +123,7 @@ class PredictionService: Service() {
         sender.notify(status)
     }
 
-    private fun eventEntityPredictionProgress(id: Long, counter: Int, bitmapProcessedPath: String, callback: () -> Unit) {
+    private fun eventEntityPredictionProgress(id: Long, counter: Int, time: Long, bitmapProcessedPath: String, callback: () -> Unit) {
         pictureService.findOne(id) {
             if (it == null) return@findOne
             pictureService.update(
@@ -134,7 +134,7 @@ class PredictionService: Service() {
                     subSampleId = it.subSampleId,
                     hasMetadata = true,
                     processedFilePath = bitmapProcessedPath,
-                    time = 0,
+                    time = time,
                     thumbnailPath = it.thumbnailPath
                 )
             ) {
