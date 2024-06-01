@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
+import com.rodrigo.deeplarva.bussiness.SubSampleLogic
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.SubSample
@@ -63,6 +64,9 @@ class PicturesActivity: BoundedActivity()  {
             override fun onAddPicture() {
                 view.getDialog().show()
             }
+            override fun onSyncSubSample() {
+                onUpdateSubSample(subSampleId)
+            }
         })
         viewModel.subSample.observe(this) {
             loadPictures(it)
@@ -80,6 +84,19 @@ class PicturesActivity: BoundedActivity()  {
             pictureService.findBySubSampleId(subSample.id) {
                     pictures -> viewModel.updatePictures(pictures)
             }
+    }
+
+    fun onUpdateSubSample(subSampleId: Long) {
+        subSampleService.findOne(subSampleId) { subSample -> run {
+            if(subSample == null) return@run
+            pictureService.findProcessedBySubSampleId(subSampleId) {
+                pictures -> run {
+                val subSampleUpdated = SubSampleLogic.generateMeasurements(subSample, pictures)
+                subSampleService.update(subSampleUpdated) {
+                    viewModel.updateSubSample(subSampleUpdated)
+                }
+            }}
+        }}
     }
 
     fun loadSubSample(subSampleId: Long) {

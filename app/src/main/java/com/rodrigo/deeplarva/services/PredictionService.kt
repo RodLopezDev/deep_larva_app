@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.bussiness.SubSampleLogic
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.entity.SubSample
@@ -153,17 +154,12 @@ class PredictionService: Service() {
             }
             pictureService.findProcessedBySubSampleId(subSampleId) {
                     pictures -> run {
-                if(pictures.isNotEmpty()){
-                    val min = pictures.minOf { it.count }
-                    val max = pictures.maxOf { it.count }
-                    val valuesList = pictures.map { it.count }.distinct()
-                    val fashionCounts = valuesList.groupingBy { it }.eachCount()
-                    val mostCommonFashion = fashionCounts.maxByOrNull { it.value }?.key
-
-                    val updated = SubSample(id=subSample.id, isTraining = true, min = min.toFloat(), max = max.toFloat(), mean = mostCommonFashion?.toFloat() ?: 0f, average = 0f, name = subSample.name)
-                    subSampleService.update(updated) {
-                        callback()
-                    }
+                if(pictures.isEmpty()){
+                    return@run
+                }
+                val updated = SubSampleLogic.generateMeasurements(subSample, pictures)
+                subSampleService.update(updated) {
+                    callback()
                 }
             }}
         }}
