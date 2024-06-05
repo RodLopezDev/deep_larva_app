@@ -9,6 +9,7 @@ import com.rodrigo.deeplarva.domain.Constants
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.ml.Detect320x320
+import com.rodrigo.deeplarva.ml.Detect640x640
 import com.rodrigo.deeplarva.utils.BitmapUtils
 
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,7 @@ class BackgroundTaskPredict(activity: Context) {
     private lateinit var finish: (id: Long) -> Unit
 
     private lateinit var my: Context
-    private var model = Detect320x320(activity)
+    private var model = Detect640x640(activity)
 
     init {
         my = activity
@@ -99,12 +100,13 @@ class BackgroundTaskPredict(activity: Context) {
         GlobalScope.launch {
             var result = model.iniciarProcesoGlobalPrediction(
                 bitmap,
-                splitWidth = 300,
-                splitHeight = 300,
-                overlap = 0.4f,
-                miBatchSize = 4,
-                miCustomConfidenceThreshold = 0.5,
-                distanceThreshold = 10f
+                splitWidth = 640,
+                splitHeight = 640,
+                overlap = 0.8f,
+                miBatchSize = 6,
+                miCustomConfidenceThreshold = 0.28F,
+                miCustomIoUThreshold = 0.80F,
+                distanceThreshold = 10.0f
             )
             val endTimeMillis = System.currentTimeMillis()
             val totalTime = endTimeMillis - startTimeMillis
