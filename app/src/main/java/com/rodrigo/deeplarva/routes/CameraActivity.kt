@@ -84,7 +84,7 @@ class CameraActivity: AppCompatActivity(), CameraEventsListener {
         const val PREF_EV = "pref_ev"
     }
 
-    private lateinit var cameraParameters: CameraParameters
+    private var cameraParameters = CameraParameters()
 
     private lateinit var view: CameraView
     private lateinit var surfaceListener: CameraSurfaceTextureListener
@@ -190,8 +190,6 @@ class CameraActivity: AppCompatActivity(), CameraEventsListener {
         }
     }
     private fun createCameraPreview() {
-        if(cameraParameters == null)
-            return
         try {
             val texture = view.textureView.surfaceTexture!!
             val previewSize = cameraParameters.imageDimension ?: return
@@ -444,7 +442,7 @@ class CameraActivity: AppCompatActivity(), CameraEventsListener {
             imageReader = ImageReader.newInstance(camera.largest.width, camera.largest.height, ImageFormat.JPEG, 3)
             imageReader.setOnImageAvailableListener(onImageAvailableListener, backgroundHandler)
 
-            cameraParameters = CameraParameters(camera)
+            cameraParameters.update(camera)
             camera.openCamera(stateCallback, backgroundHandler)
         } catch (e: CameraAccessException) {
             e.printStackTrace()

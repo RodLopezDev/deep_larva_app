@@ -5,14 +5,14 @@ import android.media.ImageReader
 import android.util.Range
 import android.util.Size
 
-class CameraParameters(private val camera: Camera) {
+class CameraParameters() {
     var imageDimension: Size? = null
     var exposureRange: Range<Int>? = null
     var exposureStep: Float = 0f
     var isoRange: Range<Int>? = null
     var speedRange: Range<Long>? = null
 
-    init {
+    fun update(camera: Camera) {
         imageDimension = camera.largest
         exposureRange = camera.exposureRange
         exposureStep = camera.exposureStep
