@@ -10,25 +10,18 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.bussiness.SubSampleLogic
+import com.rodrigo.deeplarva.application.UpdateSubSampleUseCase
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.PicturesActivity
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.routes.services.SubSampleServices
 import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PredictionService: Service() {
 
@@ -145,28 +138,8 @@ class PredictionService: Service() {
         }
     }
 
-    private fun updateSubSampleInfo(subSampleId: Long, callback: () -> Unit) {
-        subSampleService.findOne(subSampleId) {
-            subSample -> run {
-            if(subSample == null) {
-                callback()
-                return@findOne
-            }
-            pictureService.findProcessedBySubSampleId(subSampleId) {
-                    pictures -> run {
-                if(pictures.isEmpty()){
-                    return@run
-                }
-                val updated = SubSampleLogic.generateMeasurements(subSample, pictures)
-                subSampleService.update(updated) {
-                    callback()
-                }
-            }}
-        }}
-    }
-
     private fun eventFinishPrediction(subSampleId: Long) {
-        updateSubSampleInfo(subSampleId) {
+        UpdateSubSampleUseCase(subSampleService, pictureService).run(subSampleId) {
             this.onDestroy()
         }
     }
