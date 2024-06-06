@@ -14,7 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.ml.DetectSortedAugmted640x640PrimeFloat32Yolov8
+import com.rodrigo.deeplarva.ml.DetectSortedAugmentedXtraHistFloat32Yolov8n
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
@@ -85,7 +85,7 @@ class Detect640x640(private val activity: Context) {
 //        var allResults: List<Map<String, Any>>
         var allResults: List<Map<String, Any>> = emptyList()
 
-        val modelPath = "detect_sorted_augmted_640x640_prime_float32_yolov8.tflite"
+        val modelPath = "detect_sorted_augmented_xtra_hist_float32_yolov8n.tflite" // TODO: CHANGED
 
         val labelPath = "labels_2.txt"
 

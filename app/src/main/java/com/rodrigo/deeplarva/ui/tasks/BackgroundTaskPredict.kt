@@ -3,6 +3,7 @@ package com.rodrigo.deeplarva.ui.tasks
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
+import android.os.Environment
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.domain.Constants
@@ -16,6 +17,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 class BackgroundTaskPredict(activity: Context) {
@@ -72,6 +78,18 @@ class BackgroundTaskPredict(activity: Context) {
         predictBitmapCOROUTINE(bitmap) {
                 processedBitmap, counter, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
+                // TODO: Guardar en galeria
+                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "deep-larva")
+                if (!imageFolder.exists()) {
+                    imageFolder.mkdirs()
+                }
+
+                val fileName = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(
+                    Date()
+                ) + ".jpg"
+                val imageFile = File(imageFolder, fileName)
+                FileOutputStream(imageFile)
+                // TODO: Guardar en galeria
                 BitmapUtils.saveBitmapToStorage(my, processedBitmap, processedFile)
                     ?: throw IllegalArgumentException("FILE_PROCESSED_NOT_SAVED: $processingIndex")
             } else {
