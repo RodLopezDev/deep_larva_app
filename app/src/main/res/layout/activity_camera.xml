@@ -1,95 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".routes.CameraActivity">
+
     <TextureView
         android:id="@+id/textureView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/switchButton"
-        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
 
-    <Button
-        android:id="@+id/captureButton"
-        android:layout_width="125dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_margin="12dp"
+        android:padding="12dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="150dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginBottom="115dp"
-        android:text="Captura" />
+        android:background="@drawable/rounded_border_background">
 
-    <Switch
-        android:id="@+id/switchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Controls"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <SeekBar
-        android:id="@+id/exposureSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:max="100"
-        android:layout_margin="16dp"
-        android:visibility="gone"/>
+            <Button
+                android:id="@+id/btnCapture"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Capturar"
+                android:enabled="false" />
 
-    <TextView
-        android:id="@+id/exposureValueText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="EV: 0"
-        android:layout_above="@id/exposureSeekBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-    <SeekBar
-        android:id="@+id/isoSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/exposureSeekBar"
-        android:max="100"
-        android:layout_margin="16dp"
-        android:visibility="gone"/>
+            <Switch
+                android:id="@+id/swtControls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show Controls"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"/>
 
-    <TextView
-        android:id="@+id/isoValueText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ISO: 0"
-        android:layout_above="@id/isoSeekBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
 
-    <SeekBar
-        android:id="@+id/speedSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/isoSeekBar"
-        android:max="100"
-        android:layout_margin="16dp"
-        android:visibility="gone"/>
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/speedValueText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Speed: 0"
-        android:layout_above="@id/speedSeekBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        <SeekBar
+            android:id="@+id/sbExposure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:max="100" />
+
+        <TextView
+            android:id="@+id/tvExposure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EV: 0"
+            android:layout_above="@id/sbExposure"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"/>
+
+        <SeekBar
+            android:id="@+id/sbISO"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/tvExposure"
+            android:max="100"/>
+
+        <TextView
+            android:id="@+id/tvISO"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ISO: 0"
+            android:layout_above="@id/sbISO"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"/>
+
+        <SeekBar
+            android:id="@+id/sbSpeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/tvISO"
+            android:max="100"/>
+
+        <TextView
+            android:id="@+id/tvSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Speed: 0"
+            android:layout_above="@id/sbSpeed"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"/>
+
+
+    </LinearLayout>
 
 </RelativeLayout>
