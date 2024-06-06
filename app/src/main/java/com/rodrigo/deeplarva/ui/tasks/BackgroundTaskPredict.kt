@@ -27,7 +27,7 @@ class BackgroundTaskPredict(activity: Context) {
     private var processingList:List<Picture> = mutableListOf<Picture>()
 
     private lateinit var updateStatus: (status: Int) -> Unit
-    private lateinit var updateEntity: (id: Long, counter: Int, bitmapPath: String, callBack: () -> Unit) -> Unit
+    private lateinit var updateEntity: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
     private lateinit var finish: (id: Long) -> Unit
 
     private lateinit var my: Context
@@ -42,7 +42,7 @@ class BackgroundTaskPredict(activity: Context) {
         subSampleId: Long,
         pictures: List<Picture>,
         updateCallback: (status: Int) -> Unit,
-        updateEntityCallback: (id: Long, counter: Int, bitmapPath: String, callBack: () -> Unit) -> Unit,
+        updateEntityCallback: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit,
         finishCallback: (id: Long) -> Unit
     ) {
         isProcessing = true
@@ -69,7 +69,7 @@ class BackgroundTaskPredict(activity: Context) {
             ?:  throw IllegalArgumentException("BITMAP_NOT_FOUND: $processingIndex")
 
         predictBitmapCOROUTINE(bitmap) {
-                processedBitmap, counter, processedFile -> run {
+                processedBitmap, counter, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
                 BitmapUtils.saveBitmapToStorage(my, processedBitmap, processedFile)
                     ?: throw IllegalArgumentException("FILE_PROCESSED_NOT_SAVED: $processingIndex")
@@ -81,7 +81,7 @@ class BackgroundTaskPredict(activity: Context) {
             if(processingIndex != processingList.size - 1) {
                 updateStatus(processingRateProgress * processingIndex)
             }
-            updateEntity(currentItem.id, counter, processedFilePath) {
+            updateEntity(currentItem.id, counter, time, processedFilePath) {
                 recursivePredictionCOROUTINE(subSampleId)
             }
         }}
@@ -94,7 +94,8 @@ class BackgroundTaskPredict(activity: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, fileName: String) -> Unit) {
+    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, fileName: String, time: Long) -> Unit) {
+        val startTimeMillis = System.currentTimeMillis()
         GlobalScope.launch {
             var result = model.iniciarProcesoGlobalPrediction(
                 bitmap,
@@ -105,11 +106,13 @@ class BackgroundTaskPredict(activity: Context) {
                 miCustomConfidenceThreshold = 0.5,
                 distanceThreshold = 10f
             )
+            val endTimeMillis = System.currentTimeMillis()
+            val totalTime = endTimeMillis - startTimeMillis
             withContext(Dispatchers.Main) {
                 val uuid: UUID = UUID.randomUUID()
                 val uuidString: String = uuid.toString()
                 val filename = "$uuidString-processed.${Constants.IMAGE_EXTENSION}"
-                callback(result.finalBitmap, result.counter, filename)
+                callback(result.finalBitmap, result.counter, filename, totalTime)
             }
         }
     }
