@@ -3,18 +3,25 @@ package com.rodrigo.deeplarva.ui.tasks
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
+import android.os.Environment
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.domain.Constants
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.ml.Detect320x320
+import com.rodrigo.deeplarva.ml.Detect640x640
 import com.rodrigo.deeplarva.utils.BitmapUtils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 class BackgroundTaskPredict(activity: Context) {
@@ -31,7 +38,7 @@ class BackgroundTaskPredict(activity: Context) {
     private lateinit var finish: (id: Long) -> Unit
 
     private lateinit var my: Context
-    private var model = Detect320x320(activity)
+    private var model = Detect640x640(activity)
 
     init {
         my = activity
@@ -71,6 +78,18 @@ class BackgroundTaskPredict(activity: Context) {
         predictBitmapCOROUTINE(bitmap) {
                 processedBitmap, counter, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
+                // TODO: Guardar en galeria
+                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "deep-larva")
+                if (!imageFolder.exists()) {
+                    imageFolder.mkdirs()
+                }
+
+                val fileName = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(
+                    Date()
+                ) + ".jpg"
+                val imageFile = File(imageFolder, fileName)
+                FileOutputStream(imageFile)
+                // TODO: Guardar en galeria
                 BitmapUtils.saveBitmapToStorage(my, processedBitmap, processedFile)
                     ?: throw IllegalArgumentException("FILE_PROCESSED_NOT_SAVED: $processingIndex")
             } else {
@@ -99,12 +118,13 @@ class BackgroundTaskPredict(activity: Context) {
         GlobalScope.launch {
             var result = model.iniciarProcesoGlobalPrediction(
                 bitmap,
-                splitWidth = 300,
-                splitHeight = 300,
-                overlap = 0.4f,
-                miBatchSize = 4,
-                miCustomConfidenceThreshold = 0.5,
-                distanceThreshold = 10f
+                splitWidth = 640,
+                splitHeight = 640,
+                overlap = 0.8f,
+                miBatchSize = 6,
+                miCustomConfidenceThreshold = 0.28F,
+                miCustomIoUThreshold = 0.80F,
+                distanceThreshold = 10.0f
             )
             val endTimeMillis = System.currentTimeMillis()
             val totalTime = endTimeMillis - startTimeMillis
