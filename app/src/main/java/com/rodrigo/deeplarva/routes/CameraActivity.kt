@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.routes
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.camera2.CameraCharacteristics
 import android.media.Image
@@ -10,28 +11,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.routes.camera.CameraPro
 import com.rodrigo.deeplarva.routes.camera.interfaces.CameraProListener
 import com.rodrigo.deeplarva.routes.camera.utils.CameraUtils
-import com.rodrigo.deeplarva.routes.view.CameraActivityV2View
+import com.rodrigo.deeplarva.routes.view.CameraActivityView
 import com.rodrigo.deeplarva.routes.camera.interfaces.CameraActivityViewListener
 import com.rodrigo.deeplarva.utils.Files
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.ByteBuffer
 
 class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityViewListener {
 
     private var photos = mutableListOf<String>()
     private lateinit var cameraPro: CameraPro
-    private lateinit var view: CameraActivityV2View
+    private lateinit var view: CameraActivityView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        view = CameraActivityV2View(this)
+        view = CameraActivityView(this)
         cameraPro = CameraPro(this, view.textureView, this)
     }
 
@@ -57,7 +56,7 @@ class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityView
     }
 
     override fun onReceivePicture(image: Image) {
-        val fileName = "${System.currentTimeMillis()}.jpg"
+        val fileName = "${System.currentTimeMillis()}-RUNNING-IDENTIFIER"
         try {
             val file = Files(this).SaveOnStorage(image, "/deep-larva/", fileName)
             val filePath = file.absolutePath
@@ -101,5 +100,17 @@ class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityView
 
     override fun onCapture() {
         cameraPro.takePicture()
+    }
+
+    override fun onCloseView() {
+        val returnIntent = Intent()
+        if(photos.isEmpty()) {
+            setResult(RESULT_CANCELED, returnIntent)
+        } else {
+            val intentData = photos.joinToString(",,,")
+            returnIntent.putExtra(Constants.INTENT_CAMERA_PRO_RESULT, intentData)
+            setResult(RESULT_OK, returnIntent)
+        }
+        finish()
     }
 }

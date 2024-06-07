@@ -5,4 +5,5 @@ interface CameraActivityViewListener {
     fun onChangeISO(exposure: Int)
     fun onChangeSpeed(exposure: Long)
     fun onCapture()
+    fun onCloseView()
 }
