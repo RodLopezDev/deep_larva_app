@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.routes.view
 
 import android.util.Log
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
@@ -13,6 +14,7 @@ class CameraActivityView(
     private val activity: AppCompatActivity,
     private val viewModel: CameraParamsViewModel
 ) {
+    private var btnCapture: Button = activity.findViewById(R.id.btnCapture)
     private var swtControls: Switch = activity.findViewById(R.id.swtControls)
 
     private var sbExposure: SeekBar = activity.findViewById(R.id.sbExposure)
@@ -69,6 +71,10 @@ class CameraActivityView(
 
     fun setSpeedText(speed: Long) {
         tvSpeed.text = "Speed: $speed"
+    }
+
+    fun getBtnCapture(): Button {
+        return btnCapture
     }
 
     private fun setControlVisibility(isVisible: Boolean) {

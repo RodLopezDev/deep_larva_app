@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.routes.camera
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCaptureSession
@@ -8,16 +9,23 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata
+import android.hardware.camera2.CaptureFailure
 import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.TotalCaptureResult
 import android.hardware.camera2.params.MeteringRectangle
+import android.media.Image
 import android.media.ImageReader
+import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.rodrigo.deeplarva.routes.camera.interfaces.CameraActionListener
+import java.io.File
+import java.io.IOException
+import java.nio.ByteBuffer
 
 class RenderizerCamera(private val activity: AppCompatActivity) {
 
@@ -138,5 +146,51 @@ class RenderizerCamera(private val activity: AppCompatActivity) {
                 initializeUpdate(handler)
             }
         }, handler)
+    }
+
+    fun takePicture(listener: CameraActionListener, imageReader: ImageReader,handler: Handler) {
+        if(captureRequestBuilder == null) return
+        try {
+            val captureBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE).apply {
+                addTarget(imageReader.surface)
+                set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, captureRequestBuilder!!.get(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION) ?: 0)
+                set(CaptureRequest.SENSOR_SENSITIVITY, captureRequestBuilder!!.get(CaptureRequest.SENSOR_SENSITIVITY) ?: 100)
+                set(CaptureRequest.SENSOR_EXPOSURE_TIME, captureRequestBuilder!!.get(CaptureRequest.SENSOR_EXPOSURE_TIME) ?: 100000000L)
+                set(CaptureRequest.JPEG_ORIENTATION, 90)
+            }
+
+            captureSession!!.capture(captureBuilder.build(), object : CameraCaptureSession.CaptureCallback() {
+                override fun onCaptureCompleted(
+                    session: CameraCaptureSession,
+                    request: CaptureRequest,
+                    result: TotalCaptureResult
+                ) {
+                    var img: Image? = null
+                    imageReader.acquireLatestImage().use { image ->
+                        if(image == null) return@use
+//                        val buffer: ByteBuffer = image.planes[0].buffer
+//                        val bytes = ByteArray(buffer.capacity())
+//                        buffer.get(bytes)
+                        img = image
+                    }
+                    if(img == null) {
+                        return
+                    }
+                    listener.onReceivePicture(img!!)
+                }
+                override fun onCaptureFailed(
+                    session: CameraCaptureSession,
+                    request: CaptureRequest,
+                    failure: CaptureFailure
+                ) {
+                    super.onCaptureFailed(session, request, failure)
+                    listener.onFailReceivePicture()
+                }
+            }, handler)
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error taking photo: ${e.message}")
+        }
     }
 }

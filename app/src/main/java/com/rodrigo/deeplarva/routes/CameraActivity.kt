@@ -20,12 +20,13 @@ import com.rodrigo.deeplarva.routes.camera.interfaces.CameraRenderListener
 import com.rodrigo.deeplarva.routes.camera.CameraTextureView
 import com.rodrigo.deeplarva.routes.camera.CameraThreadUpdater
 import com.rodrigo.deeplarva.routes.camera.RenderizerCamera
+import com.rodrigo.deeplarva.routes.camera.interfaces.CameraActionListener
 import com.rodrigo.deeplarva.routes.camera.interfaces.CameraOnTouchListener
 import com.rodrigo.deeplarva.routes.observables.CameraParamsViewModel
 import com.rodrigo.deeplarva.routes.view.CameraActivityView
 import java.nio.ByteBuffer
 
-class CameraActivity: AppCompatActivity(), CameraPermissionsListener, CameraRenderListener, CameraOnTouchListener {
+class CameraActivity: AppCompatActivity(), CameraPermissionsListener, CameraRenderListener, CameraOnTouchListener, CameraActionListener {
 
     private lateinit var viewModel: CameraParamsViewModel
     private lateinit var view: CameraActivityView
@@ -58,6 +59,14 @@ class CameraActivity: AppCompatActivity(), CameraPermissionsListener, CameraRend
         cameraTextureView = CameraTextureView(this, this)
 
         cameraPermissions.request()
+
+        view.getBtnCapture().setOnClickListener {
+            renderizerCamera.takePicture(
+                this@CameraActivity,
+                cameraTextureView.getImageReader(),
+                cameraThreadUpdater.getHandler()
+            )
+        }
     }
 
     override fun onResume() {
@@ -102,5 +111,17 @@ class CameraActivity: AppCompatActivity(), CameraPermissionsListener, CameraRend
 
     override fun onTouch(x: Float, y: Float) {
         renderizerCamera.onTouch(x, y, cameraTextureView.getTextureView(), cameraThreadUpdater.getHandler())
+    }
+
+    override fun getFileName(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun onReceivePicture(image: Image) {
+        Toast.makeText(this, "Photo taken", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onFailReceivePicture() {
+        Toast.makeText(this, "Error taken photo", Toast.LENGTH_SHORT).show()
     }
 }

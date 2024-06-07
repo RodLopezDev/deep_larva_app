@@ -11,25 +11,28 @@ import android.view.TextureView
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.routes.camera.interfaces.CameraOnTouchListener
+import java.nio.ByteBuffer
 
 class CameraTextureView(private val activity: AppCompatActivity, private val listener: CameraOnTouchListener) {
 
     private lateinit var imageReader: ImageReader
     private val textureView: TextureView = activity.findViewById(R.id.textureView)
 
+    private val onImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
+        val image: Image? = reader.acquireLatestImage()
+        image?.let {
+            val buffer: ByteBuffer = it.planes[0].buffer
+            val bytes = ByteArray(buffer.capacity())
+            buffer.get(bytes)
+//            saveImage(bytes)
+            it.close()
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun render(camera: Camera, handler: Handler){
         imageReader = ImageReader.newInstance(camera.largest.width, camera.largest.height, ImageFormat.JPEG, 3)
-        imageReader.setOnImageAvailableListener(ImageReader.OnImageAvailableListener { reader ->
-            val image: Image? = reader.acquireLatestImage()
-            image?.let {
-//                val buffer: ByteBuffer = it.planes[0].buffer
-//                val bytes = ByteArray(buffer.capacity())
-//                buffer.get(bytes)
-////                saveImage(bytes)
-//                it.close()
-            }
-        }, handler)
+        imageReader.setOnImageAvailableListener(onImageAvailableListener, handler)
 
         if(textureView.isAvailable) {
             camera.openCamera(handler)
