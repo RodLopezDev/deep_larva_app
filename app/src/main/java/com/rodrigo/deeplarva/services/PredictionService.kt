@@ -18,6 +18,7 @@ import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.PicturesActivity
+import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
 
@@ -33,6 +34,7 @@ class PredictionService: Service() {
 
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
+    private lateinit var boxDetectionServices: BoxDetectionServices
 
     override fun onBind(intent: Intent?): IBinder? {
         return binder
@@ -46,6 +48,7 @@ class PredictionService: Service() {
         db = DbBuilder.getInstance(this)
 
         pictureService = PicturesServices(db)
+        boxDetectionServices = BoxDetectionServices(db)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -94,30 +97,34 @@ class PredictionService: Service() {
 
 
     private fun eventUpdatePredictionProgress(status: Int) {
+        if(status == 100) return
         sender.notify(status)
     }
 
-    private fun eventEntityPredictionProgress(id: Long, counter: Int, time: Long, bitmapProcessedPath: String, callback: () -> Unit) {
+    private fun eventEntityPredictionProgress(id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapProcessedPath: String, callback: () -> Unit) {
         pictureService.findOne(id) {
             if (it == null) return@findOne
-            pictureService.update(
-                Picture(
-                    id = it.id,
-                    count = counter,
-                    filePath = it.filePath,
-                    hasMetadata = true,
-                    processedFilePath = bitmapProcessedPath,
-                    time = time,
-                    thumbnailPath = it.thumbnailPath,
-                    timestamp = it.timestamp
-                )
-            ) {
-                callback()
+            boxDetectionServices.saveBulk(it.id, boxes) {
+                pictureService.update(
+                    Picture(
+                        id = it.id,
+                        count = counter,
+                        filePath = it.filePath,
+                        hasMetadata = true,
+                        processedFilePath = bitmapProcessedPath,
+                        time = time,
+                        thumbnailPath = it.thumbnailPath,
+                        timestamp = it.timestamp
+                    )
+                ) {
+                    callback()
+                }
             }
         }
     }
 
     private fun eventFinishPrediction() {
+        sender.notify(100)
         this.onDestroy()
     }
 

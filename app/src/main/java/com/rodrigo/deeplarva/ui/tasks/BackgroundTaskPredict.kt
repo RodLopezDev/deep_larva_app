@@ -20,7 +20,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
-class BackgroundTaskPredict(activity: Context) {
+class BackgroundTaskPredict(private val my: Context) {
 
     var isProcessing = false
         private set
@@ -30,21 +30,16 @@ class BackgroundTaskPredict(activity: Context) {
     private var processingList:List<Picture> = mutableListOf<Picture>()
 
     private lateinit var updateStatus: (status: Int) -> Unit
-    private lateinit var updateEntity: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
+    private lateinit var updateEntity: (id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
     private lateinit var finish: () -> Unit
 
-    private lateinit var my: Context
-    private var model = Detect640x640(activity)
-
-    init {
-        my = activity
-    }
+    private var model = Detect640x640(my)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun predictBatchCOROUTINE(
         pictures: List<Picture>,
         updateCallback: (status: Int) -> Unit,
-        updateEntityCallback: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit,
+        updateEntityCallback: (id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit,
         finishCallback: () -> Unit
     ) {
         isProcessing = true
@@ -71,7 +66,7 @@ class BackgroundTaskPredict(activity: Context) {
             ?:  throw IllegalArgumentException("BITMAP_NOT_FOUND: $processingIndex")
 
         predictBitmapCOROUTINE(bitmap) {
-                processedBitmap, counter, processedFile, time -> run {
+                processedBitmap, counter, boxes, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
                 // TODO: Guardar en galeria
                 val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "deep-larva")
@@ -95,7 +90,7 @@ class BackgroundTaskPredict(activity: Context) {
             if(processingIndex != processingList.size - 1) {
                 updateStatus(processingRateProgress * processingIndex)
             }
-            updateEntity(currentItem.id, counter, time, processedFilePath) {
+            updateEntity(currentItem.id, counter, boxes, time, processedFilePath) {
                 recursivePredictionCOROUTINE()
             }
         }}
@@ -108,7 +103,7 @@ class BackgroundTaskPredict(activity: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, fileName: String, time: Long) -> Unit) {
+    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, boxes: List<List<Float>>, fileName: String, time: Long) -> Unit) {
         val startTimeMillis = System.currentTimeMillis()
         GlobalScope.launch {
             var result = model.iniciarProcesoGlobalPrediction(
@@ -127,7 +122,7 @@ class BackgroundTaskPredict(activity: Context) {
                 val uuid: UUID = UUID.randomUUID()
                 val uuidString: String = uuid.toString()
                 val filename = "$uuidString-processed.${Constants.IMAGE_EXTENSION}"
-                callback(result.finalBitmap, result.counter, filename, totalTime)
+                callback(result.finalBitmap, result.counter, result.boxes, filename, totalTime)
             }
         }
     }
