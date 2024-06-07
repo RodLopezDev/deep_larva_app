@@ -49,10 +49,10 @@ class PicturesServices(private val db: AppDatabase) {
         }
     }
 
-    fun save(filePath: String, thumbnailPath: String, callback: () -> Unit){
+    fun save(filePath: String, thumbnailPath: String, timeStamp: Long, callback: () -> Unit){
         GlobalScope.launch {
             db.picture().insert(
-                Picture(filePath = filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0)
+                Picture(filePath = filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0, timestamp = timeStamp)
             )
             withContext(Dispatchers.Main) {
                 callback()

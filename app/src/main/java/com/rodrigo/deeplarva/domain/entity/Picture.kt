@@ -28,5 +28,8 @@ data class Picture(
     val count: Int,
 
     @ColumnInfo(name = "time")
-    val time: Long
+    val time: Long,
+
+    @ColumnInfo(name = "timestamp")
+    val timestamp: Long
 )

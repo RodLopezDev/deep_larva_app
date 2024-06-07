@@ -95,7 +95,8 @@ class PicturesActivity: BoundedActivity()  {
                     Toast.makeText(applicationContext, Constants.MESSAGE_ERROR_LOADING_IMAGE, Toast.LENGTH_LONG).show()
                     return@withContext
                 }
-                pictureService.save(filePath, thumbnailPath) {
+                val timestamp = System.currentTimeMillis()
+                pictureService.save(filePath, thumbnailPath, timestamp) {
                     pictureService.findAll {
                         viewModel.updatePictures(it)
                     }

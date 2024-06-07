@@ -108,7 +108,8 @@ class PredictionService: Service() {
                     hasMetadata = true,
                     processedFilePath = bitmapProcessedPath,
                     time = time,
-                    thumbnailPath = it.thumbnailPath
+                    thumbnailPath = it.thumbnailPath,
+                    timestamp = it.timestamp
                 )
             ) {
                 callback()
