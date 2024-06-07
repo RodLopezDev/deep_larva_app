@@ -7,15 +7,12 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
-import com.rodrigo.deeplarva.application.UpdateSubSampleUseCase
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
-import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
 import com.rodrigo.deeplarva.routes.services.PicturesServices
-import com.rodrigo.deeplarva.routes.services.SubSampleServices
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
 import com.rodrigo.deeplarva.routes.view.PictureViewListener
 import com.rodrigo.deeplarva.utils.BitmapUtils
@@ -26,27 +23,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PicturesActivity: BoundedActivity()  {
-
-    private var subSampleId: Long = 0
-
     private lateinit var view: PictureActivityView
     private lateinit var binding: ActivityPicturesBinding
 
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
-    private lateinit var subSampleService: SubSampleServices
     private lateinit var viewModel: PictureActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        subSampleId = intent.getLongExtra(Constants.INTENT_SUB_SAMPLE_FLAG, 0)
         binding = ActivityPicturesBinding.inflate(layoutInflater)
         db = DbBuilder.getInstance(this)
 
         pictureService = PicturesServices(db)
-        subSampleService = SubSampleServices(db)
 
-        view = PictureActivityView(this, binding, subSampleId)
+        view = PictureActivityView(this, binding)
         viewModel = ViewModelProvider(this)[PictureActivityViewModel::class.java]
 
         view.addViewListener(object: PictureViewListener {
@@ -59,54 +50,22 @@ class PicturesActivity: BoundedActivity()  {
                     Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_RUNNING, Toast.LENGTH_SHORT).show()
                     return
                 }
-                launchService(subSampleId)
+                launchService()
             }
             override fun onAddPicture() {
                 view.getDialog().show()
             }
-            override fun onSyncSubSample() {
-                UpdateSubSampleUseCase(subSampleService, pictureService).run(subSampleId) {
-                    if(it != null) viewModel.updateSubSample(it)
-                }
-            }
         })
-        viewModel.subSample.observe(this) {
-            loadPictures(it)
-            view.refreshResults(it)
-        }
         viewModel.pictures.observe(this) {
             view.loadPictures(it)
         }
 
-        loadSubSample(subSampleId)
+        loadPictures()
     }
 
-    fun loadPictures(subSample: SubSample?) {
-        if (subSample != null)
-            pictureService.findBySubSampleId(subSample.id) {
-                    pictures -> viewModel.updatePictures(pictures)
-            }
-    }
-
-    fun loadSubSample(subSampleId: Long) {
-        subSampleService.findOne(subSampleId) { subSample -> run {
-            if (subSample == null) {
-                Toast.makeText(this, "SubSample Not Found", Toast.LENGTH_SHORT).show()
-                finish()
-                return@run
-            }
-            viewModel.updateSubSample(subSample)
-        }}
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    fun loadPictures() {
+        pictureService.findAll {
+                pictures -> viewModel.updatePictures(pictures)
         }
     }
 
@@ -136,9 +95,10 @@ class PicturesActivity: BoundedActivity()  {
                     Toast.makeText(applicationContext, Constants.MESSAGE_ERROR_LOADING_IMAGE, Toast.LENGTH_LONG).show()
                     return@withContext
                 }
-                pictureService.save(subSampleId, filePath, thumbnailPath) {
-                    pictureService.findBySubSampleId(subSampleId) {
-                            pictures -> viewModel.updatePictures(pictures)
+                val timestamp = System.currentTimeMillis()
+                pictureService.save(filePath, thumbnailPath, timestamp) {
+                    pictureService.findAll {
+                        viewModel.updatePictures(it)
                     }
                 }
             }
@@ -156,6 +116,6 @@ class PicturesActivity: BoundedActivity()  {
 
     override fun onEndService() {
         super.onEndService()
-        loadSubSample(subSampleId)
+        loadPictures()
     }
 }

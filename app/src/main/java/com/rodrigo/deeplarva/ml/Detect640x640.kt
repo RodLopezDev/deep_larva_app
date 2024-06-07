@@ -165,7 +165,8 @@ class Detect640x640(private val activity: Context) {
         customPrint(filteredAnnotations, "[GET_LEN] filteredAnnotations", false, false, true, true, false)
 
         // Llamada a la función para plotear las anotaciones predichas
-        return plotPredictedODAnnotationsDataForAndroid(filteredAnnotations, bitmap, labels)
+        val finalBbox = filteredAnnotations.flatMap { it.bboxs }
+        return plotPredictedODAnnotationsDataForAndroid(filteredAnnotations, bitmap, finalBbox, labels)
     }
 
 
@@ -279,8 +280,7 @@ class Detect640x640(private val activity: Context) {
     fun plotPredictedODAnnotationsDataForAndroid(
         filteredAnnotations: List<GroupedAnnotation>,
         bitmap: Bitmap,
-        //imageView: ImageView,
-        //textView: TextView,
+        boxes: List<List<Float>>,
         labels: List<String>): FinalResult {
 
         val dsmkdmskmkmsmds = "dsmkdmskmkmsmds"
@@ -355,14 +355,14 @@ class Detect640x640(private val activity: Context) {
 
             //var finalText = "$total_predictions detected"
 
-            return FinalResult(resizedBitmap, total_predictions)
+            return FinalResult(resizedBitmap, total_predictions, boxes)
         } else {
             // La variable total_predictions es igual a cero
             println("No hay predicciones disponibles.")
             // Puedes poner aquí cualquier otra acción que desees realizar cuando total_predictions sea igual a cero
 //            toast = Toast.makeText(activity, "No se ha detectado ningún objeto.", Toast.LENGTH_LONG)
 //            throw Exception("NO SE ENCONTRARON NADA")
-            return FinalResult(null, 0)
+            return FinalResult(null, 0, listOf())
         }
 //
 //        val timer = object : CountDownTimer(4000, 1000) {

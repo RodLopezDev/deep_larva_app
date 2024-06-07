@@ -48,9 +48,8 @@ open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
         receiver.unregister()
     }
 
-    protected fun launchService(subSampleId: Long){
+    protected fun launchService(){
         var intent = Intent(applicationContext, PredictionService::class.java)
-        intent.putExtra(Constants.INTENT_SUB_SAMPLE_FLAG, subSampleId)
         Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_STARTED, Toast.LENGTH_SHORT).show()
         startService(intent)
     }

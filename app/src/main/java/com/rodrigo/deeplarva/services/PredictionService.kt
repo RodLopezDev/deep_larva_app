@@ -13,14 +13,13 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.application.UpdateSubSampleUseCase
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.PicturesActivity
+import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
-import com.rodrigo.deeplarva.routes.services.SubSampleServices
 import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
 
 class PredictionService: Service() {
@@ -35,11 +34,9 @@ class PredictionService: Service() {
 
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
-    private lateinit var subSampleService: SubSampleServices
+    private lateinit var boxDetectionServices: BoxDetectionServices
 
     override fun onBind(intent: Intent?): IBinder? {
-        var subSampleId = intent?.getLongExtra(Constants.INTENT_SUB_SAMPLE_FLAG, 0)
-        Log.d(TAG, "onBind: ${subSampleId}")
         return binder
     }
 
@@ -51,63 +48,48 @@ class PredictionService: Service() {
         db = DbBuilder.getInstance(this)
 
         pictureService = PicturesServices(db)
-        subSampleService = SubSampleServices(db)
+        boxDetectionServices = BoxDetectionServices(db)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "Service Started")
-        var subSampleId = intent?.getLongExtra(Constants.INTENT_SUB_SAMPLE_FLAG, 0) ?: 0
-        Log.d(TAG, "onStartCommand: ${subSampleId}")
-        if(subSampleId?.toInt() == 0){
-            this.onDestroy()
-            return START_STICKY
-        }
         isRunning = true
 
-        subSampleService.findOne(subSampleId) {
-            subSample -> run {
-            if(subSample == null) {
-                return@run
-            }
+        val notificationIntent = Intent(this, PicturesActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
 
-            val notificationIntent = Intent(this, PicturesActivity::class.java)
-            notificationIntent.putExtra(Constants.INTENT_SUB_SAMPLE_FLAG, subSample.id)
-            val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
+        val notification: Notification = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("DeepLarva")
+            .setContentText("Processing pictures")
+            .setSmallIcon(R.drawable.deep_larva_icon)
+            .setContentIntent(pendingIntent)
+            .build()
 
-            val notification: Notification = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("DeepLarva")
-                .setContentText("Processing SubSample: ${subSample.id}")
-                .setSmallIcon(R.drawable.deep_larva_icon)
-                .setContentIntent(pendingIntent)
-                .build()
+        startForeground(Constants.NOTIFICATION_ID, notification)
 
-            startForeground(Constants.NOTIFICATION_ID, notification)
-
-            eventPredict(subSampleId)
-        }}
+        eventPredict()
 
         return START_STICKY
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun eventPredict(subSampleId: Long) {
+    fun eventPredict() {
         if(backgroundTask.isProcessing){
             return
         }
-        pictureService.findUnprocessedBySubSampleId(subSampleId) {
+        pictureService.findUnprocessed {
                 pictures ->
             if (pictures.isNotEmpty()){
                 sender.notify(0)
                 backgroundTask.predictBatchCOROUTINE(
-                    subSampleId,
                     pictures,
                     ::eventUpdatePredictionProgress,
                     ::eventEntityPredictionProgress,
                     ::eventFinishPrediction
                 )
             } else {
-                eventFinishPrediction(subSampleId)
+                eventFinishPrediction()
             }
         }
     }
@@ -115,33 +97,35 @@ class PredictionService: Service() {
 
 
     private fun eventUpdatePredictionProgress(status: Int) {
+        if(status == 100) return
         sender.notify(status)
     }
 
-    private fun eventEntityPredictionProgress(id: Long, counter: Int, time: Long, bitmapProcessedPath: String, callback: () -> Unit) {
+    private fun eventEntityPredictionProgress(id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapProcessedPath: String, callback: () -> Unit) {
         pictureService.findOne(id) {
             if (it == null) return@findOne
-            pictureService.update(
-                Picture(
-                    id = it.id,
-                    count = counter,
-                    filePath = it.filePath,
-                    subSampleId = it.subSampleId,
-                    hasMetadata = true,
-                    processedFilePath = bitmapProcessedPath,
-                    time = time,
-                    thumbnailPath = it.thumbnailPath
-                )
-            ) {
-                callback()
+            boxDetectionServices.saveBulk(it.id, boxes) {
+                pictureService.update(
+                    Picture(
+                        id = it.id,
+                        count = counter,
+                        filePath = it.filePath,
+                        hasMetadata = true,
+                        processedFilePath = bitmapProcessedPath,
+                        time = time,
+                        thumbnailPath = it.thumbnailPath,
+                        timestamp = it.timestamp
+                    )
+                ) {
+                    callback()
+                }
             }
         }
     }
 
-    private fun eventFinishPrediction(subSampleId: Long) {
-        UpdateSubSampleUseCase(subSampleService, pictureService).run(subSampleId) {
-            this.onDestroy()
-        }
+    private fun eventFinishPrediction() {
+        sender.notify(100)
+        this.onDestroy()
     }
 
     override fun onDestroy() {

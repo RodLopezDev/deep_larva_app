@@ -22,37 +22,37 @@ class PicturesServices(private val db: AppDatabase) {
         }
     }
 
-    fun findBySubSampleId(subSampleId: Long, callback: (pictures: List<Picture>) -> Unit){
+    fun findAll(callback: (pictures: List<Picture>) -> Unit){
         GlobalScope.launch {
-            var pictures = db.picture().getBySubSampleId(subSampleId)
+            var pictures = db.picture().getAllPictures()
             withContext(Dispatchers.Main) {
                 callback(pictures)
             }
         }
     }
 
-    fun findUnprocessedBySubSampleId(subSampleId: Long, callback: (pictures: List<Picture>) -> Unit){
+    fun findUnprocessed(callback: (pictures: List<Picture>) -> Unit){
         GlobalScope.launch {
-            var pictures = db.picture().getBySubSampleIdNonProcessed(subSampleId)
+            var pictures = db.picture().getAllNonProcessed()
             withContext(Dispatchers.Main) {
                 callback(pictures)
             }
         }
     }
 
-    fun findProcessedBySubSampleId(subSampleId: Long, callback: (pictures: List<Picture>) -> Unit){
+    fun findProcessed(callback: (pictures: List<Picture>) -> Unit){
         GlobalScope.launch {
-            var pictures = db.picture().getBySubSampleIdProcessed(subSampleId)
+            var pictures = db.picture().getAllProcessed()
             withContext(Dispatchers.Main) {
                 callback(pictures)
             }
         }
     }
 
-    fun save(subSampleId: Long, filePath: String, thumbnailPath: String, callback: () -> Unit){
+    fun save(filePath: String, thumbnailPath: String, timeStamp: Long, callback: () -> Unit){
         GlobalScope.launch {
             db.picture().insert(
-                Picture(filePath = filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, subSampleId = subSampleId, time = 0)
+                Picture(filePath = filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0, timestamp = timeStamp)
             )
             withContext(Dispatchers.Main) {
                 callback()

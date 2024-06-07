@@ -1,6 +1,8 @@
 package com.rodrigo.deeplarva.utils
 
+import java.text.SimpleDateFormat
 import java.time.Duration
+import java.util.Locale
 
 class Time {
     companion object {
@@ -11,6 +13,11 @@ class Time {
             val seconds = totalSeconds % 60
 
             return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        }
+
+        fun longFormatTimestamp(timestamp: Long): String {
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            return sdf.format(timestamp)
         }
     }
 }

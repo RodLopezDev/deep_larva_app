@@ -18,7 +18,7 @@ class SplashActivity: AppCompatActivity() {
         GlobalScope.launch {
             delay(splashScreenTime)
             withContext(Dispatchers.Main) {
-                var intent = Intent(this@SplashActivity, SubSampleActivity::class.java)
+                var intent = Intent(this@SplashActivity, PicturesActivity::class.java)
                 startActivity(intent)
                 finish()
             }

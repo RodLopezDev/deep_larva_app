@@ -5,14 +5,10 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.domain.Constants
-
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.ml.Detect320x320
 import com.rodrigo.deeplarva.ml.Detect640x640
 import com.rodrigo.deeplarva.utils.BitmapUtils
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -24,7 +20,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
-class BackgroundTaskPredict(activity: Context) {
+class BackgroundTaskPredict(private val my: Context) {
 
     var isProcessing = false
         private set
@@ -34,23 +30,17 @@ class BackgroundTaskPredict(activity: Context) {
     private var processingList:List<Picture> = mutableListOf<Picture>()
 
     private lateinit var updateStatus: (status: Int) -> Unit
-    private lateinit var updateEntity: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
-    private lateinit var finish: (id: Long) -> Unit
+    private lateinit var updateEntity: (id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
+    private lateinit var finish: () -> Unit
 
-    private lateinit var my: Context
-    private var model = Detect640x640(activity)
-
-    init {
-        my = activity
-    }
+    private var model = Detect640x640(my)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun predictBatchCOROUTINE(
-        subSampleId: Long,
         pictures: List<Picture>,
         updateCallback: (status: Int) -> Unit,
-        updateEntityCallback: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit,
-        finishCallback: (id: Long) -> Unit
+        updateEntityCallback: (id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit,
+        finishCallback: () -> Unit
     ) {
         isProcessing = true
         updateStatus = updateCallback
@@ -61,13 +51,13 @@ class BackgroundTaskPredict(activity: Context) {
         processingRateProgress = 100 / pictures.size
         processingList = pictures
 
-        recursivePredictionCOROUTINE(subSampleId)
+        recursivePredictionCOROUTINE()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun recursivePredictionCOROUTINE(subSampleId: Long) {
+    private fun recursivePredictionCOROUTINE() {
         if(processingIndex >= processingList.size) {
-            finishPrediction(subSampleId)
+            finishPrediction()
             return
         }
 
@@ -76,7 +66,7 @@ class BackgroundTaskPredict(activity: Context) {
             ?:  throw IllegalArgumentException("BITMAP_NOT_FOUND: $processingIndex")
 
         predictBitmapCOROUTINE(bitmap) {
-                processedBitmap, counter, processedFile, time -> run {
+                processedBitmap, counter, boxes, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
                 // TODO: Guardar en galeria
                 val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "deep-larva")
@@ -100,20 +90,20 @@ class BackgroundTaskPredict(activity: Context) {
             if(processingIndex != processingList.size - 1) {
                 updateStatus(processingRateProgress * processingIndex)
             }
-            updateEntity(currentItem.id, counter, time, processedFilePath) {
-                recursivePredictionCOROUTINE(subSampleId)
+            updateEntity(currentItem.id, counter, boxes, time, processedFilePath) {
+                recursivePredictionCOROUTINE()
             }
         }}
     }
 
-    private fun finishPrediction(subSampleId: Long) {
+    private fun finishPrediction() {
         isProcessing = false
         processingIndex = 0
-        finish(subSampleId)
+        finish()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, fileName: String, time: Long) -> Unit) {
+    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, boxes: List<List<Float>>, fileName: String, time: Long) -> Unit) {
         val startTimeMillis = System.currentTimeMillis()
         GlobalScope.launch {
             var result = model.iniciarProcesoGlobalPrediction(
@@ -132,7 +122,7 @@ class BackgroundTaskPredict(activity: Context) {
                 val uuid: UUID = UUID.randomUUID()
                 val uuidString: String = uuid.toString()
                 val filename = "$uuidString-processed.${Constants.IMAGE_EXTENSION}"
-                callback(result.finalBitmap, result.counter, filename, totalTime)
+                callback(result.finalBitmap, result.counter, result.boxes, filename, totalTime)
             }
         }
     }
