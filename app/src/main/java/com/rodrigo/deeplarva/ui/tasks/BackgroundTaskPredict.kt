@@ -112,9 +112,7 @@ class BackgroundTaskPredict(private val my: Context) {
                 splitHeight = 640,
                 overlap = 0.75f,
                 miCustomConfidenceThreshold = 0.60F,
-                miCustomIoUThreshold = 0.80F,
-                //distanceThreshold = 10.0f
-                distanceThreshold = 0.3f
+                miCustomIoUThresholdNMS = 0.3f
             )
             val endTimeMillis = System.currentTimeMillis()
             val totalTime = endTimeMillis - startTimeMillis
