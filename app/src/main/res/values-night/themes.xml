@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.App.Dark" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <!-- <style name="Theme.App.Dark" parent="Theme.MaterialComponents.DayNight.DarkActionBar">-->
 
 <!--        -->
 <!--        &lt;!&ndash; Primary brand color. &ndash;&gt;-->
@@ -14,5 +14,24 @@
 <!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
 <!--        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>-->
 <!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+        <!-- </style>-->
+    <style name="Theme.App.Dark" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="colorControlNormal">@color/black</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.DeepLarva.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.DeepLarva.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="CustomFloatingActionButton" parent="Widget.Design.FloatingActionButton">
+        <item name="backgroundTint">@color/white</item>
+        <!--        <item name="fabSize">mini</item>-->
+        <!--        <item name="elevation">8dp</item>-->
+        <item name="rippleColor">@color/gray100</item>
     </style>
 </resources>
