@@ -6,21 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ImageHandler(private val activity: AppCompatActivity) {
 
-    private val camera: PhotoByCameraHandler
-    private val storage: PhotoByStorageHandler
+    private val storage: PhotoByStorageHandler = PhotoByStorageHandler(activity)
+    private val cameraPro: PhotoByCameraProHandler = PhotoByCameraProHandler(activity)
 
     private var handlers = mutableListOf<IPhotoHandler>()
 
     init {
-        camera = PhotoByCameraHandler(activity)
-        storage = PhotoByStorageHandler(activity)
-
-        handlers.add(camera)
+        handlers.add(cameraPro)
         handlers.add(storage)
     }
 
     fun launchCamera(){
-        camera.launch()
+        cameraPro.launch()
     }
 
     fun launchStorage(){
@@ -34,6 +31,6 @@ class ImageHandler(private val activity: AppCompatActivity) {
     }
 
     fun onRequestComplete(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        return camera.onRequestComplete(requestCode, permissions, grantResults)
+        return cameraPro.onRequestComplete(requestCode, permissions, grantResults)
     }
 }
