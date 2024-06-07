@@ -82,14 +82,12 @@ class Detector(
 
     fun detect(frame: Bitmap, customConfidenceThreshold: Float, custom_IoUThreshold: Float): List<BoundingBox>? {
 
-        var inferenceTime = SystemClock.uptimeMillis()
+        //var inferenceTime = SystemClock.uptimeMillis()
 
         val resizedBitmap = Bitmap.createScaledBitmap(frame, tensorWidth, tensorHeight, false)
 
         val tensorImage = TensorImage(DataType.FLOAT32)
         tensorImage.load(resizedBitmap)
-
-        print("tensorImage: $tensorImage")
 
         val processedImage = imageProcessor.process(tensorImage)
         val imageBuffer = processedImage.buffer
@@ -147,7 +145,8 @@ class Detector(
 
         if (boundingBoxes.isEmpty()) return null
 
-        return applyNMS(boundingBoxes, iouThreshold)
+        //return applyNMS(boundingBoxes, iouThreshold)
+        return boundingBoxes
     }
 
     private fun applyNMS(boxes: List<BoundingBox>, iouThreshold: Float) : MutableList<BoundingBox> {
