@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.view
+package com.rodrigo.deeplarva.routes.camera.interfaces
 
 interface CameraActivityViewListener {
     fun onChangeExposure(exposure: Int)

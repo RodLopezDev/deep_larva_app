@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.cameraV2
+package com.rodrigo.deeplarva.routes.camera.interfaces
 
 import android.hardware.camera2.CameraCharacteristics
 import android.media.Image
@@ -8,4 +8,5 @@ interface CameraProListener {
     fun onReceivePicture(image: Image)
     fun onLogError(message: String)
     fun onError()
+    fun onCameraLoaded()
 }

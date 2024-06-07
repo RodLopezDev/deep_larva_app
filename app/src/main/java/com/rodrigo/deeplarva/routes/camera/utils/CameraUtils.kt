@@ -1,7 +1,14 @@
-package com.rodrigo.deeplarva.routes.cameraV2
+package com.rodrigo.deeplarva.routes.camera.utils
 
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
+import android.media.Image
+import android.widget.Toast
+import com.rodrigo.deeplarva.routes.camera.domain.CameraCharacteristic
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.ByteBuffer
 
 class CameraUtils {
     companion object {

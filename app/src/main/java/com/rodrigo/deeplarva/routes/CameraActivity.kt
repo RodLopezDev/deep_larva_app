@@ -1,80 +1,38 @@
 package com.rodrigo.deeplarva.routes
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.ImageFormat
-import android.hardware.camera2.CameraDevice
+import android.hardware.camera2.CameraCharacteristics
 import android.media.Image
-import android.media.ImageReader
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.routes.camera.Camera
-import com.rodrigo.deeplarva.routes.camera.CameraPermissions
-import com.rodrigo.deeplarva.routes.camera.interfaces.CameraPermissionsListener
-import com.rodrigo.deeplarva.routes.camera.interfaces.CameraRenderListener
-import com.rodrigo.deeplarva.routes.camera.CameraTextureView
-import com.rodrigo.deeplarva.routes.camera.CameraThreadUpdater
-import com.rodrigo.deeplarva.routes.camera.RenderizerCamera
-import com.rodrigo.deeplarva.routes.camera.interfaces.CameraActionListener
-import com.rodrigo.deeplarva.routes.camera.interfaces.CameraOnTouchListener
-import com.rodrigo.deeplarva.routes.observables.CameraParamsViewModel
-import com.rodrigo.deeplarva.routes.view.CameraActivityView
+import com.rodrigo.deeplarva.routes.camera.CameraPro
+import com.rodrigo.deeplarva.routes.camera.interfaces.CameraProListener
+import com.rodrigo.deeplarva.routes.camera.utils.CameraUtils
+import com.rodrigo.deeplarva.routes.view.CameraActivityV2View
+import com.rodrigo.deeplarva.routes.camera.interfaces.CameraActivityViewListener
+import com.rodrigo.deeplarva.utils.Files
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.ByteBuffer
 
-class CameraActivity: AppCompatActivity(), CameraPermissionsListener, CameraRenderListener, CameraOnTouchListener, CameraActionListener {
+class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityViewListener {
 
-    private lateinit var viewModel: CameraParamsViewModel
-    private lateinit var view: CameraActivityView
-    private lateinit var cameraTextureView: CameraTextureView
-
-    private val cameraThreadUpdater = CameraThreadUpdater()
-    private val renderizerCamera = RenderizerCamera(this)
-    private val cameraPermissions = CameraPermissions(this, this)
+    private var photos = mutableListOf<String>()
+    private lateinit var cameraPro: CameraPro
+    private lateinit var view: CameraActivityV2View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        viewModel = ViewModelProvider(this)[CameraParamsViewModel::class.java]
-        view = CameraActivityView(this, viewModel)
-
-        viewModel.ev.observe(this) {
-            view.setEvText(it!!)
-            renderizerCamera.updateRender(it, viewModel.iso.value!!, viewModel.speed.value!!, cameraThreadUpdater.getHandler())
-        }
-        viewModel.iso.observe(this) {
-            view.setISOText(it!!)
-            renderizerCamera.updateRender(viewModel.ev.value!!, it, viewModel.speed.value!!, cameraThreadUpdater.getHandler())
-        }
-        viewModel.speed.observe(this) {
-            view.setSpeedText(it!!)
-            renderizerCamera.updateRender(viewModel.ev.value!!, viewModel.iso.value!!, it, cameraThreadUpdater.getHandler())
-        }
-
-        cameraTextureView = CameraTextureView(this, this)
-
-        cameraPermissions.request()
-
-        view.getBtnCapture().setOnClickListener {
-            renderizerCamera.takePicture(
-                this@CameraActivity,
-                cameraTextureView.getImageReader(),
-                cameraThreadUpdater.getHandler()
-            )
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        cameraThreadUpdater.onStart()
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-            cameraPermissions.request()
-        }
+        view = CameraActivityV2View(this)
+        cameraPro = CameraPro(this, view.textureView, this)
     }
 
     override fun onRequestPermissionsResult(
@@ -83,45 +41,65 @@ class CameraActivity: AppCompatActivity(), CameraPermissionsListener, CameraRend
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        cameraPermissions.check(requestCode, permissions, grantResults)
+        if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            cameraPro.init()
+            return
+        }
     }
 
-    @SuppressLint("MissingPermission")
-    override fun onInitCamera() {
-        val camera = Camera(this, this)
-        cameraTextureView.render(camera, cameraThreadUpdater.getHandler())
-    }
-
-    override fun onRejectCamera() {
-        Toast.makeText(this, "Unauthorizaed camera", Toast.LENGTH_SHORT).show()
-        finish()
-    }
-
-    override fun onOpened(camera: Camera, cameraDevice: CameraDevice) {
-        renderizerCamera.render(camera, cameraDevice, cameraTextureView.getTextureView(), cameraThreadUpdater.getHandler(), cameraTextureView.getImageReader())
-    }
-
-    override fun onDisconnected(camera: CameraDevice) {
-        renderizerCamera.delete(camera)
-    }
-
-    override fun onError(camera: CameraDevice, error: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onTouch(x: Float, y: Float) {
-        renderizerCamera.onTouch(x, y, cameraTextureView.getTextureView(), cameraThreadUpdater.getHandler())
-    }
-
-    override fun getFileName(): String {
-        TODO("Not yet implemented")
+    override fun onResume() {
+        super.onResume()
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 1)
+        }else {
+            cameraPro.init()
+        }
     }
 
     override fun onReceivePicture(image: Image) {
-        Toast.makeText(this, "Photo taken", Toast.LENGTH_SHORT).show()
+        val fileName = "${System.currentTimeMillis()}.jpg"
+        try {
+            val file = Files(this).SaveOnStorage(image, "/deep-larva/", fileName)
+            val filePath = file.absolutePath
+
+            photos.add(filePath)
+            runOnUiThread {
+                Toast.makeText(this, "Image Added: $filePath", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: IOException) {
+            onLogError("CameraActivity.onReceivePicture.SaveOnStorage::${e?.message}")
+        }
     }
 
-    override fun onFailReceivePicture() {
-        Toast.makeText(this, "Error taken photo", Toast.LENGTH_SHORT).show()
+    override fun onLogError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onError() {
+        finish()
+    }
+
+    override fun onCameraLoaded() {
+        view.showTextureView()
+    }
+
+    override fun onDetectCamera(cameraCharacteristics: CameraCharacteristics) {
+        view.initializeCommandControl(this, CameraUtils.getCameraCharacteristic(cameraCharacteristics))
+    }
+
+    override fun onChangeExposure(exposure: Int) {
+        cameraPro.updateExposure(exposure)
+    }
+
+    override fun onChangeISO(exposure: Int) {
+        cameraPro.updateISO(exposure)
+    }
+
+    override fun onChangeSpeed(exposure: Long) {
+        cameraPro.updateSpeed(exposure)
+    }
+
+    override fun onCapture() {
+        cameraPro.takePicture()
     }
 }

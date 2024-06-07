@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.cameraV2
+package com.rodrigo.deeplarva.routes.camera.domain
 
 import android.util.Range
 import android.util.Size

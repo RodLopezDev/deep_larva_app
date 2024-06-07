@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.cameraV2
+package com.rodrigo.deeplarva.routes.camera
 
 import android.Manifest
 import android.content.Context
@@ -18,6 +18,7 @@ import android.view.TextureView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.rodrigo.deeplarva.routes.camera.interfaces.CameraProListener
 
 class CameraPro(private val activity: AppCompatActivity, private val textureView: TextureView, private val listener: CameraProListener) {
 
@@ -66,6 +67,7 @@ class CameraPro(private val activity: AppCompatActivity, private val textureView
         override fun onOpened(camera: CameraDevice) {
             cameraDevice = camera
             createCameraPreviewSession()
+            listener.onCameraLoaded()
         }
         override fun onDisconnected(camera: CameraDevice) {
             camera.close()
@@ -127,8 +129,6 @@ class CameraPro(private val activity: AppCompatActivity, private val textureView
                     return
                 }
                 cameraCaptureSession = session
-//                captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-//                cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, null)
                 updateCameraThread()
             }
 

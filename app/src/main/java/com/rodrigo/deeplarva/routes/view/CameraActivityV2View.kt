@@ -9,7 +9,8 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.routes.cameraV2.CameraCharacteristic
+import com.rodrigo.deeplarva.routes.camera.domain.CameraCharacteristic
+import com.rodrigo.deeplarva.routes.camera.interfaces.CameraActivityViewListener
 
 class CameraActivityV2View(
     private val activity: AppCompatActivity
@@ -88,6 +89,11 @@ class CameraActivityV2View(
         }
 
         llCommandControl.visibility = View.VISIBLE
+        llShadowTexture.visibility = View.INVISIBLE
+    }
+
+    fun showTextureView() {
+        // TODO: REVIEW THIS
         llShadowTexture.visibility = View.INVISIBLE
     }
 
