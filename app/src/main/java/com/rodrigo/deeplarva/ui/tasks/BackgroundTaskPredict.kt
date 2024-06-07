@@ -5,14 +5,10 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.domain.Constants
-
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.ml.Detect320x320
 import com.rodrigo.deeplarva.ml.Detect640x640
 import com.rodrigo.deeplarva.utils.BitmapUtils
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -35,7 +31,7 @@ class BackgroundTaskPredict(activity: Context) {
 
     private lateinit var updateStatus: (status: Int) -> Unit
     private lateinit var updateEntity: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
-    private lateinit var finish: (id: Long) -> Unit
+    private lateinit var finish: () -> Unit
 
     private lateinit var my: Context
     private var model = Detect640x640(activity)
@@ -46,11 +42,10 @@ class BackgroundTaskPredict(activity: Context) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun predictBatchCOROUTINE(
-        subSampleId: Long,
         pictures: List<Picture>,
         updateCallback: (status: Int) -> Unit,
         updateEntityCallback: (id: Long, counter: Int, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit,
-        finishCallback: (id: Long) -> Unit
+        finishCallback: () -> Unit
     ) {
         isProcessing = true
         updateStatus = updateCallback
@@ -61,13 +56,13 @@ class BackgroundTaskPredict(activity: Context) {
         processingRateProgress = 100 / pictures.size
         processingList = pictures
 
-        recursivePredictionCOROUTINE(subSampleId)
+        recursivePredictionCOROUTINE()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun recursivePredictionCOROUTINE(subSampleId: Long) {
+    private fun recursivePredictionCOROUTINE() {
         if(processingIndex >= processingList.size) {
-            finishPrediction(subSampleId)
+            finishPrediction()
             return
         }
 
@@ -101,15 +96,15 @@ class BackgroundTaskPredict(activity: Context) {
                 updateStatus(processingRateProgress * processingIndex)
             }
             updateEntity(currentItem.id, counter, time, processedFilePath) {
-                recursivePredictionCOROUTINE(subSampleId)
+                recursivePredictionCOROUTINE()
             }
         }}
     }
 
-    private fun finishPrediction(subSampleId: Long) {
+    private fun finishPrediction() {
         isProcessing = false
         processingIndex = 0
-        finish(subSampleId)
+        finish()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

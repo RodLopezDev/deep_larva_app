@@ -1,6 +1,5 @@
 package com.rodrigo.deeplarva.domain
 
-import com.rodrigo.deeplarva.domain.entity.SubSample
 import com.rodrigo.deeplarva.utils.Colors
 
 class Constants {
@@ -14,7 +13,6 @@ class Constants {
 
         const val IMAGE_EXTENSION =".png"
 
-        const val INTENT_SUB_SAMPLE_FLAG = "subSampleId"
         const val INTENT_CAMERA_PRO_RESULT = "data"
 
         const val NOTIFICATION_CHANNEL_ID = "MyServiceChannel"

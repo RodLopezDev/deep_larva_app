@@ -1,7 +1,5 @@
 package com.rodrigo.deeplarva.domain
 
-import com.rodrigo.deeplarva.domain.entity.SubSample
-import com.rodrigo.deeplarva.utils.Colors
 import com.rodrigo.deeplarva.utils.Time
 
 class MessageFactory {
@@ -10,8 +8,8 @@ class MessageFactory {
             return "Pruebas"
         }
 
-        fun getResultsView(subSample: SubSample): String {
-            return "Moda : ${subSample.mean} individuos\nMax : ${subSample.min} individuos\nMin : ${subSample.max} individuos"
+        fun getResultsView(): String {
+            return ""
         }
 
         fun getPictureResults(hasResult: Boolean, count: Int, time: Long): String {

@@ -17,14 +17,11 @@ interface PictureDAO {
     @Query("SELECT * FROM picture")
     fun getAllPictures(): List<Picture>
 
-    @Query("SELECT * FROM picture WHERE sub_sample_id = :subSampleId")
-    fun getBySubSampleId(subSampleId: Long): List<Picture>
+    @Query("SELECT * FROM picture WHERE has_metadata = 1")
+    fun getAllProcessed(): List<Picture>
 
-    @Query("SELECT * FROM picture WHERE has_metadata = 1 and sub_sample_id = :subSampleId")
-    fun getBySubSampleIdProcessed(subSampleId: Long): List<Picture>
-
-    @Query("SELECT * FROM picture WHERE has_metadata = 0 and sub_sample_id = :subSampleId")
-    fun getBySubSampleIdNonProcessed(subSampleId: Long): List<Picture>
+    @Query("SELECT * FROM picture WHERE has_metadata = 0")
+    fun getAllNonProcessed(): List<Picture>
 
     @Insert
     fun insert(user: Picture)
