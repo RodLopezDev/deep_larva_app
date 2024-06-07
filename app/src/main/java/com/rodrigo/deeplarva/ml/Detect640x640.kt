@@ -61,8 +61,7 @@ class Detect640x640(private val activity: Context) {
         splitHeight: Int,
         overlap: Float,
         miCustomConfidenceThreshold: Float,
-        miCustomIoUThreshold: Float,
-        distanceThreshold: Float
+        miCustomIoUThresholdNMS: Float
     ): FinalResult {
         // Dividir la imagen en partes usando la función splitImages
         val splits_results = splitImages(bitmap, splitWidth, splitHeight, overlap)
@@ -96,8 +95,7 @@ class Detect640x640(private val activity: Context) {
             detector2,
             imageSplits,
             imageSplitsKeys,
-            miCustomConfidenceThreshold,
-            miCustomIoUThreshold
+            miCustomConfidenceThreshold
         )
 
         val finalTime = Instant.now()
@@ -109,28 +107,12 @@ class Detect640x640(private val activity: Context) {
         // Obtener los resultados de la predicción
         val variable_triple = getAllPredictedAnnotations(allResults)
 
-        // Imprimir los resultados actuales
-        customPrint(variable_triple.scores, "[CURRENT] scores", false, false, true, true)
-        customPrint(variable_triple.centroids, "[CURRENT] centroids", false, false, true, true)
-        customPrint(variable_triple.bboxs, "[CURRENT] bboxs", false, false, true, true)
-        customPrint(variable_triple.categoryIds, "[CURRENT] categoryIds", false, false, true, true)
-        customPrint(variable_triple.keys, "[CURRENT] keys", false, false, true, true)
-
         // Escalar los resultados de la predicción
         val variable_triple_actualizado = obtenerDatosEscaladoPrediccionODV1(variable_triple)
 
-        //println("\n")
-
-        // Imprimir los resultados actualizados
-        //customPrint(variable_triple_actualizado.scores, "[ACTUALIZADO] scores", false, false, true, true)
-        //customPrint(variable_triple_actualizado.centroids, "[ACTUALIZADO] centroids", false, false, true, true)
-        //customPrint(variable_triple_actualizado.bboxs, "[ACTUALIZADO] bboxs", false, false, true, true)
-        //customPrint(variable_triple_actualizado.categoryIds, "[ACTUALIZADO] categoryIds", false, false, true, true)
-        //customPrint(variable_triple_actualizado.keys, "[ACTUALIZADO] keys", false, false, true, true)
-
         // Llamada a la función para agrupar las anotaciones
         //val groupedAnnotations = groupODAnnotationsDataV1(variable_triple_actualizado, distanceThreshold)
-        val groupedAnnotations = nmsKotlin(variable_triple_actualizado, distanceThreshold)
+        val groupedAnnotations = nmsKotlin(variable_triple_actualizado, miCustomIoUThresholdNMS)
 
 
         // Llamada a la función para plotear las anotaciones predichas
@@ -143,8 +125,7 @@ class Detect640x640(private val activity: Context) {
         custom_detector: Detector,
         imageSplits: Array<Bitmap?>,
         imageSplitsKeys: Array<String?>,
-        customConfidenceThreshold: Float,
-        customIoUThreshold: Float
+        customConfidenceThreshold: Float
     ): List<Map<String, Any>> {
 
         val allResults = mutableListOf<Map<String, Any>>()
@@ -174,7 +155,7 @@ class Detect640x640(private val activity: Context) {
                 mutableBatchImgElement = Bitmap.createScaledBitmap(mutableBatchImgElement!!, split_imgWidth!!, split_imgHeight!!, false)
             } ?: println("Bitmap Element es nulo")
 
-            val BoxesapplyNMS2 = custom_detector.detect(mutableBatchImgElement2!!, customConfidenceThreshold, customIoUThreshold)
+            val BoxesapplyNMS2 = custom_detector.detect(mutableBatchImgElement2!!, customConfidenceThreshold)
 
             var new_locations_List2 = mutableListOf<List<Float>>()
             val classes2 = mutableListOf<Float>()
@@ -208,12 +189,7 @@ class Detect640x640(private val activity: Context) {
                     )
                 )
             }
-            //val finalTime = Instant.now()
-
-            //val timeDifferenceOutput = calculateTimeDifference(initialTime, finalTime)
-            //println("timeDifferenceOutput: $timeDifferenceOutput")
         }
-
         return allResults
     }
 
@@ -366,90 +342,6 @@ class Detect640x640(private val activity: Context) {
         return "Type: $type, Length: $length"
     }
 
-    fun euclideanDistance(points1: List<Float>, points2: List<Float>): Float {
-        return sqrt((points1[1] - points2[1]).pow(2) + (points1[0] - points2[0]).pow(2))
-    }
-
-
-
-    fun filterGroupedAnnotationsDataV2(annotationsData: List<GroupedAnnotation>): List<GroupedAnnotation> {
-        val filteredAnnotationsData = mutableListOf<GroupedAnnotation>()
-
-        for (iIdx in annotationsData.indices) {
-            val categories = mutableMapOf<Int, MutableMap<String, Any>>()
-
-            for ((jIdx, score) in annotationsData[iIdx].scores.withIndex()) {
-                val centroid = annotationsData[iIdx].centroids[jIdx]
-                val bbox = annotationsData[iIdx].bboxs[jIdx] as MutableList<Float>
-                val categoryId = annotationsData[iIdx].categoryIds[jIdx]
-
-                if (categoryId !in categories) {
-                    categories[categoryId] = mutableMapOf(
-                        "count" to 1,
-                        "locations" to mutableListOf(jIdx)
-                    )
-                } else {
-                    categories[categoryId]!!["count"] = (categories[categoryId]!!["count"] as Int) + 1
-                    (categories[categoryId]!!["locations"] as MutableList<Int>).add(jIdx)
-                }
-            }
-
-            var datosJIdxOrdenados = listOf<CustomDataJIdx>()
-
-            for ((category, info) in categories) {
-                val sumCentroidsOfCategory = floatArrayOf(0f, 0f)
-
-                for (jIdx in info["locations"] as List<Int>) {
-                    val centroid = annotationsData[iIdx].centroids[jIdx]
-                    sumCentroidsOfCategory[0] += centroid[0]
-                    sumCentroidsOfCategory[1] += centroid[1]
-                }
-
-                val averageCentroidOfCategory = sumCentroidsOfCategory.map { it / (info["locations"] as List<Int>).size }
-
-                var bestScoreJIdx = 0.0f
-                var locationBestScoreJIdx = 0
-
-                for (jIdx in info["locations"] as List<Int>) {
-                    val score = annotationsData[iIdx].scores[jIdx]
-
-                    if (score > bestScoreJIdx) {
-                        bestScoreJIdx = score
-                        locationBestScoreJIdx = jIdx
-                    }
-                }
-
-                val referenceBox = moveBoxToCentroid(annotationsData[iIdx].bboxs[locationBestScoreJIdx].toMutableList(), averageCentroidOfCategory)
-
-                // Inicializar datos como una lista vacía mutable
-                val datosJIdx = mutableListOf<CustomDataJIdx>()
-
-                for (jIdx in info["locations"] as List<Int>) {
-                    val bbox_2 = annotationsData[iIdx].bboxs[jIdx]
-                    val boxIOU = calculateBoxIoU(referenceBox, bbox_2)
-
-                    // Agregar datos a la lista
-                    datosJIdx += CustomDataJIdx(jIdx, annotationsData[iIdx].scores[jIdx], boxIOU.toFloat())
-                }
-
-                datosJIdxOrdenados = ordenarDataJIdx(datosJIdx)
-
-            }
-
-            val newGroup = GroupedAnnotation(
-                scores = mutableListOf(annotationsData[iIdx].scores[datosJIdxOrdenados.first().jIdx]),
-                centroids = mutableListOf(annotationsData[iIdx].centroids[datosJIdxOrdenados.first().jIdx]),
-                bboxs = mutableListOf(annotationsData[iIdx].bboxs[datosJIdxOrdenados.first().jIdx]),
-                categoryIds = mutableListOf(annotationsData[iIdx].categoryIds[datosJIdxOrdenados.first().jIdx])
-            )
-            filteredAnnotationsData.add(newGroup)
-
-        }
-
-        return filteredAnnotationsData
-    }
-
-
     fun getScaledDataOverBbox(predictionBboxData: MutableList<Float>, splitBboxData: List<Float>): MutableList<Float> {
 
         // aqui_toy
@@ -508,44 +400,6 @@ class Detect640x640(private val activity: Context) {
     fun calculateTimeDifference(initialTime: Instant, finalTime: Instant): String {
         val duration = Duration.between(initialTime, finalTime)
         return formatDuration(duration)
-    }
-
-    fun groupODAnnotationsDataV1(annotationsData: PredictedAnnotation, threshold: Float): List<GroupedAnnotation> {
-        val (scores, centroids, bboxs, categoryIds, _) = annotationsData
-
-        val groupedAnnotationsData = mutableListOf<GroupedAnnotation>()
-
-        for (idx in bboxs.indices) {
-            var foundGroup = false
-
-            // Check if the point is close to any existing group
-            for (group in groupedAnnotationsData) {
-                for (groupCentroid in group.centroids) {
-                    if (euclideanDistance(centroids[idx], groupCentroid) < threshold) {
-                        group.scores.add(scores[idx])
-                        group.centroids.add(centroids[idx])
-                        group.bboxs.add(bboxs[idx])
-                        group.categoryIds.add(categoryIds[idx])
-                        foundGroup = true
-                        break
-                    }
-                }
-                if (foundGroup) break
-            }
-
-            // If the point is not close to any existing group, create a new group
-            if (!foundGroup) {
-                val newGroup = GroupedAnnotation(
-                    scores = mutableListOf(scores[idx]),
-                    centroids = mutableListOf(centroids[idx]),
-                    bboxs = mutableListOf(bboxs[idx]),
-                    categoryIds = mutableListOf(categoryIds[idx])
-                )
-                groupedAnnotationsData.add(newGroup)
-            }
-        }
-
-        return groupedAnnotationsData
     }
 
     fun nmsKotlin(annotationsData: PredictedAnnotation, threshold: Float): List<GroupedAnnotation> {
