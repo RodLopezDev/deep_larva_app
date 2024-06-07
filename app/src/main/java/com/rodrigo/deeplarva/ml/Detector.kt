@@ -80,7 +80,7 @@ class Detector(
         interpreter = null
     }
 
-    fun detect(frame: Bitmap, customConfidenceThreshold: Float, custom_IoUThreshold: Float): List<BoundingBox>? {
+    fun detect(frame: Bitmap, customConfidenceThreshold: Float): List<BoundingBox>? {
 
         //var inferenceTime = SystemClock.uptimeMillis()
 
@@ -95,12 +95,12 @@ class Detector(
         val output = TensorBuffer.createFixedSize(intArrayOf(1 , numChannel, numElements), OUTPUT_IMAGE_TYPE)
         interpreter?.run(imageBuffer, output.buffer)
 
-        val bestBoxes = bestBox(output.floatArray, customConfidenceThreshold, custom_IoUThreshold)
+        val bestBoxes = bestBox(output.floatArray, customConfidenceThreshold)
 
         return bestBoxes
     }
 
-    private fun bestBox(array: FloatArray, confidenceThreshold: Float, iouThreshold: Float) : List<BoundingBox>? {
+    private fun bestBox(array: FloatArray, confidenceThreshold: Float) : List<BoundingBox>? {
 
         val boundingBoxes = mutableListOf<BoundingBox>()
 
