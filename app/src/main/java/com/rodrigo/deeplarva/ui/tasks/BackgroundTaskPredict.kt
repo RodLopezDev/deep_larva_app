@@ -115,9 +115,8 @@ class BackgroundTaskPredict(activity: Context) {
                 bitmap,
                 splitWidth = 640,
                 splitHeight = 640,
-                overlap = 0.8f,
-                miBatchSize = 6,
-                miCustomConfidenceThreshold = 0.28F,
+                overlap = 0.75f,
+                miCustomConfidenceThreshold = 0.60F,
                 miCustomIoUThreshold = 0.80F,
                 //distanceThreshold = 10.0f
                 distanceThreshold = 0.3f
