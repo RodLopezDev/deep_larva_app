@@ -21,6 +21,7 @@ import org.tensorflow.lite.support.image.ops.ResizeOp
 import java.time.Duration
 import java.time.Instant
 
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -124,14 +125,15 @@ class Detect640x640(private val activity: Context) {
         println("\n")
 
         // Imprimir los resultados actualizados
-        customPrint(variable_triple_actualizado.scores, "[ACTUALIZADO] scores", false, false, true, true)
-        customPrint(variable_triple_actualizado.centroids, "[ACTUALIZADO] centroids", false, false, true, true)
-        customPrint(variable_triple_actualizado.bboxs, "[ACTUALIZADO] bboxs", false, false, true, true)
-        customPrint(variable_triple_actualizado.categoryIds, "[ACTUALIZADO] categoryIds", false, false, true, true)
-        customPrint(variable_triple_actualizado.keys, "[ACTUALIZADO] keys", false, false, true, true)
+        //customPrint(variable_triple_actualizado.scores, "[ACTUALIZADO] scores", false, false, true, true)
+        //customPrint(variable_triple_actualizado.centroids, "[ACTUALIZADO] centroids", false, false, true, true)
+        //customPrint(variable_triple_actualizado.bboxs, "[ACTUALIZADO] bboxs", false, false, true, true)
+        //customPrint(variable_triple_actualizado.categoryIds, "[ACTUALIZADO] categoryIds", false, false, true, true)
+        //customPrint(variable_triple_actualizado.keys, "[ACTUALIZADO] keys", false, false, true, true)
 
         // Llamada a la función para agrupar las anotaciones
-        val groupedAnnotations = groupODAnnotationsDataV1(variable_triple_actualizado, distanceThreshold)
+        //val groupedAnnotations = groupODAnnotationsDataV1(variable_triple_actualizado, distanceThreshold)
+        val groupedAnnotations = nmsKotlin(variable_triple_actualizado, distanceThreshold)
 
 //        println("groupedAnnotations: $groupedAnnotations")
 
@@ -143,8 +145,8 @@ class Detect640x640(private val activity: Context) {
 //            }
 //        }
 
-        customPrint((groupedAnnotations as? Collection<*>)?.size ?: 0, "[len_groupedAnnotations] ", true, true, false, false)
-        customPrint(groupedAnnotations, "[GET_LEN] groupedAnnotations", false, false, true, true, false)
+        //customPrint((groupedAnnotations as? Collection<*>)?.size ?: 0, "[len_groupedAnnotations] ", true, true, false, false)
+        //customPrint(groupedAnnotations, "[GET_LEN] groupedAnnotations", false, false, true, true, false)
 
         // Llamada a la función para filtrar las anotaciones agrupadas
         val filteredAnnotations = filterGroupedAnnotationsDataV2(groupedAnnotations)
@@ -644,6 +646,48 @@ class Detect640x640(private val activity: Context) {
         return groupedAnnotationsData
     }
 
+    fun nmsKotlin(annotationsData: PredictedAnnotation, threshold: Float): List<GroupedAnnotation> {
+        val (scores, centroids, bboxs, categoryIds, _) = annotationsData
+
+        data class BBox(val index: Int, val coordinates: List<Float>)
+
+        val bboxList = bboxs.mapIndexed { index, bbox -> BBox(index, bbox) }.sortedByDescending { scores[it.index] }
+        val bboxAreas = bboxList.map { (it.coordinates[2] - it.coordinates[0] + 1) * (it.coordinates[3] - it.coordinates[1] + 1) }
+
+        val filteredIndices = mutableListOf<Int>()
+        val sortedIdx = bboxList.map { it.index }.toMutableList()
+
+        while (sortedIdx.isNotEmpty()) {
+            val rbboxIdx = sortedIdx[0]
+            filteredIndices.add(rbboxIdx)
+
+            val overlap = sortedIdx.drop(1).map { idx ->
+                val overlapXMin = max(bboxList[rbboxIdx].coordinates[0], bboxList[idx].coordinates[0])
+                val overlapYMin = max(bboxList[rbboxIdx].coordinates[1], bboxList[idx].coordinates[1])
+                val overlapXMax = min(bboxList[rbboxIdx].coordinates[2], bboxList[idx].coordinates[2])
+                val overlapYMax = min(bboxList[rbboxIdx].coordinates[3], bboxList[idx].coordinates[3])
+                val overlapWidth = max(0f, overlapXMax - overlapXMin + 1)
+                val overlapHeight = max(0f, overlapYMax - overlapYMin + 1)
+                val overlapArea = overlapWidth * overlapHeight
+                val iou = overlapArea / (bboxAreas[rbboxIdx] + bboxAreas[idx] - overlapArea)
+                idx to iou
+            }
+
+            val deleteIdx = overlap.filter { it.second > threshold }.map { it.first }.toMutableList()
+            deleteIdx.add(0, rbboxIdx)
+
+            sortedIdx.removeAll(deleteIdx)
+        }
+
+        return filteredIndices.map { idx ->
+            GroupedAnnotation(
+                scores = mutableListOf(scores[idx]),
+                centroids = mutableListOf(centroids[idx]),
+                bboxs = mutableListOf(bboxs[idx]),
+                categoryIds = mutableListOf(categoryIds[idx])
+            )
+        }
+    }
 
     fun getAllPredictedAnnotations(getallResults: List<Map<String, Any>>): PredictedAnnotation {
 
