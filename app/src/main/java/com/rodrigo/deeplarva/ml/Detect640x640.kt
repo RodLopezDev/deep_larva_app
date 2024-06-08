@@ -130,9 +130,43 @@ class Detect640x640(private val activity: Context) {
         return plotPredictedODAnnotationsDataForAndroid(groupedAnnotations, bitmap, finalBbox,labels)
     }
 
+    //Mas lento
+    fun nmsKotlin(bboxes: List<BoundingBox>, threshold: Float): MutableList<BoundingBox> {
+        if (bboxes.isEmpty()) return mutableListOf()
 
+        // Ordenar las bounding boxes por puntajes en orden descendente
+        val sortedBboxes = bboxes.sortedByDescending { it.cnf }
+        val bboxAreas = sortedBboxes.map { (it.x2 - it.x1 + 1) * (it.y2 - it.y1 + 1) }
 
+        val filtered = mutableListOf<BoundingBox>()
+        val sortedIdx = sortedBboxes.indices.toMutableList()
 
+        while (sortedIdx.isNotEmpty()) {
+            val rbboxIdx = sortedIdx[0]
+            filtered.add(sortedBboxes[rbboxIdx])
+
+            val overlap = sortedIdx.drop(1).map { idx ->
+                val overlapXMin = max(sortedBboxes[rbboxIdx].x1, sortedBboxes[idx].x1)
+                val overlapYMin = max(sortedBboxes[rbboxIdx].y1, sortedBboxes[idx].y1)
+                val overlapXMax = min(sortedBboxes[rbboxIdx].x2, sortedBboxes[idx].x2)
+                val overlapYMax = min(sortedBboxes[rbboxIdx].y2, sortedBboxes[idx].y2)
+                val overlapWidth = max(0f, overlapXMax - overlapXMin + 1)
+                val overlapHeight = max(0f, overlapYMax - overlapYMin + 1)
+                val overlapArea = overlapWidth * overlapHeight
+                val iou = overlapArea / (bboxAreas[rbboxIdx] + bboxAreas[idx] - overlapArea)
+                idx to iou
+            }
+
+            val deleteIdx = overlap.filter { it.second > threshold }.map { it.first }.toMutableList()
+            deleteIdx.add(0, rbboxIdx)
+
+            sortedIdx.removeAll(deleteIdx)
+        }
+
+        return filtered
+    }
+
+    //Mas rapido
     private fun applyNMS(boxes: List<BoundingBox>, iouThreshold: Float): MutableList<BoundingBox> {
         val sortedBoxes = boxes.sortedByDescending { it.cnf }.toMutableList()
         val selectedBoxes = mutableListOf<BoundingBox>()
