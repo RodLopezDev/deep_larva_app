@@ -15,6 +15,7 @@ import com.rodrigo.deeplarva.ui.listener.ListEventListener
 
 
 class PictureActivityView(
+    private val deviceId: String,
     private val activity: AppCompatActivity,
     private val binding: ActivityPicturesBinding,
     private val listener: IPictureViewListener
@@ -68,6 +69,18 @@ class PictureActivityView(
             listener.onRemovePicture(item)
             dialog.dismiss()
         }
+
+        dialog.show()
+    }
+
+    fun showInfoDialog() {
+        val dialog = AlertDialog.Builder(activity)
+            .setTitle("DeviceID")
+            .setMessage(deviceId)
+            .setPositiveButton("Close") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
 
         dialog.show()
     }

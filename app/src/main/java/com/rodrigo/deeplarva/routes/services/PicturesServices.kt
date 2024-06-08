@@ -50,10 +50,10 @@ class PicturesServices(private val db: AppDatabase) {
         }
     }
 
-    fun save(filePath: String, thumbnailPath: String, timeStamp: Long, callback: () -> Unit){
+    fun save(deviceId: String, filePath: String, thumbnailPath: String, timeStamp: Long, callback: () -> Unit){
         GlobalScope.launch {
             db.picture().insert(
-                Picture(filePath = filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0, timestamp = timeStamp)
+                Picture(filePath = filePath, deviceId = deviceId, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0, timestamp = timeStamp)
             )
             withContext(Dispatchers.Main) {
                 callback()
@@ -61,11 +61,11 @@ class PicturesServices(private val db: AppDatabase) {
         }
     }
 
-    fun saveBulk(items: List<BitmapProcessingResult>, callback: () -> Unit){
+    fun saveBulk(deviceId: String, items: List<BitmapProcessingResult>, callback: () -> Unit){
         GlobalScope.launch {
             items.map {
                 db.picture().insert(
-                    Picture(filePath = it.filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = it.thumbnailPath, time = 0, timestamp = it.timestamp)
+                    Picture(filePath = it.filePath, deviceId = deviceId, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = it.thumbnailPath, time = 0, timestamp = it.timestamp)
                 )
             }
             withContext(Dispatchers.Main) {

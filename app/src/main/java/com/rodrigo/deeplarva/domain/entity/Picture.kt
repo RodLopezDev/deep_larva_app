@@ -11,6 +11,9 @@ data class Picture(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
+    @ColumnInfo(name = "device_id")
+    val deviceId: String,
+
     @ColumnInfo(name = "file_path")
     val filePath: String,
 
