@@ -39,15 +39,6 @@ class PictureAdapterList (context: Context, private val dataList: List<Picture>)
             tvCount.text = "-"
         }
 
-        itemView.setOnClickListener {
-            listener.onClick(currentItem, position)
-        }
-
-        itemView.setOnLongClickListener() {
-            listener.onLongClick(currentItem, position)
-            true
-        }
-
         return itemView!!
     }
 }

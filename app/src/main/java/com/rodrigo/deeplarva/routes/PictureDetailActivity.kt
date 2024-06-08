@@ -2,6 +2,7 @@ package com.rodrigo.deeplarva.routes
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
@@ -16,7 +17,7 @@ class PictureDetailActivity: AppCompatActivity() {
     private lateinit var boxDetectionServices: BoxDetectionServices
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pictureId = intent.getLongExtra("pictureId", 0)
+        pictureId = intent.getLongExtra(Constants.INTENT_PICTURE_DETAIL, 0)
 
         db = DbBuilder.getInstance(this)
         pictureService = PicturesServices(db)

@@ -13,6 +13,7 @@ class Constants {
 
         const val IMAGE_EXTENSION =".png"
 
+        const val INTENT_PICTURE_DETAIL = "pictureId"
         const val INTENT_CAMERA_PRO_RESULT = "data"
 
         const val NOTIFICATION_CHANNEL_ID = "MyServiceChannel"

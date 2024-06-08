@@ -1,10 +1,12 @@
 package com.rodrigo.deeplarva.routes.view
 
+import android.content.Intent
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.routes.CameraActivity
 import com.rodrigo.deeplarva.routes.PictureDetailActivity
@@ -23,6 +25,9 @@ class PictureActivityView(
             showOptionsDialog(item)
         }
         override fun onClick(item: Picture, position: Int) {
+            val intent = Intent(activity, PictureDetailActivity::class.java)
+            intent.putExtra(Constants.INTENT_PICTURE_DETAIL, item.id)
+            activity.startActivity(intent)
         }
     })
 
