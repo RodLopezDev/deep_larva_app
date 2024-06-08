@@ -26,9 +26,10 @@ class PictureActivityView(
             showOptionsDialog(item)
         }
         override fun onClick(item: Picture, position: Int) {
-            val intent = Intent(activity, PictureDetailActivity::class.java)
-            intent.putExtra(Constants.INTENT_PICTURE_DETAIL, item.id)
-            activity.startActivity(intent)
+            // TODO: DISABLE TEMPORALLY, REQUIRE ESTIMATION TIME TO IMPLEMENT
+//            val intent = Intent(activity, PictureDetailActivity::class.java)
+//            intent.putExtra(Constants.INTENT_PICTURE_DETAIL, item.id)
+//            activity.startActivity(intent)
         }
     })
 
@@ -62,10 +63,12 @@ class PictureActivityView(
     private fun showOptionsDialog(item: Picture) {
         val dialogView = activity.layoutInflater.inflate(R.layout.dialog_picture_options, null)
         val dialog = AlertDialog.Builder(activity)
+            .setTitle("Opciones")
             .setView(dialogView)
             .create()
 
-        dialogView.findViewById<Button>(R.id.btnDelete).setOnClickListener {
+        val btnRemove = dialogView.findViewById<Button>(R.id.btnDelete)
+        btnRemove.setOnClickListener {
             listener.onRemovePicture(item)
             dialog.dismiss()
         }
