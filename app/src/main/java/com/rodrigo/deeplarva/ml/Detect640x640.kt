@@ -127,6 +127,7 @@ class Detect640x640(private val activity: Context) {
         }
         val finalBbox = groupedAnnotations.flatMap { it.bboxs }
         // Llamada a la función para plotear las anotaciones predichas
+
         return plotPredictedODAnnotationsDataForAndroid(groupedAnnotations, bitmap, finalBbox,labels)
     }
 
@@ -327,11 +328,13 @@ class Detect640x640(private val activity: Context) {
             val resizedBitmap = resizeBitmapByPercentage(mutable, 0.4f)
             
             return FinalResult(resizedBitmap, total_predictions,boxes)
+
         } else {
             // La variable total_predictions es igual a cero
             println("No hay predicciones disponibles.")
 
             return FinalResult(null, 0, listOf())
+
         }
 
     }
