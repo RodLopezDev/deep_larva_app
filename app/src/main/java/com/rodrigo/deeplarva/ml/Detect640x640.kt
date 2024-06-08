@@ -60,8 +60,6 @@ class Detect640x640(private val activity: Context) {
         splitWidth: Int,
         splitHeight: Int,
         overlap: Float,
-        miBatchSize: Int,
-
         miCustomConfidenceThreshold: Float,
         miCustomIoUThreshold: Float,
         distanceThreshold: Float
@@ -95,10 +93,9 @@ class Detect640x640(private val activity: Context) {
         detector2.setup()
 
         allResults = realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
-            detector2, // Agrega este parámetro
+            detector2,
             imageSplits,
             imageSplitsKeys,
-            miBatchSize,
             miCustomConfidenceThreshold,
             miCustomIoUThreshold
         )
@@ -122,7 +119,7 @@ class Detect640x640(private val activity: Context) {
         // Escalar los resultados de la predicción
         val variable_triple_actualizado = obtenerDatosEscaladoPrediccionODV1(variable_triple)
 
-        println("\n")
+        //println("\n")
 
         // Imprimir los resultados actualizados
         //customPrint(variable_triple_actualizado.scores, "[ACTUALIZADO] scores", false, false, true, true)
@@ -135,146 +132,86 @@ class Detect640x640(private val activity: Context) {
         //val groupedAnnotations = groupODAnnotationsDataV1(variable_triple_actualizado, distanceThreshold)
         val groupedAnnotations = nmsKotlin(variable_triple_actualizado, distanceThreshold)
 
-//        println("groupedAnnotations: $groupedAnnotations")
-
-//        // Imprimir resultados agrupados
-        println("\nGrouped Annotations:")
-//        for ((i_idx, group) in groupedAnnotations.withIndex()) {
-//            for ((j_idx, sub_group) in groupedAnnotations[i_idx].bboxs.withIndex()) {
-//                customPrint("", "[$i_idx][$j_idx]", false, false, false, false)
-//            }
-//        }
-
-        //customPrint((groupedAnnotations as? Collection<*>)?.size ?: 0, "[len_groupedAnnotations] ", true, true, false, false)
-        //customPrint(groupedAnnotations, "[GET_LEN] groupedAnnotations", false, false, true, true, false)
-
-        // Llamada a la función para filtrar las anotaciones agrupadas
-        val filteredAnnotations = filterGroupedAnnotationsDataV2(groupedAnnotations)
-
-//        println("filteredAnnotations: $filteredAnnotations")
-
-//        // Imprimir resultados filtrados
-//        println("\nFiltered Annotations:")
-//        for ((i_idx, group) in filteredAnnotations.withIndex()) {
-//            for ((j_idx, sub_group) in filteredAnnotations[i_idx].bboxs.withIndex()) {
-//                customPrint("", "[$i_idx][$j_idx]", false, false, false, false)
-//            }
-//        }
-
-        println("[len_filteredAnnotations] : ${(filteredAnnotations as? Collection<*>)?.size ?: 0}")
-
-        customPrint((filteredAnnotations as? Collection<*>)?.size ?: 0, "[len_filteredAnnotations] ", true, true, false, false)
-        customPrint(filteredAnnotations, "[GET_LEN] filteredAnnotations", false, false, true, true, false)
-
-        // Llamada a la función para plotear las anotaciones predichas
-        val finalBbox = filteredAnnotations.flatMap { it.bboxs }
-        return plotPredictedODAnnotationsDataForAndroid(filteredAnnotations, bitmap, finalBbox, labels)
+        val finalBbox = groupedAnnotations.flatMap { it.bboxs }
+        return plotPredictedODAnnotationsDataForAndroid(groupedAnnotations, bitmap, finalBbox, labels)
     }
 
 
 
     fun realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
-        custom_detector: Detector, // Agrega este parámetro
+        custom_detector: Detector,
         imageSplits: Array<Bitmap?>,
         imageSplitsKeys: Array<String?>,
-        batchSize: Int,
         customConfidenceThreshold: Float,
         customIoUThreshold: Float
     ): List<Map<String, Any>> {
 
         val allResults = mutableListOf<Map<String, Any>>()
 
-        for (startIdx in 0 until imageSplits.size step batchSize) {
-            val endIdx = min(startIdx + batchSize, imageSplits.size)
-            val batchSplits = imageSplits.copyOfRange(startIdx, endIdx)
-            val batchSplitsKeys = imageSplitsKeys.copyOfRange(startIdx, endIdx)
+        for ((batchIndex, batchImgElement) in imageSplits.withIndex()) {
+            //val initialTime = Instant.now()
 
-            for ((batchIndex, batchImgElement) in batchSplits.withIndex()) {
+            val batchSplitsKey = imageSplitsKeys.getOrNull(batchIndex)
+            println("Batch Index: $batchIndex")
+            println("Batch Splits Key: $batchSplitsKey")
+            println("Batch Img Element: $batchImgElement")
+            println("-------------")
 
-                val batchSplitsKey = batchSplitsKeys.getOrNull(batchIndex)
-                println("Batch Index: $batchIndex")
-                println("Batch Splits Key: $batchSplitsKey")
-                println("Batch Img Element: $batchImgElement")
-                println("-------------")
+            var mutableBatchImgElement: Bitmap? = null
+            var mutableBatchImgElement2: Bitmap? = null
 
-                var mutableBatchImgElement: Bitmap? = null
-                var mutableBatchImgElement2: Bitmap? = null
+            var split_imgWidth: Int? = null
+            var split_imgHeight: Int? = null
 
-                var split_imgWidth: Int? = null
-                var split_imgHeight: Int? = null
+            batchImgElement?.let {
+                mutableBatchImgElement = it
+                split_imgWidth = it.width
+                split_imgHeight = it.height
 
-                batchImgElement?.let {
-                    mutableBatchImgElement = it // Declarar como variable mutable
-                    split_imgWidth = it.width
-                    split_imgHeight = it.height
+                mutableBatchImgElement2 = it
 
-                    mutableBatchImgElement2 = it
+                mutableBatchImgElement = Bitmap.createScaledBitmap(mutableBatchImgElement!!, split_imgWidth!!, split_imgHeight!!, false)
+            } ?: println("Bitmap Element es nulo")
 
-                    // Redimensionar el Bitmap directamente
-                    mutableBatchImgElement = Bitmap.createScaledBitmap(mutableBatchImgElement!!, split_imgWidth!!, split_imgHeight!!, false)
+            val BoxesapplyNMS2 = custom_detector.detect(mutableBatchImgElement2!!, customConfidenceThreshold, customIoUThreshold)
 
-                    // Aquí puedes realizar cualquier otra lógica específica de tu aplicación
-                    // También puedes llamar a "model.process(batchImgElement)" si es necesario
-                } ?: println("Bitmap Element es nulo")
+            var new_locations_List2 = mutableListOf<List<Float>>()
+            val classes2 = mutableListOf<Float>()
+            val scores2 = mutableListOf<Float>()
 
-                val dkmfkjnfmdffd = "dkmfkjnfmdffd"
-                println("dkmfkjnfmdffd: $dkmfkjnfmdffd")
+            if (BoxesapplyNMS2 != null) {
+                BoxesapplyNMS2.forEach { box ->
 
-
-                val BoxesapplyNMS2 = custom_detector.detect(mutableBatchImgElement2!!, customConfidenceThreshold, customIoUThreshold)
-
-                val dkmfkjnfmdffd2 = "dkmfkjnfmdffd2"
-                println("dkmfkjnfmdffd2: $dkmfkjnfmdffd2")
-
-                var new_locations_List2 = mutableListOf<List<Float>>()
-                val classes2 = mutableListOf<Float>()
-                val scores2 = mutableListOf<Float>()
+                    var left = box.x1 * split_imgWidth!! // x_min // x1
+                    var top = box.y1 * split_imgHeight!! // y_min // y1
+                    var right = box.x2 * split_imgWidth!! // x_max // x2
+                    var bottom = box.y2 * split_imgHeight!! // y_max // y2
 
 
 
-                if (BoxesapplyNMS2 != null) {
-                    BoxesapplyNMS2.forEach { box ->
+                    val subList = listOf(top, left, bottom, right)
+                    new_locations_List2.add(subList as List<Float>)
 
-                        var left = box.x1 * split_imgWidth!! // x_min // x1
-                        var top = box.y1 * split_imgHeight!! // y_min // y1
-                        var right = box.x2 * split_imgWidth!! // x_max // x2
-                        var bottom = box.y2 * split_imgHeight!! // y_max // y2
-
-
-                        customPrint(top, "top", hasLen = false)
-                        customPrint(left, "left", hasLen = false)
-                        customPrint(bottom, "bottom", hasLen = false)
-                        customPrint(right, "right", hasLen = false)
-
-                        val subList = listOf(top, left, bottom, right)
-                        new_locations_List2.add(subList as List<Float>)
-
-                        // Agregar el valor de la clase a la lista
-                        classes2.add(box.cls.toFloat())
-                        scores2.add(box.cnf.toFloat())
-                    }
+                    classes2.add(box.cls.toFloat())
+                    scores2.add(box.cnf.toFloat())
                 }
-
-                if (BoxesapplyNMS2 != null) {
-                    if (BoxesapplyNMS2.isNotEmpty()) {
-
-                        allResults.add(
-                            mapOf(
-                                "boxes" to new_locations_List2,
-                                "classes" to classes2.toFloatArray(),
-                                "scores" to scores2.toFloatArray(),
-                                "image_splits_keys" to batchSplitsKey.toString()
-                            )
-                        )  // Creando el diccionario directamente
-                    }
-                }
-
             }
-        }
 
-        println("allResults: $allResults")
-        val dkmfkjnfmdffd23 = "dkmfkjnfmdffd23"
-        println("dkmfkjnfmdffd23: $dkmfkjnfmdffd23")
+            if (BoxesapplyNMS2 != null && BoxesapplyNMS2.isNotEmpty()) {
+                allResults.add(
+                    mapOf(
+                        "boxes" to new_locations_List2,
+                        "classes" to classes2.toFloatArray(),
+                        "scores" to scores2.toFloatArray(),
+                        "image_splits_keys" to batchSplitsKey.toString()
+                    )
+                )
+            }
+            //val finalTime = Instant.now()
+
+            //val timeDifferenceOutput = calculateTimeDifference(initialTime, finalTime)
+            //println("timeDifferenceOutput: $timeDifferenceOutput")
+        }
 
         return allResults
     }
