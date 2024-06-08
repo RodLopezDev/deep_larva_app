@@ -3,6 +3,7 @@ package com.rodrigo.deeplarva.domain.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -14,7 +15,8 @@ import androidx.room.PrimaryKey
             childColumns = ["picture_id"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["picture_id"])]
 )
 data class BoxDetection(
     @PrimaryKey(autoGenerate = true)
