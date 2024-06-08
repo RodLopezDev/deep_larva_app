@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.domain
 
 import android.Manifest
+import android.os.Build
 import com.rodrigo.deeplarva.utils.Colors
 
 class Constants {
@@ -28,10 +29,19 @@ class Constants {
 
         const val SHARED_PREFERENCES_DEVICE_ID = "DEVICE-IDENTIFIER"
 
-        val APP_PERMISSIONS_LIST = listOf<String>(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
+        fun getPermissionsList (): List<String> {
+            // REF: https://stackoverflow.com/questions/75628155/read-external-storage-permission-request-not-showing-on-emulator
+            // REF: https://stackoverflow.com/questions/72948052/android-13-read-external-storage-permission-still-usable
+            val sdk = Build.VERSION.SDK_INT
+
+            val permissions = mutableListOf<String>(Manifest.permission.CAMERA)
+            if(sdk < Build.VERSION_CODES.Q){
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            } else {
+                permissions.add(Manifest.permission.READ_MEDIA_IMAGES)
+            }
+            return permissions
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.rodrigo.deeplarva.routes
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -33,8 +34,9 @@ class PermissionsHandlerActivity: AppCompatActivity() {
     }
 
     private fun requestPermissions() {
-        val requiredPermissions = Constants.APP_PERMISSIONS_LIST.filter {
-            ContextCompat.checkSelfPermission(this@PermissionsHandlerActivity, it)  != PackageManager.PERMISSION_GRANTED
+        val requiredPermissions = Constants.getPermissionsList().filter {
+            val permission = ContextCompat.checkSelfPermission(this@PermissionsHandlerActivity, it)
+            permission != PackageManager.PERMISSION_GRANTED
         }
 
         if(requiredPermissions.isNotEmpty()) {

@@ -40,7 +40,7 @@ class SplashActivity: AppCompatActivity() {
     }
 
     private fun grantedPermissions (): Boolean {
-        val requiredPermissions = Constants.APP_PERMISSIONS_LIST.filter {
+        val requiredPermissions = Constants.getPermissionsList().filter {
             ContextCompat.checkSelfPermission(this@SplashActivity, it)  != PackageManager.PERMISSION_GRANTED
         }
         return requiredPermissions.isEmpty()
