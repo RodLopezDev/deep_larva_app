@@ -9,11 +9,13 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
 import com.rodrigo.deeplarva.routes.services.PicturesServices
+import com.rodrigo.deeplarva.routes.view.IPictureViewListener
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
 import com.rodrigo.deeplarva.routes.view.PictureViewListener
 import com.rodrigo.deeplarva.utils.BitmapUtils
@@ -23,7 +25,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PicturesActivity: BoundedActivity()  {
+class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     private lateinit var view: PictureActivityView
     private lateinit var binding: ActivityPicturesBinding
 
@@ -38,7 +40,7 @@ class PicturesActivity: BoundedActivity()  {
 
         pictureService = PicturesServices(db)
 
-        view = PictureActivityView(this, binding)
+        view = PictureActivityView(this, binding, this)
         viewModel = ViewModelProvider(this)[PictureActivityViewModel::class.java]
 
         view.addViewListener(object: PictureViewListener {
@@ -117,5 +119,11 @@ class PicturesActivity: BoundedActivity()  {
     override fun onEndService() {
         super.onEndService()
         loadPictures()
+    }
+
+    override fun onRemovePicture(picture: Picture) {
+        pictureService.remove(picture) {
+            loadPictures()
+        }
     }
 }

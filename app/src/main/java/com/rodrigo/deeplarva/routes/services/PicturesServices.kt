@@ -82,4 +82,13 @@ class PicturesServices(private val db: AppDatabase) {
             }
         }
     }
+
+    fun remove(picture: Picture, callback: () -> Unit){
+        GlobalScope.launch {
+            db.picture().delete(picture)
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
 }

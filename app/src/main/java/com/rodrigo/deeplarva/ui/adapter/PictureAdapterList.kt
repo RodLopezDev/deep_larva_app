@@ -14,7 +14,7 @@ import com.rodrigo.deeplarva.utils.Time
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PictureAdapterList (context: Context, private val dataList: List<Picture>, private val listener: ListEventListener<Picture>) :
+class PictureAdapterList (context: Context, private val dataList: List<Picture>) :
     ArrayAdapter<Picture>(context, R.layout.item_list_picture, dataList) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
