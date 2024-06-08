@@ -13,9 +13,10 @@ class PhotoByStorageHandler(override val activity: Activity): IPhotoHandler {
         intent.setType("image/*")
         activity.startActivityForResult(intent, REQUESTCODE)
     }
-    override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): Bitmap {
+    override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap> {
         if (requestCode == REQUESTCODE && resultCode == Activity.RESULT_OK){
-            return MediaStore.Images.Media.getBitmap(activity.contentResolver, data?.data)
+            val bitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, data?.data)
+            return listOf(bitmap)
         }
         throw Exception("ERROR_GETTING_IMAGE")
     }

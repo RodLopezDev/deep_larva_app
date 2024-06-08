@@ -18,15 +18,19 @@ class PhotoByCameraProHandler(override val activity: Activity): IPhotoHandler {
         activity.startActivityForResult(intent, REQUESTCODE)
     }
 
-    override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): Bitmap {
+    override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap> {
         val result = data!!.getStringExtra(Constants.INTENT_CAMERA_PRO_RESULT)
         val files = result!!.split(",,,")
 
-        val bitmap = BitmapUtils.getBitmapFromPath(files[0]) ?:
-            throw Exception("ERROR_GETTING_IMAGE")
+        val bitmaps = files.map {
+            try  {
+                BitmapUtils.getBitmapFromPath(it)
+            } catch (ex: Exception) {
+            null
+            }
+        }
 
-        // TODO: Ver como hacer para que ocupe mas de 1 foto
-        return bitmap
+        return bitmaps.filterNotNull()
     }
 
     override fun getRequestCode(): Int {

@@ -46,7 +46,7 @@ class AddPictureDialog(private val context: AppCompatActivity) {
         dialog?.dismiss()
     }
 
-    fun resolve(requestCode: Int, resultCode: Int, data: Intent?): Bitmap {
+    fun resolve(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap> {
         return handler.resolve(requestCode, resultCode, data)
     }
 

@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
@@ -75,28 +76,27 @@ class PicturesActivity: BoundedActivity()  {
         view.getDialog().hide()
 
         if(data == null || resultCode == 0) return
-        var bitmap = view.getDialog().resolve(requestCode, resultCode, data)
+        val bitmaps = view.getDialog().resolve(requestCode, resultCode, data)
 
         GlobalScope.launch {
-            var thumbnail = ImageProcessor.scale(bitmap)
+            val results = bitmaps.map {
+                var thumbnail = ImageProcessor.scale(it)
 
-            var bitmapFileName = BitmapUtils.getRandomBitmapName()
-            var thumbnailFileName = BitmapUtils.getRandomBitmapName()
+                var bitmapFileName = BitmapUtils.getRandomBitmapName()
+                var thumbnailFileName = BitmapUtils.getRandomBitmapName()
 
-            val filePath = BitmapUtils.saveBitmapToStorage(applicationContext, bitmap, bitmapFileName)
-            val thumbnailPath = BitmapUtils.saveBitmapToStorage(applicationContext, thumbnail, thumbnailFileName)
-
+                val filePath = BitmapUtils.saveBitmapToStorage(applicationContext, it, bitmapFileName)
+                val thumbnailPath = BitmapUtils.saveBitmapToStorage(applicationContext, thumbnail, thumbnailFileName)
+                if(filePath == null || thumbnail == null) {
+                    null
+                }else {
+                    val timestamp = System.currentTimeMillis()
+                    BitmapProcessingResult(filePath!!, thumbnailPath!!, timestamp)
+                }
+            }
+            val okResults = results.filterNotNull()
             withContext(Dispatchers.Main) {
-                if (filePath == null) {
-                    Toast.makeText(applicationContext, Constants.MESSAGE_ERROR_LOADING_IMAGE, Toast.LENGTH_LONG).show()
-                    return@withContext
-                }
-                if (thumbnailPath == null) {
-                    Toast.makeText(applicationContext, Constants.MESSAGE_ERROR_LOADING_IMAGE, Toast.LENGTH_LONG).show()
-                    return@withContext
-                }
-                val timestamp = System.currentTimeMillis()
-                pictureService.save(filePath, thumbnailPath, timestamp) {
+                pictureService.saveBulk(okResults) {
                     pictureService.findAll {
                         viewModel.updatePictures(it)
                     }

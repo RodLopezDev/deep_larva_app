@@ -16,8 +16,6 @@ class CameraUtils {
 
             val map = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             val largest = map!!.getOutputSizes(ImageFormat.JPEG).maxByOrNull { it.width * it.height }!!
-            val exposureRange = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE)
-            val exposureStep = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP)?.toFloat() ?: 0f
             val isoRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE)
             val speedRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
 
@@ -26,7 +24,7 @@ class CameraUtils {
 //            val defaultIso = isoRange?.upper ?: 0
 //            val defaultExposure = exposureRange?.upper ?: 0
 
-            return CameraCharacteristic(largest, exposureRange!!, exposureStep, isoRange!!, speedRange!!)
+            return CameraCharacteristic(largest, isoRange!!, speedRange!!)
         }
     }
 }

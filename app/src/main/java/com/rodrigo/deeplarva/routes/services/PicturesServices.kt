@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.routes.services
 
 import com.rodrigo.deeplarva.domain.entity.Picture
+import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -54,6 +55,19 @@ class PicturesServices(private val db: AppDatabase) {
             db.picture().insert(
                 Picture(filePath = filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0, timestamp = timeStamp)
             )
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    fun saveBulk(items: List<BitmapProcessingResult>, callback: () -> Unit){
+        GlobalScope.launch {
+            items.map {
+                db.picture().insert(
+                    Picture(filePath = it.filePath, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = it.thumbnailPath, time = 0, timestamp = it.timestamp)
+                )
+            }
             withContext(Dispatchers.Main) {
                 callback()
             }
