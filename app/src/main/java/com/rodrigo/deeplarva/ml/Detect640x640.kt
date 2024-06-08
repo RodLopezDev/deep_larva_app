@@ -222,16 +222,16 @@ class Detect640x640(private val activity: Context) {
         boxes: List<List<Float>>,
         labels: List<String>): FinalResult {
 
-        val dsmkdmskmkmsmds = "dsmkdmskmkmsmds"
-        println("dsmkdmskmkmsmds: $dsmkdmskmkmsmds")
+        val name_fun = "plotPredictedODAnnotationsDataForAndroid"
+        println("Dentro de la funcion: $name_fun")
 
         val mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
         val canvas = Canvas(mutable)
 
         val total_predictions = (filteredAnnotations as? Collection<*>)?.size ?: 0
 
-        val dsmkdmskmkmsmdsede = "dsmkdmskmkmsmdsede"
-        println("dsmkdmskmkmsmdsede: $dsmkdmskmkmsmdsede")
+        //val dsmkdmskmkmsmdsede = "dsmkdmskmkmsmdsede"
+        //println("dsmkdmskmkmsmdsede: $dsmkdmskmkmsmdsede")
 
 
         // Mostrar un Toast por 4 segundos
@@ -259,63 +259,28 @@ class Detect640x640(private val activity: Context) {
 
                     paint.textSize = h / 15f
 
-                    val dsmkdmskmkmsmds = "dsmkdmskmkmsmds"
-                    println("dsmkdmskmkmsmds: $dsmkdmskmkmsmds")
-
                     paint.strokeWidth = h / 85f
                     // paint.color = colors2[i_idx]
                     paint.color = colors2[my_category_id]
                     paint.style = Paint.Style.STROKE
 
-                    val dsmkdmskmkmsmds2 = "dsmkdmskmkmsmds2"
-                    println("dsmkdmskmkmsmds2: $dsmkdmskmkmsmds2")
-
                     canvas.drawRect(RectF(custom_left, custom_top, custom_right, custom_bottom), paint)
 
-                    val dsmkdmskmkmsmds244 = "dsmkdmskmkmsmds244"
-                    println("dsmkdmskmkmsmds244: $dsmkdmskmkmsmds244")
 
                     paint.style = Paint.Style.FILL
-                    // Puedes descomentar la línea siguiente si deseas dibujar también el texto
-                    // canvas.drawText(labels[my_category_id] + " " + my_score.toString(), custom_left, custom_top, paint)
                 }
             }
 
             val resizedBitmap = resizeBitmapByPercentage(mutable, 0.4f)
-
-            val mjmdjmdjmf = "mjmdjmdjmf"
-            println("mjmdjmdjmf: $mjmdjmdjmf")
-            //imageView.setImageBitmap(resizedBitmap)
-
-//            imageView.setImageBitmap(mutable)
-
-            // Actualizar el texto del textView
-            //textView.text = "$total_predictions ${labels[filteredAnnotations[0].categoryIds[0]]} detectadas"
-
-            //var finalText = "$total_predictions detected"
-
-            return FinalResult(resizedBitmap, total_predictions, boxes)
+            
+            return FinalResult(resizedBitmap, total_predictions,boxes)
         } else {
             // La variable total_predictions es igual a cero
             println("No hay predicciones disponibles.")
-            // Puedes poner aquí cualquier otra acción que desees realizar cuando total_predictions sea igual a cero
-//            toast = Toast.makeText(activity, "No se ha detectado ningún objeto.", Toast.LENGTH_LONG)
-//            throw Exception("NO SE ENCONTRARON NADA")
+
             return FinalResult(null, 0, listOf())
         }
-//
-//        val timer = object : CountDownTimer(4000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-////                toast.show()
-//            }
-//
-//            override fun onFinish() {
-////                toast.cancel()
-//            }
-//        }
-//
-//
-//        timer.start()
+
     }
 
 
@@ -358,8 +323,6 @@ class Detect640x640(private val activity: Context) {
 
         for (i in yPoints) {
             for (j in xPoints) {
-//                val key = "$i:${i + splitHeight},${j}:${j + splitWidth}"
-//                val key = "$i:${j},${splitHeight}:${splitWidth}"
                 val key = "${i?.toFloat()}:${j?.toFloat()},${splitHeight?.toFloat()}:${splitWidth?.toFloat()}"
                 customPrint(j,"j")
                 customPrint(j,"i")
@@ -684,6 +647,8 @@ class Detect640x640(private val activity: Context) {
         val bboxs = mutableListOf<List<Float>>()
         val centroids = mutableListOf<List<Float>>()
         // iIdx
+        val name_fun = "obtenerDatosEscaladoPrediccionODV1"
+        println("Dentro de la funcion: $name_fun")
         for (jIdx in variable_triple.bboxs.indices) {
 
             // val keyValues = variable_triple.keys[jIdx].split("\\d+".toRegex()).filter { it.isNotEmpty() }.map { it.toInt() }
@@ -697,14 +662,12 @@ class Detect640x640(private val activity: Context) {
 
             val scaledBbox = getScaledDataOverBbox(variable_triple.bboxs[jIdx] as MutableList<Float>, keyValues)
 
-
             val x_min = scaledBbox[1]
             val y_min = scaledBbox[0]
             val x_max = scaledBbox[3]
             val y_max = scaledBbox[2]
 
-            val fkmfdmfkd = "fkmfdmfkd"
-            println("fkmfdmfkd: $fkmfdmfkd")
+
 
             val centroid_x: Float = ((x_min + x_max) / 2).toFloat()
             val centroid_y: Float = ((y_min + y_max) / 2).toFloat()
