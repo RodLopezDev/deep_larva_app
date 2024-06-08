@@ -1,5 +1,6 @@
 package com.rodrigo.deeplarva.domain
 
+import android.Manifest
 import com.rodrigo.deeplarva.utils.Colors
 
 class Constants {
@@ -24,6 +25,13 @@ class Constants {
         const val MESSAGE_SERVICE_STARTED = "Ejecutando conteo"
         const val MESSAGE_SERVICE_DISCONNECTED = "Servicio sin comunicación"
         const val MESSAGE_SERVICE_RUNNING = "Procesamiento en ejecución"
-        const val MESSAGE_ERROR_LOADING_IMAGE = "Error al cargar imagen"
+
+        const val SHARED_PREFERENCES_DEVICE_ID = "DEVICE-IDENTIFIER"
+
+        val APP_PERMISSIONS_LIST = listOf<String>(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
 }
