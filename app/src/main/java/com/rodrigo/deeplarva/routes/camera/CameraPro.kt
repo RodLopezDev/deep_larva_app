@@ -4,15 +4,20 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
+import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCaptureSession
+import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.TotalCaptureResult
+import android.hardware.camera2.params.MeteringRectangle
 import android.media.ImageReader
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.Surface
 import android.view.TextureView
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +31,10 @@ class CameraPro(private val activity: AppCompatActivity, private val textureView
     private lateinit var cameraDevice: CameraDevice
     private lateinit var captureRequestBuilder: CaptureRequest.Builder
     private lateinit var cameraCaptureSession: CameraCaptureSession
+    private lateinit var scaleGestureDetector: ScaleGestureDetector
+
+    private var currentZoomLevel = 1f
+    private var maxZoomLevel = 1f
 
     init {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -33,6 +42,32 @@ class CameraPro(private val activity: AppCompatActivity, private val textureView
         } else {
             this.init()
         }
+
+        // TODO: THIS JUST COPIED
+        scaleGestureDetector = ScaleGestureDetector(activity, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                cameraDevice?.let {
+                    val scaleFactor = detector.scaleFactor
+                    currentZoomLevel = (currentZoomLevel * scaleFactor).coerceIn(1f, maxZoomLevel)
+                    val characteristics = (activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
+                        .getCameraCharacteristics(it.id)
+                    val maxZoom = characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM) ?: 1f
+                    maxZoomLevel = maxZoom
+                    val rect = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE) ?: return false
+                    val cropWidth = (rect.width() / currentZoomLevel).toInt()
+                    val cropHeight = (rect.height() / currentZoomLevel).toInt()
+                    val cropRect = Rect(
+                        rect.centerX() - cropWidth / 2,
+                        rect.centerY() - cropHeight / 2,
+                        rect.centerX() + cropWidth / 2,
+                        rect.centerY() + cropHeight / 2
+                    )
+                    captureRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, cropRect)
+                    updateCameraThread()
+                }
+                return true
+            }
+        })
     }
 
     fun init() {
@@ -43,6 +78,14 @@ class CameraPro(private val activity: AppCompatActivity, private val textureView
             override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
             override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean = true
+        }
+
+        textureView.setOnTouchListener { _, event ->
+            scaleGestureDetector.onTouchEvent(event)
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                focusOnTouch(event.x, event.y)
+            }
+            true
         }
     }
 
@@ -173,5 +216,38 @@ class CameraPro(private val activity: AppCompatActivity, private val textureView
     fun updateSpeed(value: Long){
         captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, value)
         updateCameraThread()
+    }
+
+    // TODO: THIS JUST COPIED
+    private fun focusOnTouch(x: Float, y: Float) {
+        cameraDevice?.let {
+            val characteristics = (activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
+                .getCameraCharacteristics(it.id)
+            val sensorArraySize = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE) ?: return
+
+            val focusAreaSize = 200
+            val focusArea = Rect(
+                (x / textureView.width * sensorArraySize.width()).toInt() - focusAreaSize / 2,
+                (y / textureView.height * sensorArraySize.height()).toInt() - focusAreaSize / 2,
+                (x / textureView.width * sensorArraySize.width()).toInt() + focusAreaSize / 2,
+                (y / textureView.height * sensorArraySize.height()).toInt() + focusAreaSize / 2
+            )
+
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(MeteringRectangle(focusArea, MeteringRectangle.METERING_WEIGHT_MAX)))
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO)
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START)
+
+            cameraCaptureSession.capture(captureRequestBuilder.build(), object : CameraCaptureSession.CaptureCallback() {
+                override fun onCaptureCompleted(
+                    session: CameraCaptureSession,
+                    request: CaptureRequest,
+                    result: TotalCaptureResult
+                ) {
+                    super.onCaptureCompleted(session, request, result)
+                    captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE)
+                    updateCameraThread()
+                }
+            }, null)
+        }
     }
 }
