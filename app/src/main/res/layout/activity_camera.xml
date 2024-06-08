@@ -71,27 +71,9 @@
         </LinearLayout>
 
         <SeekBar
-            android:id="@+id/sbExposure"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:max="100" />
-
-        <TextView
-            android:id="@+id/tvExposure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="EV: 0"
-            android:textColor="@color/gray800"
-            android:layout_above="@id/sbExposure"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"/>
-
-        <SeekBar
             android:id="@+id/sbISO"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/tvExposure"
             android:max="100"/>
 
         <TextView

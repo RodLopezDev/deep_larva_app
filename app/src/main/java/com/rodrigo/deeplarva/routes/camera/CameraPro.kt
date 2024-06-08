@@ -165,11 +165,6 @@ class CameraPro(private val activity: AppCompatActivity, private val textureView
         }
     }
 
-    fun updateExposure(value: Int){
-        captureRequestBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, value)
-        updateCameraThread()
-    }
-
     fun updateISO(value: Int){
         captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, value)
         updateCameraThread()

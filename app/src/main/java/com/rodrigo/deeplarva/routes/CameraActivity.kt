@@ -86,10 +86,6 @@ class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityView
         view.initializeCommandControl(this, CameraUtils.getCameraCharacteristic(cameraCharacteristics))
     }
 
-    override fun onChangeExposure(exposure: Int) {
-        cameraPro.updateExposure(exposure)
-    }
-
     override fun onChangeISO(exposure: Int) {
         cameraPro.updateISO(exposure)
     }
