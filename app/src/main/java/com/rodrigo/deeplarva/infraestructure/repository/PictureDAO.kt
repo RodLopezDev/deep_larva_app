@@ -14,7 +14,7 @@ interface PictureDAO {
     @Query("SELECT * FROM picture where id = :id ")
     fun getById(id: Long): List<Picture>
 
-    @Query("SELECT * FROM picture")
+    @Query("SELECT * FROM picture ORDER BY timestamp DESC")
     fun getAllPictures(): List<Picture>
 
     @Query("SELECT * FROM picture WHERE has_metadata = 1")
