@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.entity.Picture
+import com.rodrigo.deeplarva.routes.CameraActivity
+import com.rodrigo.deeplarva.routes.PictureDetailActivity
 import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
 import com.rodrigo.deeplarva.ui.listener.ListEventListener
 
