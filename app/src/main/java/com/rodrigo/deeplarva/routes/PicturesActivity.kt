@@ -75,7 +75,8 @@ class PicturesActivity: BoundedActivity()  {
         view.getDialog().hide()
 
         if(data == null || resultCode == 0) return
-        var bitmap = view.getDialog().resolve(requestCode, resultCode, data)
+        val bitmaps = view.getDialog().resolve(requestCode, resultCode, data)
+        val bitmap = bitmaps[0]
 
         GlobalScope.launch {
             var thumbnail = ImageProcessor.scale(bitmap)

@@ -9,7 +9,7 @@ interface IPhotoHandler {
 
     fun launch()
 
-    fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): Bitmap
+    fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap>
 
     fun getRequestCode(): Int
 }

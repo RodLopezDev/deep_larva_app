@@ -51,9 +51,10 @@ class PhotoByCameraHandler(override val activity: Activity): IPhotoHandler {
             activity.startActivityForResult(takePictureIntent, REQUESTCODE)
         }
     }
-    override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): Bitmap {
+    override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap> {
         if (requestCode == REQUESTCODE && resultCode == Activity.RESULT_OK){
-            return BitmapFactory.decodeFile(currentPhotoPath)
+            val bitmap = BitmapFactory.decodeFile(currentPhotoPath)
+            return listOf(bitmap)
         }
         throw Exception("ERROR_GETTING_IMAGE")
     }

@@ -24,7 +24,7 @@ class ImageHandler(private val activity: AppCompatActivity) {
         storage.launch()
     }
 
-    fun resolve(requestCode: Int, resultCode: Int, data: Intent?): Bitmap {
+    fun resolve(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap> {
         var selected = handlers.find { it.getRequestCode() === requestCode }
             ?: throw Exception("HANDLER_NOT_FOUND")
         return selected.getBitmap(requestCode, resultCode, data)
