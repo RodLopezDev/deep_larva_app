@@ -34,7 +34,7 @@ class Constants {
             // REF: https://stackoverflow.com/questions/72948052/android-13-read-external-storage-permission-still-usable
             val sdk = Build.VERSION.SDK_INT
 
-            val permissions = mutableListOf<String>(Manifest.permission.CAMERA)
+            val permissions = mutableListOf<String>(Manifest.permission.INTERNET, Manifest.permission.CAMERA)
             if(sdk < Build.VERSION_CODES.Q){
                 permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
