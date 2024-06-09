@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.UseCaseSyncPicture
+import com.rodrigo.deeplarva.application.UseCaseSyncPicture
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
@@ -17,7 +17,6 @@ import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.modules.requests.RequestListener
-import com.rodrigo.deeplarva.modules.requests.RequestManager
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
@@ -32,9 +31,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
-import org.json.JSONObject
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     private lateinit var view: PictureActivityView
@@ -163,20 +159,23 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     }
 
     private fun sync() {
-        pictureService.findProcessed { pictures -> run {
+        pictureService.findProcessedNonSync { pictures -> run {
             if (pictures.isEmpty()) {
-                return@findProcessed
+                Toast.makeText(this@PicturesActivity, "No hay muestras por sincronizar", Toast.LENGTH_SHORT).show()
+                return@findProcessedNonSync
             }
             val picture = pictures[0]
-            UseCaseSyncPicture(boxDetectionServices).run(picture, object: RequestListener {
+            UseCaseSyncPicture(pictureService, boxDetectionServices).run(picture, object: RequestListener {
                 override fun onFailure() {
                     this@PicturesActivity.runOnUiThread {
-                        Toast.makeText(this@PicturesActivity, "ERROR", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PicturesActivity, "Error al subir muestra", Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onComplete() {
                     this@PicturesActivity.runOnUiThread {
-                        Toast.makeText(this@PicturesActivity, "COMPLETED", Toast.LENGTH_SHORT).show()
+                        sync()
+                        loadPictures()
+                        Toast.makeText(this@PicturesActivity, "Se cargó una muestras", Toast.LENGTH_SHORT).show()
                     }
                 }
             })

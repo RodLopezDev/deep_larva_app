@@ -1,15 +1,16 @@
-package com.rodrigo.deeplarva
+package com.rodrigo.deeplarva.application
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.requests.SyncPictureRequest
 import com.rodrigo.deeplarva.modules.requests.RequestListener
 import com.rodrigo.deeplarva.modules.requests.RequestManager
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
+import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.utils.BitmapUtils
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-class UseCaseSyncPicture(private val boxDetectionServices: BoxDetectionServices) {
+class UseCaseSyncPicture(private val picturesServices: PicturesServices, private val boxDetectionServices: BoxDetectionServices) {
     fun run (picture: Picture, listener: RequestListener){
         val originalBitmap = BitmapUtils.getBitmapFromPath(picture.filePath)
         val processedBitmap = BitmapUtils.getBitmapFromPath(picture.processedFilePath)
@@ -41,7 +42,9 @@ class UseCaseSyncPicture(private val boxDetectionServices: BoxDetectionServices)
                                     listener.onFailure()
                                 }
                                 override fun onComplete() {
-                                    listener.onComplete()
+                                    picturesServices.update(picture.copy(syncWithCloud = true)) {
+                                        listener.onComplete()
+                                    }
                                 }
                             })
                         }

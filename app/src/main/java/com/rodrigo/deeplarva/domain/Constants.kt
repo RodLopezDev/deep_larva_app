@@ -6,6 +6,10 @@ import com.rodrigo.deeplarva.utils.Colors
 
 class Constants {
     companion object {
+
+        val SERVICE_BASE_URL = "https://webhook.site"
+        val SERVICE_API_LEY = "123123123"
+
         val OPACITY_GREEN = Colors.green(90)
         val OPACITY_RED = Colors.red(90)
 

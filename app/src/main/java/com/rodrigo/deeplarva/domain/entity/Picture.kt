@@ -14,6 +14,9 @@ data class Picture(
     @ColumnInfo(name = "device_id")
     val deviceId: String,
 
+    @ColumnInfo(name = "uuid")
+    val uuid: String,
+
     @ColumnInfo(name = "file_path")
     val filePath: String,
 
@@ -25,6 +28,9 @@ data class Picture(
 
     @ColumnInfo(name = "has_metadata")
     val hasMetadata: Boolean,
+
+    @ColumnInfo(name = "sync")
+    val syncWithCloud: Boolean,
 
     @ColumnInfo(name = "count")
     val count: Int,
