@@ -83,9 +83,9 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
                 view.showInfoDialog()
                 true
             }
-            R.id.action_sync -> {
-                true
-            }
+//            R.id.action_sync -> {
+//                true
+//            }
             else -> super.onOptionsItemSelected(item)
         }
     }
