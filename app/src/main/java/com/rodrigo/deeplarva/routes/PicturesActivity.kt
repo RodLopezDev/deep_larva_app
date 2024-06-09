@@ -9,13 +9,17 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.UseCaseSyncPicture
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
+import com.rodrigo.deeplarva.modules.requests.RequestListener
+import com.rodrigo.deeplarva.modules.requests.RequestManager
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
+import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.routes.view.IPictureViewListener
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
@@ -27,6 +31,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.*
+import org.json.JSONObject
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     private lateinit var view: PictureActivityView
@@ -34,6 +42,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
 
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
+    private lateinit var boxDetectionServices: BoxDetectionServices
     private lateinit var viewModel: PictureActivityViewModel
 
     private lateinit var deviceId: String
@@ -44,6 +53,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
 
         db = DbBuilder.getInstance(this)
         pictureService = PicturesServices(db)
+        boxDetectionServices = BoxDetectionServices(db)
         deviceId = PreferencesHelper(this).getString(Constants.SHARED_PREFERENCES_DEVICE_ID)!!
 
         view = PictureActivityView(deviceId, this, binding, this)
@@ -83,9 +93,10 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
                 view.showInfoDialog()
                 true
             }
-//            R.id.action_sync -> {
-//                true
-//            }
+            R.id.action_sync -> {
+                sync()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -149,5 +160,30 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
         pictureService.findAll {
                 pictures -> viewModel.updatePictures(pictures)
         }
+    }
+
+    private fun sync() {
+        pictureService.findProcessed { pictures -> run {
+            if (pictures.isEmpty()) {
+                return@findProcessed
+            }
+            val picture = pictures[0]
+            UseCaseSyncPicture(boxDetectionServices).run(picture, object: RequestListener {
+                override fun onFailure() {
+                    this@PicturesActivity.runOnUiThread {
+                        Toast.makeText(this@PicturesActivity, "ERROR", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onComplete() {
+                    this@PicturesActivity.runOnUiThread {
+                        Toast.makeText(this@PicturesActivity, "COMPLETED", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+        }}
+    }
+
+    companion object {
+        private val TAG = PicturesActivity::class.java.simpleName
     }
 }
