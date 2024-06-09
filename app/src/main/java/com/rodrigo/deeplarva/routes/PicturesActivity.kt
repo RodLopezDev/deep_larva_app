@@ -3,27 +3,32 @@ package com.rodrigo.deeplarva.routes
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
+import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
 import com.rodrigo.deeplarva.routes.services.PicturesServices
+import com.rodrigo.deeplarva.routes.view.IPictureViewListener
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
 import com.rodrigo.deeplarva.routes.view.PictureViewListener
 import com.rodrigo.deeplarva.utils.BitmapUtils
 import com.rodrigo.deeplarva.utils.ImageProcessor
+import com.rodrigo.deeplarva.utils.PreferencesHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PicturesActivity: BoundedActivity()  {
+class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     private lateinit var view: PictureActivityView
     private lateinit var binding: ActivityPicturesBinding
 
@@ -31,14 +36,17 @@ class PicturesActivity: BoundedActivity()  {
     private lateinit var pictureService: PicturesServices
     private lateinit var viewModel: PictureActivityViewModel
 
+    private lateinit var deviceId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPicturesBinding.inflate(layoutInflater)
+
         db = DbBuilder.getInstance(this)
-
         pictureService = PicturesServices(db)
+        deviceId = PreferencesHelper(this).getString(Constants.SHARED_PREFERENCES_DEVICE_ID)!!
 
-        view = PictureActivityView(this, binding)
+        view = PictureActivityView(deviceId, this, binding, this)
         viewModel = ViewModelProvider(this)[PictureActivityViewModel::class.java]
 
         view.addViewListener(object: PictureViewListener {
@@ -64,9 +72,21 @@ class PicturesActivity: BoundedActivity()  {
         loadPictures()
     }
 
-    fun loadPictures() {
-        pictureService.findAll {
-                pictures -> viewModel.updatePictures(pictures)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_info -> {
+                view.showInfoDialog()
+                true
+            }
+//            R.id.action_sync -> {
+//                true
+//            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -96,7 +116,7 @@ class PicturesActivity: BoundedActivity()  {
             }
             val okResults = results.filterNotNull()
             withContext(Dispatchers.Main) {
-                pictureService.saveBulk(okResults) {
+                pictureService.saveBulk(deviceId, okResults) {
                     pictureService.findAll {
                         viewModel.updatePictures(it)
                     }
@@ -117,5 +137,17 @@ class PicturesActivity: BoundedActivity()  {
     override fun onEndService() {
         super.onEndService()
         loadPictures()
+    }
+
+    override fun onRemovePicture(picture: Picture) {
+        pictureService.remove(picture) {
+            loadPictures()
+        }
+    }
+
+    private fun loadPictures() {
+        pictureService.findAll {
+                pictures -> viewModel.updatePictures(pictures)
+        }
     }
 }

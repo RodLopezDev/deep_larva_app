@@ -108,6 +108,7 @@ class PredictionService: Service() {
                 pictureService.update(
                     Picture(
                         id = it.id,
+                        deviceId = it.deviceId,
                         count = counter,
                         filePath = it.filePath,
                         hasMetadata = true,

@@ -21,4 +21,13 @@ class BoxDetectionServices(private val db: AppDatabase) {
             }
         }
     }
+
+    fun findByPictureId(pictureId: Long, callback: (boxes: List<BoxDetection>) -> Unit){
+        GlobalScope.launch {
+            var boxes = db.boxDetection().getByPictureId(pictureId)
+            withContext(Dispatchers.Main) {
+                callback(boxes.ifEmpty { mutableListOf<BoxDetection>() })
+            }
+        }
+    }
 }
