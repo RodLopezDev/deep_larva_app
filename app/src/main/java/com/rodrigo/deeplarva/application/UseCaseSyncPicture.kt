@@ -27,17 +27,17 @@ class UseCaseSyncPicture(private val picturesServices: PicturesServices, private
 
             val objPayload = SyncPictureRequest(picture, boxes)
             val json = jsonAdapter.toJson(objPayload)
-            RequestManager().post("/9a56382a-e46e-48e5-b209-54c56d82176b", json, object: RequestListener {
+            RequestManager().post("/picture", json, object: RequestListener {
                 override fun onFailure() {
                     listener.onFailure()
                 }
                 override fun onComplete() {
-                    RequestManager().postWithBitmap("/9a56382a-e46e-48e5-b209-54c56d82176b", originalBitmap, object: RequestListener {
+                    RequestManager().postWithBitmap("/bitmap/file/${picture.uuid}", originalBitmap, object: RequestListener {
                         override fun onFailure() {
                             listener.onFailure()
                         }
                         override fun onComplete() {
-                            RequestManager().postWithBitmap("/9a56382a-e46e-48e5-b209-54c56d82176b", processedBitmap, object: RequestListener {
+                            RequestManager().postWithBitmap("/bitmap/processed/${picture.uuid}", processedBitmap, object: RequestListener {
                                 override fun onFailure() {
                                     listener.onFailure()
                                 }
