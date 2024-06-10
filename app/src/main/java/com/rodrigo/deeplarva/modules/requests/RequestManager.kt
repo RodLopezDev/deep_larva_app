@@ -6,7 +6,6 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -15,7 +14,7 @@ class RequestManager {
     fun post(url: String, json: String, listener: RequestListener) {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .addHeader("api-Key", Constants.SERVICE_API_LEY)
+            .addHeader("x-api-key", Constants.SERVICE_API_KEY)
             .url("${Constants.SERVICE_BASE_URL}$url")
             .post(json.toRequestBody("application/json; charset=utf-8".toMediaType()))
             .build()
@@ -50,7 +49,7 @@ class RequestManager {
 
         val requestBody = builder.build()
         val request = Request.Builder()
-            .addHeader("api-Key", Constants.SERVICE_API_LEY)
+            .addHeader("x-api-key", Constants.SERVICE_API_KEY)
             .url("${Constants.SERVICE_BASE_URL}$url")
             .post(requestBody)
             .build()

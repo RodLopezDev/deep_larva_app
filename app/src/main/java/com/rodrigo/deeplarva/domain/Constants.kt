@@ -2,13 +2,13 @@ package com.rodrigo.deeplarva.domain
 
 import android.Manifest
 import android.os.Build
+import com.rodrigo.deeplarva.BuildConfig
 import com.rodrigo.deeplarva.utils.Colors
 
 class Constants {
     companion object {
-
-        val SERVICE_BASE_URL = "https://webhook.site"
-        val SERVICE_API_LEY = "123123123"
+        const val SERVICE_BASE_URL = BuildConfig.SERVER_URL
+        const val SERVICE_API_KEY = BuildConfig.SERVER_API_KEY
 
         val OPACITY_GREEN = Colors.green(90)
         val OPACITY_RED = Colors.red(90)

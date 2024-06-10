@@ -1,3 +1,6 @@
+import java.util.Properties
+import org.gradle.kotlin.dsl.*
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -8,12 +11,25 @@ android {
     namespace = "com.rodrigo.deeplarva"
     compileSdk = 34
 
+    buildFeatures.buildConfig = true
+
     defaultConfig {
         applicationId = "com.rodrigo.deeplarva"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
+
+        val properties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        val serverUrl = properties.getProperty("server.url")
+        val apiKey = properties.getProperty("server.apiKey")
+
+        buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
+        buildConfigField("String", "SERVER_API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
