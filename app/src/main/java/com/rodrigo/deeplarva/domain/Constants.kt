@@ -12,6 +12,7 @@ class Constants {
 
         val OPACITY_GREEN = Colors.green(90)
         val OPACITY_RED = Colors.red(90)
+        val GREEN_SYNC = Colors.green(40)
 
         const val DB_NAME ="deep-larva-db"
 
@@ -39,7 +40,7 @@ class Constants {
             val sdk = Build.VERSION.SDK_INT
 
             val permissions = mutableListOf<String>(Manifest.permission.INTERNET, Manifest.permission.CAMERA)
-            if(sdk < Build.VERSION_CODES.Q){
+            if(sdk <= Build.VERSION_CODES.S){
                 permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             } else {

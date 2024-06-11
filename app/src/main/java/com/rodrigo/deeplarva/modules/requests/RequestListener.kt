@@ -1,6 +1,6 @@
 package com.rodrigo.deeplarva.modules.requests
 
-interface RequestListener {
-    fun onComplete()
+interface RequestListener<T> {
+    fun onComplete(result: T)
     fun onFailure()
 }

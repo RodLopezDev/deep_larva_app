@@ -18,6 +18,7 @@ import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.modules.requests.RequestListener
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
+import com.rodrigo.deeplarva.routes.services.BackendPictureServices
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.routes.view.IPictureViewListener
@@ -159,19 +160,24 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     }
 
     private fun sync() {
+        val backendPictureServices = BackendPictureServices()
         pictureService.findProcessedNonSync { pictures -> run {
             if (pictures.isEmpty()) {
                 Toast.makeText(this@PicturesActivity, "No hay muestras por sincronizar", Toast.LENGTH_SHORT).show()
                 return@findProcessedNonSync
             }
             val picture = pictures[0]
-            UseCaseSyncPicture(pictureService, boxDetectionServices).run(picture, object: RequestListener {
+            UseCaseSyncPicture(
+                pictureService,
+                boxDetectionServices,
+                backendPictureServices
+            ).run(picture, object: RequestListener<String> {
                 override fun onFailure() {
                     this@PicturesActivity.runOnUiThread {
                         Toast.makeText(this@PicturesActivity, "Error al subir muestra", Toast.LENGTH_SHORT).show()
                     }
                 }
-                override fun onComplete() {
+                override fun onComplete(result: String) {
                     this@PicturesActivity.runOnUiThread {
                         sync()
                         loadPictures()

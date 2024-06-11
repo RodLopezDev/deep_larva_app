@@ -2,16 +2,20 @@ package com.rodrigo.deeplarva.modules.requests
 
 import android.graphics.Bitmap
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.response.PreSignedURLResponse
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 
 class RequestManager {
-    fun post(url: String, json: String, listener: RequestListener) {
+    inline fun <reified T> post(url: String, json: String, listener: RequestListener<T>) {
         val client = OkHttpClient()
         val request = Request.Builder()
             .addHeader("x-api-key", Constants.SERVICE_API_KEY)
@@ -26,13 +30,22 @@ class RequestManager {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    listener.onComplete()
-                } else {
+                    val body = response.body?.string()
+                    val moshi = Moshi.Builder()
+                        .add(KotlinJsonAdapterFactory())
+                        .build()
+                    val responseAdapter = moshi.adapter(T::class.java)
+                    val response = responseAdapter.fromJson(body)
+                    if(response != null){
+                        listener.onComplete(response)
+                        return
+                    }
                 }
+                listener.onFailure()
             }
         })
     }
-    fun postWithBitmap(url: String, bitmap: Bitmap, listener: RequestListener) {
+    fun putToS3(s3Url: String, bitmap: Bitmap, listener: RequestListener<String>) {
         val client = OkHttpClient()
 
         val builder = MultipartBody.Builder()
@@ -42,16 +55,16 @@ class RequestManager {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val bitmapData = byteArrayOutputStream.toByteArray()
 
+        // TODO: Check files, bat format in server
         builder.addFormDataPart(
-            "image", "image.png",
+            "file", "image.png",
             RequestBody.create("image/png".toMediaTypeOrNull(), bitmapData)
         )
 
         val requestBody = builder.build()
         val request = Request.Builder()
-            .addHeader("x-api-key", Constants.SERVICE_API_KEY)
-            .url("${Constants.SERVICE_BASE_URL}$url")
-            .post(requestBody)
+            .url(s3Url)
+            .put(requestBody)
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -61,9 +74,11 @@ class RequestManager {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    listener.onComplete()
-                } else {
+                    val body = response.body?.string()
+                    listener.onComplete("")
+                    return
                 }
+                listener.onFailure()
             }
         })
     }

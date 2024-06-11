@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.ui.listener.ListEventListener
 import com.rodrigo.deeplarva.utils.Time
@@ -41,7 +42,7 @@ class PictureAdapterList (context: Context, private val dataList: List<Picture>)
         }
 
         if(currentItem.syncWithCloud) {
-            itemView.setBackgroundColor(Color.GREEN)
+            itemView.setBackgroundColor(Constants.GREEN_SYNC)
         }
 
         return itemView!!
