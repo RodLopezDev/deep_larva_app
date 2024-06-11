@@ -8,6 +8,7 @@ import com.rodrigo.deeplarva.routes.services.BackendPictureServices
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.utils.BitmapUtils
+import java.io.File
 
 class UseCaseSyncPicture(
     private val picturesServices: PicturesServices,
@@ -15,8 +16,8 @@ class UseCaseSyncPicture(
     private val backendPictureServices: BackendPictureServices,
 ) {
     fun run (picture: Picture, listener: RequestListener<String>){
-        val originalBitmap = BitmapUtils.getBitmapFromPath(picture.filePath)
-        val processedBitmap = BitmapUtils.getBitmapFromPath(picture.processedFilePath)
+        val originalBitmap = File(picture.filePath)
+        val processedBitmap = File(picture.processedFilePath)
         if(originalBitmap == null || processedBitmap == null) {
             listener.onFailure()
             return
