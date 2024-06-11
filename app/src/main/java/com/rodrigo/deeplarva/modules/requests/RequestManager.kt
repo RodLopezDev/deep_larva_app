@@ -2,7 +2,6 @@ package com.rodrigo.deeplarva.modules.requests
 
 import android.graphics.Bitmap
 import com.rodrigo.deeplarva.domain.Constants
-import com.rodrigo.deeplarva.domain.response.PreSignedURLResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
@@ -11,7 +10,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 
 class RequestManager {
