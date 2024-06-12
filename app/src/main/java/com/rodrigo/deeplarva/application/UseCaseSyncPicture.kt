@@ -30,16 +30,16 @@ class UseCaseSyncPicture(
                     listener.onFailure()
                 }
                 override fun onComplete(response: NewPictureResponse) {
-                    backendPictureServices.uploadFile(response, originalBitmap, object: RequestListener<String> {
+                    backendPictureServices.uploadFile(response, originalBitmap, object: RequestListener<Boolean> {
                         override fun onFailure() {
                             listener.onFailure()
                         }
-                        override fun onComplete(r1: String) {
-                            backendPictureServices.uploadProcessedFile(response, processedBitmap, object: RequestListener<String> {
+                        override fun onComplete(r1: Boolean) {
+                            backendPictureServices.uploadProcessedFile(response, processedBitmap, object: RequestListener<Boolean> {
                                 override fun onFailure() {
                                     listener.onFailure()
                                 }
-                                override fun onComplete(r2: String) {
+                                override fun onComplete(r2: Boolean) {
                                     picturesServices.update(picture.copy(syncWithCloud = true)) {
                                         listener.onComplete("")
                                     }
