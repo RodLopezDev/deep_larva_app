@@ -64,15 +64,16 @@ dependencies {
 
     implementation("org.tensorflow:tensorflow-lite-support:0.4.0-rc0")
     implementation("org.tensorflow:tensorflow-lite-metadata:0.4.0-rc0")
-    implementation("org.tensorflow:tensorflow-lite-gpu:2.10.0")
-    implementation("org.tensorflow:tensorflow-lite-gpu-api:2.10.0")
-
+    //Librería de GPU compatibles
+    //Tensorflow Lite GPU
+    //implementation("org.tensorflow:tensorflow-lite-gpu:2.10.0")
+    //implementation("org.tensorflow:tensorflow-lite-gpu-api:2.10.0")
     //0.4.0-rc0
     //org.tensorflow:tensorflow-lite-gpu-api:2.10.0
-    implementation("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4")
+    //implementation("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4")
 
-    implementation("com.google.android.gms:play-services-tflite-impl:16.1.0")
-    implementation("com.google.android.gms:play-services-tflite-gpu:16.2.0")
+    //implementation("com.google.android.gms:play-services-tflite-impl:16.1.0")
+    //implementation("com.google.android.gms:play-services-tflite-gpu:16.2.0")
 
     val room_version = "2.4.0"
     implementation("androidx.room:room-runtime:$room_version")
