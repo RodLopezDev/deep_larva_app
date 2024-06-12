@@ -19,10 +19,10 @@ class BackendPictureServices {
         val json = jsonAdapter.toJson(payload)
         RequestManager().post<NewPictureResponse>("/picture", json, listener)
     }
-    fun uploadFile(response: NewPictureResponse, file: File, listener: RequestListener<String>){
+    fun uploadFile(response: NewPictureResponse, file: File, listener: RequestListener<Boolean>){
         RequestManager().putToS3(response.originalFileURL, file, listener)
     }
-    fun uploadProcessedFile(response: NewPictureResponse, file: File, listener: RequestListener<String>){
+    fun uploadProcessedFile(response: NewPictureResponse, file: File, listener: RequestListener<Boolean>){
         RequestManager().putToS3(response.processedFileURL, file,listener)
     }
 }
