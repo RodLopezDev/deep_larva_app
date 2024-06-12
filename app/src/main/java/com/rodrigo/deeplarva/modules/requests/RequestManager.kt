@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 
 
@@ -43,23 +44,9 @@ class RequestManager {
             }
         })
     }
-    fun putToS3(s3Url: String, bitmap: Bitmap, listener: RequestListener<String>) {
+    fun putToS3(s3Url: String, file: File, listener: RequestListener<String>) {
         val client = OkHttpClient()
-
-        val builder = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        val bitmapData = byteArrayOutputStream.toByteArray()
-
-        // TODO: Check files, bat format in server
-        builder.addFormDataPart(
-            "file", "image.png",
-            RequestBody.create("image/png".toMediaTypeOrNull(), bitmapData)
-        )
-
-        val requestBody = builder.build()
+        val requestBody = RequestBody.create("image/png".toMediaTypeOrNull(), file)
         val request = Request.Builder()
             .url(s3Url)
             .put(requestBody)

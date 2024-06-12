@@ -3,6 +3,7 @@ package com.rodrigo.deeplarva.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import com.rodrigo.deeplarva.domain.Constants
 import java.io.File
 import java.io.FileOutputStream
@@ -17,7 +18,16 @@ class BitmapUtils {
             return "$uuidString.${Constants.IMAGE_EXTENSION}"
         }
         fun getBitmapFromPath(filePath: String): Bitmap? {
-            return BitmapFactory.decodeFile(filePath)
+            val bitmap = BitmapFactory.decodeFile(filePath)
+            val newBitmap = Bitmap.createBitmap(
+                bitmap.width,
+                bitmap.height,
+                Bitmap.Config.RGB_565
+            )
+            val canvas = Canvas(newBitmap)
+            canvas.drawBitmap(bitmap, 0f, 0f, null)
+            bitmap.recycle()
+            return newBitmap
         }
         fun saveBitmapToStorage(context: Context, bitmap: Bitmap, filename: String): String? {
             val file = File(context.getExternalFilesDir(null), filename)
