@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.ui.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.ui.listener.ListEventListener
 import com.rodrigo.deeplarva.utils.Time
@@ -37,6 +39,10 @@ class PictureAdapterList (context: Context, private val dataList: List<Picture>)
         } else {
             tvDuration.text = "Tiempo: 00:00:00"
             tvCount.text = "-"
+        }
+
+        if(currentItem.syncWithCloud) {
+            itemView.setBackgroundColor(Constants.GREEN_SYNC)
         }
 
         return itemView!!

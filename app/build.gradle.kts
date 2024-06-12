@@ -1,3 +1,6 @@
+import java.util.Properties
+import org.gradle.kotlin.dsl.*
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -8,12 +11,25 @@ android {
     namespace = "com.rodrigo.deeplarva"
     compileSdk = 34
 
+    buildFeatures.buildConfig = true
+
     defaultConfig {
         applicationId = "com.rodrigo.deeplarva"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
+
+        val properties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        val serverUrl = properties.getProperty("server.url")
+        val apiKey = properties.getProperty("server.apiKey")
+
+        buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
+        buildConfigField("String", "SERVER_API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -72,6 +88,10 @@ dependencies {
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation("androidx.camera:camera-view:${camerax_version}")
+
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.moshi:moshi:1.12.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
 
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")

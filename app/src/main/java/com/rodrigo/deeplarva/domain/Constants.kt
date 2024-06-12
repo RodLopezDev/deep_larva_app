@@ -2,12 +2,17 @@ package com.rodrigo.deeplarva.domain
 
 import android.Manifest
 import android.os.Build
+import com.rodrigo.deeplarva.BuildConfig
 import com.rodrigo.deeplarva.utils.Colors
 
 class Constants {
     companion object {
+        const val SERVICE_BASE_URL = BuildConfig.SERVER_URL
+        const val SERVICE_API_KEY = BuildConfig.SERVER_API_KEY
+
         val OPACITY_GREEN = Colors.green(90)
         val OPACITY_RED = Colors.red(90)
+        val GREEN_SYNC = Colors.green(40)
 
         const val DB_NAME ="deep-larva-db"
 
@@ -34,8 +39,8 @@ class Constants {
             // REF: https://stackoverflow.com/questions/72948052/android-13-read-external-storage-permission-still-usable
             val sdk = Build.VERSION.SDK_INT
 
-            val permissions = mutableListOf<String>(Manifest.permission.CAMERA)
-            if(sdk < Build.VERSION_CODES.Q){
+            val permissions = mutableListOf<String>(Manifest.permission.INTERNET, Manifest.permission.CAMERA)
+            if(sdk <= Build.VERSION_CODES.S){
                 permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             } else {

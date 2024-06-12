@@ -17,8 +17,8 @@ interface PictureDAO {
     @Query("SELECT * FROM picture ORDER BY timestamp DESC")
     fun getAllPictures(): List<Picture>
 
-    @Query("SELECT * FROM picture WHERE has_metadata = 1")
-    fun getAllProcessed(): List<Picture>
+    @Query("SELECT * FROM picture WHERE has_metadata = 1 and sync = 0")
+    fun getAllProcessedNonSync(): List<Picture>
 
     @Query("SELECT * FROM picture WHERE has_metadata = 0")
     fun getAllNonProcessed(): List<Picture>

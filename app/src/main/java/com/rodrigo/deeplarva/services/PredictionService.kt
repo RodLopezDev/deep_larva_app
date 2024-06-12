@@ -115,7 +115,9 @@ class PredictionService: Service() {
                         processedFilePath = bitmapProcessedPath,
                         time = time,
                         thumbnailPath = it.thumbnailPath,
-                        timestamp = it.timestamp
+                        timestamp = it.timestamp,
+                        syncWithCloud = false,
+                        uuid = it.uuid
                     )
                 ) {
                     callback()

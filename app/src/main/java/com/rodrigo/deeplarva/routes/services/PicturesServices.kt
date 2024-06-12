@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 class PicturesServices(private val db: AppDatabase) {
 
@@ -41,9 +42,9 @@ class PicturesServices(private val db: AppDatabase) {
         }
     }
 
-    fun findProcessed(callback: (pictures: List<Picture>) -> Unit){
+    fun findProcessedNonSync(callback: (pictures: List<Picture>) -> Unit){
         GlobalScope.launch {
-            var pictures = db.picture().getAllProcessed()
+            var pictures = db.picture().getAllProcessedNonSync()
             withContext(Dispatchers.Main) {
                 callback(pictures)
             }
@@ -53,7 +54,7 @@ class PicturesServices(private val db: AppDatabase) {
     fun save(deviceId: String, filePath: String, thumbnailPath: String, timeStamp: Long, callback: () -> Unit){
         GlobalScope.launch {
             db.picture().insert(
-                Picture(filePath = filePath, deviceId = deviceId, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0, timestamp = timeStamp)
+                Picture(filePath = filePath, deviceId = deviceId, uuid = UUID.randomUUID().toString(), hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = thumbnailPath, time = 0, timestamp = timeStamp, syncWithCloud = false)
             )
             withContext(Dispatchers.Main) {
                 callback()
@@ -65,7 +66,7 @@ class PicturesServices(private val db: AppDatabase) {
         GlobalScope.launch {
             items.map {
                 db.picture().insert(
-                    Picture(filePath = it.filePath, deviceId = deviceId, hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = it.thumbnailPath, time = 0, timestamp = it.timestamp)
+                    Picture(filePath = it.filePath, deviceId = deviceId, uuid = UUID.randomUUID().toString(), hasMetadata = false, count = 0, processedFilePath = "", thumbnailPath = it.thumbnailPath, time = 0, timestamp = it.timestamp, syncWithCloud = false)
                 )
             }
             withContext(Dispatchers.Main) {
