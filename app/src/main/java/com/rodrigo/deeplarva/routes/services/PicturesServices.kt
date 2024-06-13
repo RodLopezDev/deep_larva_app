@@ -1,7 +1,7 @@
 package com.rodrigo.deeplarva.routes.services
 
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
+import com.rodrigo.deeplarva.domain.view.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

@@ -2,7 +2,7 @@ package com.rodrigo.deeplarva.routes
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices

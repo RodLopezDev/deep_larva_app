@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.domain
+package com.rodrigo.deeplarva.application.utils
 
 import com.rodrigo.deeplarva.utils.Time
 

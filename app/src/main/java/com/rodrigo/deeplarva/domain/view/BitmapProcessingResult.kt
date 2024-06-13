@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.domain.utils
+package com.rodrigo.deeplarva.domain.view
 
 data class BitmapProcessingResult (
     val filePath: String,

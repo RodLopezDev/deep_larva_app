@@ -2,7 +2,6 @@ package com.rodrigo.deeplarva.routes
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -10,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 
 class PermissionsHandlerActivity: AppCompatActivity() {
 

@@ -10,7 +10,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase

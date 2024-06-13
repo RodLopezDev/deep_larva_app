@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.domain
+package com.rodrigo.deeplarva.application.utils
 
 import android.Manifest
 import android.os.Build

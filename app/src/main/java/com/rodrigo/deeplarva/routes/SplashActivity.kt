@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.utils.PreferencesHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

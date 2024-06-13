@@ -5,10 +5,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.widget.Toast
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.routes.CameraActivity
 import com.rodrigo.deeplarva.utils.BitmapUtils
-import java.lang.Error
 
 class PhotoByCameraProHandler(override val activity: Activity): IPhotoHandler {
     private val REQUESTCODE = 1000

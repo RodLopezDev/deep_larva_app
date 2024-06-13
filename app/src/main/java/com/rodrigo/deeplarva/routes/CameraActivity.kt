@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.routes.camera.CameraPro
 import com.rodrigo.deeplarva.routes.camera.interfaces.CameraProListener
 import com.rodrigo.deeplarva.routes.camera.utils.CameraUtils

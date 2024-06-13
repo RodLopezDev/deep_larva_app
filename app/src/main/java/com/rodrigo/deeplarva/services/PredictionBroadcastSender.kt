@@ -2,7 +2,7 @@ package com.rodrigo.deeplarva.services
 
 import android.app.Service
 import android.content.Intent
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 
 class PredictionBroadcastSender(private val service: Service) {
 

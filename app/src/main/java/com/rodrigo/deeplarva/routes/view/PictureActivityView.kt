@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
-import com.rodrigo.deeplarva.domain.entity.Picture
+import com.rodrigo.deeplarva.domain.view.PictureListEntity
 import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.ui.listener.ListEventListener
@@ -22,11 +22,11 @@ class PictureActivityView(
     private val listener: IPictureViewListener
 ) {
     private val handler = ImageHandler(activity)
-    private var list: ListHandlerView<Picture> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, object: ListEventListener<Picture> {
-        override fun onLongClick(item: Picture, position: Int) {
+    private var list: ListHandlerView<PictureListEntity> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, object: ListEventListener<PictureListEntity> {
+        override fun onLongClick(item: PictureListEntity, position: Int) {
             showOptionsDialog(item)
         }
-        override fun onClick(item: Picture, position: Int) {
+        override fun onClick(item: PictureListEntity, position: Int) {
             activity.runOnUiThread {
                 Toast.makeText(activity, "Click", Toast.LENGTH_SHORT).show()
             }
@@ -49,7 +49,7 @@ class PictureActivityView(
         binding.btnTakePicture.setOnClickListener { handler.launchCamera() }
     }
 
-    fun loadPictures(pictures: List<Picture>, listener: PictureItemListListener) {
+    fun loadPictures(pictures: List<PictureListEntity>, listener: PictureItemListListener) {
         val adapter = PictureAdapterList(activity, pictures, listener)
         list.populate(pictures, adapter)
     }
@@ -62,7 +62,7 @@ class PictureActivityView(
         return handler.resolve(requestCode, resultCode, data)
     }
 
-    private fun showOptionsDialog(item: Picture) {
+    private fun showOptionsDialog(item: PictureListEntity) {
         val dialogView = activity.layoutInflater.inflate(R.layout.dialog_picture_options, null)
         val dialog = AlertDialog.Builder(activity)
             .setTitle("Opciones")
@@ -71,7 +71,7 @@ class PictureActivityView(
 
         val btnRemove = dialogView.findViewById<Button>(R.id.btnDelete)
         btnRemove.setOnClickListener {
-            listener.onRemovePicture(item)
+            listener.onRemovePicture(item.picture)
             dialog.dismiss()
         }
 

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.application
+package com.rodrigo.deeplarva.application.usecases
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.requests.SyncPictureRequest
@@ -7,7 +7,6 @@ import com.rodrigo.deeplarva.modules.requests.RequestListener
 import com.rodrigo.deeplarva.routes.services.BackendPictureServices
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
-import com.rodrigo.deeplarva.utils.BitmapUtils
 import java.io.File
 
 class UseCaseSyncPicture(

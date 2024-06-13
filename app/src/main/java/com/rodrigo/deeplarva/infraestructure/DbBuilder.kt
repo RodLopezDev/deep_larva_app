@@ -3,7 +3,7 @@ package com.rodrigo.deeplarva.infraestructure
 import androidx.room.Room
 import android.content.Context
 import androidx.annotation.NonNull
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 

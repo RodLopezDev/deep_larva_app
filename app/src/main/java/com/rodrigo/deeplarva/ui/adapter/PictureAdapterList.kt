@@ -1,24 +1,28 @@
 package com.rodrigo.deeplarva.ui.adapter
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.domain.Constants
-import com.rodrigo.deeplarva.domain.entity.Picture
+import com.rodrigo.deeplarva.application.utils.Constants
+import com.rodrigo.deeplarva.domain.view.PictureListEntity
 import com.rodrigo.deeplarva.utils.Time
 
 class PictureAdapterList (
     context: Context,
-    private val dataList: List<Picture>,
+    private val dataList: List<PictureListEntity>,
     private val listener: PictureItemListListener
 ) :
-    ArrayAdapter<Picture>(context, R.layout.item_list_picture, dataList) {
+    ArrayAdapter<PictureListEntity>(context, R.layout.item_list_picture, dataList) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
         if (itemView == null) {
@@ -27,41 +31,92 @@ class PictureAdapterList (
             itemView = inflater.inflate(R.layout.item_list_picture, parent, false)
         }
 
-        val currentItem = dataList[position]
+        val currentItem = dataList[position]!!
+        val picture = currentItem!!.picture
 
-
-        val btnProcess = itemView!!.findViewById<Button>(R.id.btnProcess)
         val llProcessedView = itemView!!.findViewById<LinearLayout>(R.id.llProcessedView)
-        val llUnprocessedView = itemView!!.findViewById<LinearLayout>(R.id.llUnprocessedView)
-
         val tvDatetime = itemView!!.findViewById<TextView>(R.id.tvDatetime)
         val tvDuration = itemView!!.findViewById<TextView>(R.id.tvDuration)
-        val tvCount = itemView!!.findViewById<TextView>(R.id.tvCount)
 
-        tvDatetime.text = Time.longFormatTimestamp(currentItem.timestamp)
-        if (currentItem.hasMetadata) {
-            tvDuration.text = "Tiempo: ${Time.formatDuration(currentItem.time)}"
-            tvCount.text = currentItem.count.toString()
-
-            llProcessedView.visibility = View.VISIBLE
-            llUnprocessedView.visibility = View.GONE
-            btnProcess.visibility = View.GONE
-        } else {
-            tvDuration.text = "Tiempo: 00:00:00"
-            tvCount.text = "-"
-
-            llProcessedView.visibility = View.GONE
-            llUnprocessedView.visibility = View.VISIBLE
-            btnProcess.visibility = View.VISIBLE
-            btnProcess.setOnClickListener {
-                listener.onPredict(currentItem)
-            }
-        }
-
-        if(currentItem.syncWithCloud) {
+        if(picture.syncWithCloud) {
             itemView.setBackgroundColor(Constants.GREEN_SYNC)
         }
 
+        tvDatetime.text = Time.longFormatTimestamp(picture.timestamp)
+        tvDuration.text = if (picture.hasMetadata)
+            "Tiempo: ${Time.formatDuration(picture.time)}"
+        else "Tiempo: 00:00:00"
+
+        if(llProcessedView.childCount == 0) {
+            if (picture.hasMetadata) {
+                llProcessedView.addView(getCountView(context, picture.count))
+            } else if(currentItem.state == null){
+                llProcessedView.addView(getButtonForPredict(context) { listener.onPredict(picture) })
+            } else if (currentItem.state.isProcessing) {
+
+            } else {
+
+            }
+        }
+
         return itemView!!
+    }
+
+    companion object {
+        fun getButtonForPredict(context: Context, listener: View.OnClickListener): LinearLayout {
+            val ll = LinearLayout(context)
+            ll.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1F)
+            ll.orientation = LinearLayout.VERTICAL
+            ll.gravity = Gravity.RIGHT
+
+            val btn = FloatingActionButton(context)
+            val btnLL = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            btnLL.gravity = Gravity.RIGHT
+            btn.layoutParams = btnLL
+            btn.size = FloatingActionButton.SIZE_MINI
+            btn.setImageResource(android.R.drawable.ic_media_play)
+            btn.setOnClickListener(listener)
+
+            ll.addView(btn)
+            return ll
+        }
+
+        fun getCountView(context: Context, count: Int): LinearLayout {
+            val ll = LinearLayout(context)
+            ll.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1F)
+            ll.orientation = LinearLayout.VERTICAL
+
+            val textView = TextView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                textSize = 12f
+                setTextColor(resources.getColor(android.R.color.black, null))
+                gravity = Gravity.RIGHT
+                text = "Total"
+            }
+
+            val textView2 = TextView(context).apply {
+                id = View.generateViewId()  // Generate a unique ID
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                textSize = 32f // textSize in sp, not dp
+//                setLineHeight(40) // lineHeight in pixels
+//                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+//                setTextColor(resources.getColor(R.color.purple_200, null))
+                gravity = Gravity.RIGHT
+                text = count.toString()
+            }
+
+            if (ll.childCount == 0) {
+                ll.addView(textView)
+                ll.addView(textView2)
+            }
+            return ll
+        }
     }
 }

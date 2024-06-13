@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="12dp">
 
@@ -35,41 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12dp"
-            android:textColor="@android:color/black"
-            android:gravity="right"
-            android:hint="Total" />
-
-        <TextView
-            android:id="@+id/tvCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="32dp"
-            android:lineHeight="40dp"
-            android:textColor="@android:color/black"
-            android:gravity="right"
-            android:hint="290"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llUnprocessedView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btnProcess"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Procesar"/>
-
-    </LinearLayout>
+        android:layout_gravity="right"
+        android:orientation="vertical"/>
 
 </LinearLayout>

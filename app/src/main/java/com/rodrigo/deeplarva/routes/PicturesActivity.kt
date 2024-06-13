@@ -9,11 +9,12 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.application.UseCaseSyncPicture
+import com.rodrigo.deeplarva.application.usecases.UseCaseLoadPictures
+import com.rodrigo.deeplarva.application.usecases.UseCaseSyncPicture
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
-import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.domain.utils.BitmapProcessingResult
+import com.rodrigo.deeplarva.domain.view.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 import com.rodrigo.deeplarva.modules.requests.RequestListener
@@ -114,11 +115,9 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
             val okResults = results.filterNotNull()
             withContext(Dispatchers.Main) {
                 pictureService.saveBulk(deviceId, okResults) {
-                    pictureService.findAll {
-                        viewModel.updatePictures(it)
-                        runOnUiThread {
-                            dialog.dismiss()
-                        }
+                    loadPictures()
+                    runOnUiThread {
+                        dialog.dismiss()
                     }
                 }
             }
@@ -146,8 +145,8 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     }
 
     private fun loadPictures() {
-        pictureService.findAll {
-                pictures -> viewModel.updatePictures(pictures)
+        UseCaseLoadPictures(pictureService).run {
+            viewModel.updatePictures(it)
         }
     }
 

@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
 import androidx.annotation.RequiresApi
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.ml.Detect640x640
 import com.rodrigo.deeplarva.utils.BitmapUtils
