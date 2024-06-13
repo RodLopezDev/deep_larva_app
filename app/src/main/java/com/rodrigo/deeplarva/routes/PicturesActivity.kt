@@ -23,7 +23,8 @@ import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.routes.view.IPictureViewListener
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
-import com.rodrigo.deeplarva.routes.view.PictureViewListener
+import com.rodrigo.deeplarva.ui.ProgressDialog
+import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.utils.BitmapUtils
 import com.rodrigo.deeplarva.utils.ImageProcessor
 import com.rodrigo.deeplarva.utils.PreferencesHelper
@@ -31,7 +32,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.*
 
 class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     private lateinit var view: PictureActivityView
@@ -56,24 +56,12 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
         view = PictureActivityView(deviceId, this, binding, this)
         viewModel = ViewModelProvider(this)[PictureActivityViewModel::class.java]
 
-        view.addViewListener(object: PictureViewListener {
-            override fun onPredict() {
-                if(!isServiceBounded()) {
-                    Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_DISCONNECTED, Toast.LENGTH_SHORT).show()
-                    return
-                }
-                if(isServiceRunning()){
-                    Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_RUNNING, Toast.LENGTH_SHORT).show()
-                    return
-                }
-                launchService()
-            }
-            override fun onAddPicture() {
-                view.getDialog().show()
-            }
-        })
         viewModel.pictures.observe(this) {
-            view.loadPictures(it)
+            view.loadPictures(it, object: PictureItemListListener {
+                override fun onPredict(picture: Picture) {
+                    launchService(picture)
+                }
+            })
         }
 
         loadPictures()
@@ -101,11 +89,12 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        view.getDialog().hide()
-
         if(data == null || resultCode == 0) return
-        val bitmaps = view.getDialog().resolve(requestCode, resultCode, data)
 
+        val dialog = ProgressDialog()
+        dialog.show(this@PicturesActivity)
+
+        val bitmaps = view.resolve(requestCode, resultCode, data)
         GlobalScope.launch {
             val results = bitmaps.map {
                 var thumbnail = ImageProcessor.scale(it)
@@ -127,6 +116,9 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
                 pictureService.saveBulk(deviceId, okResults) {
                     pictureService.findAll {
                         viewModel.updatePictures(it)
+                        runOnUiThread {
+                            dialog.dismiss()
+                        }
                     }
                 }
             }

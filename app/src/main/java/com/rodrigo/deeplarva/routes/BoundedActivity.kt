@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.domain.entity.Picture
 
 import com.rodrigo.deeplarva.services.PredictionBoundService
 import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
@@ -48,8 +49,9 @@ open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
         receiver.unregister()
     }
 
-    protected fun launchService(){
+    protected fun launchService(picture: Picture){
         var intent = Intent(applicationContext, PredictionService::class.java)
+        intent.putExtra("pictureId", picture.id)
         Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_STARTED, Toast.LENGTH_SHORT).show()
         startService(intent)
     }

@@ -1,23 +1,19 @@
 package com.rodrigo.deeplarva.services
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.domain.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.infraestructure.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
-import com.rodrigo.deeplarva.routes.PicturesActivity
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
@@ -53,22 +49,30 @@ class PredictionService: Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val pictureId = intent!!.getLongExtra("pictureId", 0) ?: 0
+        if(pictureId.toInt() == 0){
+            return START_STICKY
+        }
+
         Log.d(TAG, "Service Started")
         isRunning = true
+        Toast.makeText(this, "$pictureId", Toast.LENGTH_SHORT).show()
 
-        val notificationIntent = Intent(this, PicturesActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
 
-        val notification: Notification = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("DeepLarva")
-            .setContentText("Processing pictures")
-            .setSmallIcon(R.drawable.deep_larva_icon)
-            .setContentIntent(pendingIntent)
-            .build()
 
-        startForeground(Constants.NOTIFICATION_ID, notification)
-
-        eventPredict()
+//        val notificationIntent = Intent(this, PicturesActivity::class.java)
+//        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
+//
+//        val notification: Notification = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+//            .setContentTitle("DeepLarva")
+//            .setContentText("Processing pictures")
+//            .setSmallIcon(R.drawable.deep_larva_icon)
+//            .setContentIntent(pendingIntent)
+//            .build()
+//
+//        startForeground(Constants.NOTIFICATION_ID, notification)
+//
+//        eventPredict()
 
         return START_STICKY
     }
