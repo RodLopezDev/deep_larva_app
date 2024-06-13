@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -53,9 +54,9 @@ class PictureAdapterList (
             } else if(currentItem.state == null){
                 llProcessedView.addView(getButtonForPredict(context) { listener.onPredict(picture) })
             } else if (currentItem.state.isProcessing) {
-
+                llProcessedView.addView(getProcessing(context))
             } else {
-
+                llProcessedView.addView(getButtonForPredict(context))
             }
         }
 
@@ -63,7 +64,24 @@ class PictureAdapterList (
     }
 
     companion object {
-        fun getButtonForPredict(context: Context, listener: View.OnClickListener): LinearLayout {
+        fun getProcessing(context: Context) : LinearLayout {
+            val ll = LinearLayout(context)
+            ll.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1F)
+            ll.orientation = LinearLayout.VERTICAL
+            ll.gravity = Gravity.RIGHT
+            ll.height
+
+            val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleLarge).apply {
+                layoutParams = LinearLayout.LayoutParams(100, 100).apply {
+                    gravity = Gravity.RIGHT
+                }
+                isIndeterminate = true
+            }
+
+            ll.addView(progressBar)
+            return ll
+        }
+        fun getButtonForPredict(context: Context, listener: View.OnClickListener? = null): LinearLayout {
             val ll = LinearLayout(context)
             ll.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1F)
             ll.orientation = LinearLayout.VERTICAL
@@ -75,7 +93,13 @@ class PictureAdapterList (
             btn.layoutParams = btnLL
             btn.size = FloatingActionButton.SIZE_MINI
             btn.setImageResource(android.R.drawable.ic_media_play)
-            btn.setOnClickListener(listener)
+
+            if(listener != null) {
+                btn.setOnClickListener(listener)
+            } else {
+                btn.isEnabled = false
+                btn.backgroundTintList = context.getColorStateList(R.color.gray500)
+            }
 
             ll.addView(btn)
             return ll
@@ -111,11 +135,8 @@ class PictureAdapterList (
                 gravity = Gravity.RIGHT
                 text = count.toString()
             }
-
-            if (ll.childCount == 0) {
-                ll.addView(textView)
-                ll.addView(textView2)
-            }
+            ll.addView(textView)
+            ll.addView(textView2)
             return ll
         }
     }

@@ -1,6 +1,6 @@
 package com.rodrigo.deeplarva.services
 
     interface ServiceChangesListener {
-    fun onStartService()
+    fun onStartService(pictureId: Long)
     fun onEndService()
 }

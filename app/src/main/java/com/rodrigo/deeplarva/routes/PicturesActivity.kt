@@ -3,6 +3,7 @@ package com.rodrigo.deeplarva.routes
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.usecases.UseCaseLoadPictures
+import com.rodrigo.deeplarva.application.usecases.UseCaseLoadPicturesProcessesRunning
 import com.rodrigo.deeplarva.application.usecases.UseCaseSyncPicture
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
@@ -87,6 +89,11 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d("", "")
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -138,6 +145,13 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
         loadPictures()
     }
 
+    override fun onStartService(pictureId: Long) {
+        super.onStartService(pictureId)
+        UseCaseLoadPicturesProcessesRunning(pictureService).execute(pictureId) {
+            viewModel.updatePictures(it)
+        }
+    }
+
     override fun onRemovePicture(picture: Picture) {
         pictureService.remove(picture) {
             loadPictures()
@@ -145,7 +159,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
     }
 
     private fun loadPictures() {
-        UseCaseLoadPictures(pictureService).run {
+        UseCaseLoadPictures(pictureService).execute {
             viewModel.updatePictures(it)
         }
     }
@@ -177,9 +191,5 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
                 }
             })
         }}
-    }
-
-    companion object {
-        private val TAG = PicturesActivity::class.java.simpleName
     }
 }

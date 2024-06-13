@@ -6,9 +6,11 @@ import com.rodrigo.deeplarva.application.utils.Constants
 
 class PredictionBroadcastSender(private val service: Service) {
 
-    fun notify(percentage: Int) {
+    fun notify(pictureId: Long, percentage: Int) {
+        val mockEncryptedMessage = "$pictureId|$percentage"
+
         val broadcastIntent = Intent(Constants.BROADCAST_ACTION)
-        broadcastIntent.putExtra("data", percentage)
+        broadcastIntent.putExtra("data", mockEncryptedMessage)
         service.sendBroadcast(broadcastIntent)
     }
 }

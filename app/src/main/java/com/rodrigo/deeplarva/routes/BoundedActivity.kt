@@ -19,19 +19,19 @@ open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        receiver.register {
-            when (it) {
+        receiver.register { pictureId, percentaje -> run {
+            when (percentaje) {
                 0 -> {
-                    onStartService()
+                    onStartService(pictureId)
                 }
                 100 -> {
                     onEndService()
                 }
                 else -> {
-                    updateServiceValue(it)
+//                    updateServiceValue(it)
                 }
             }
-        }
+        }}
     }
 
     override fun onStart() {
@@ -64,11 +64,11 @@ open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
         return boundService.isBounded()
     }
 
-    protected fun updateServiceValue(percentage: Int) {
+//    protected fun updateServiceValue(percentage: Int) {
+//
+//    }
 
-    }
-
-    override fun onStartService() {
+    override fun onStartService(pictureId: Long) {
     }
 
     override fun onEndService() {

@@ -29,18 +29,19 @@ class BackgroundTaskPredict(private val my: Context) {
     private var processingRateProgress = 0
     private var processingList:List<Picture> = mutableListOf<Picture>()
 
-    private lateinit var updateStatus: (status: Int) -> Unit
+    private lateinit var updateStatus: (id: Long, status: Int) -> Unit
     private lateinit var updateEntity: (id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
-    private lateinit var finish: () -> Unit
+    private lateinit var finish: (id: Long) -> Unit
 
     private var model = Detect640x640(my)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun predictBatchCOROUTINE(
+        id: Long,
         pictures: List<Picture>,
-        updateCallback: (status: Int) -> Unit,
+        updateCallback: (id: Long, status: Int) -> Unit,
         updateEntityCallback: (id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit,
-        finishCallback: () -> Unit
+        finishCallback: (id: Long) -> Unit
     ) {
         isProcessing = true
         updateStatus = updateCallback
@@ -51,13 +52,13 @@ class BackgroundTaskPredict(private val my: Context) {
         processingRateProgress = 100 / pictures.size
         processingList = pictures
 
-        recursivePredictionCOROUTINE()
+        recursivePredictionCOROUTINE(id)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun recursivePredictionCOROUTINE() {
+    private fun recursivePredictionCOROUTINE(id: Long) {
         if(processingIndex >= processingList.size) {
-            finishPrediction()
+            finishPrediction(id)
             return
         }
 
@@ -88,18 +89,18 @@ class BackgroundTaskPredict(private val my: Context) {
 
             processingIndex++
             if(processingIndex != processingList.size - 1) {
-                updateStatus(processingRateProgress * processingIndex)
+                updateStatus(id, processingRateProgress * processingIndex)
             }
             updateEntity(currentItem.id, counter, boxes, time, processedFilePath) {
-                recursivePredictionCOROUTINE()
+                recursivePredictionCOROUTINE(id)
             }
         }}
     }
 
-    private fun finishPrediction() {
+    private fun finishPrediction(id: Long) {
         isProcessing = false
         processingIndex = 0
-        finish()
+        finish(id)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

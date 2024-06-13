@@ -11,11 +11,14 @@ class PredictionBroadcastReceiver (private val activity: AppCompatActivity){
 
     private lateinit var receiver: BroadcastReceiver
 
-    fun register(callback: (percentage: Int) -> Unit) {
+    fun register(callback: (pictureId: Long, percentage: Int) -> Unit) {
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                val percentage = intent?.getIntExtra("data", 0) ?: return
-                callback(percentage)
+                val mockEncryptedMessage = intent?.getStringExtra("data") ?: return
+                val splitValues = mockEncryptedMessage.split("|")
+                val pictureId = splitValues[0].toLong()
+                val percentage = splitValues[1].toInt()
+                callback(pictureId, percentage)
             }
         }
         val filter = IntentFilter(Constants.BROADCAST_ACTION)
