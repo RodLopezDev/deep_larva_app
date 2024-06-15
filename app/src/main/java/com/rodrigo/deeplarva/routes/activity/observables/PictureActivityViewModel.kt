@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.observables
+package com.rodrigo.deeplarva.routes.activity.observables
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

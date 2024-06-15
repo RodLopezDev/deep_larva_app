@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.view
+package com.rodrigo.deeplarva.routes.activity.view
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 

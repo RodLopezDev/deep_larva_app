@@ -1,10 +1,9 @@
-package com.rodrigo.deeplarva.ui.view
+package com.rodrigo.deeplarva.ui.widget.listHandler
 
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
-import com.rodrigo.deeplarva.ui.listener.ListEventListener
 
 class ListHandlerView<T>(
     private var list: ListView,

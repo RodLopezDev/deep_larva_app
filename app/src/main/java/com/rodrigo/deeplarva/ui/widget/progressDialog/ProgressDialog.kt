@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui
+package com.rodrigo.deeplarva.ui.widget.progressDialog
 
 import android.app.AlertDialog
 import android.content.Context

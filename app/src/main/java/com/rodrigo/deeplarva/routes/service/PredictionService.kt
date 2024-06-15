@@ -22,7 +22,7 @@ import com.rodrigo.deeplarva.modules.services.BoxDetectionServices
 import com.rodrigo.deeplarva.modules.services.PicturesServices
 import com.rodrigo.deeplarva.routes.activity.PicturesActivity
 import com.rodrigo.deeplarva.routes.broadcast.PredictionBroadcastSender
-import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
+import com.rodrigo.deeplarva.modules.tasks.BackgroundTaskPredict
 
 class PredictionService: Service() {
     private val TAG = "DEEP_LARVA::PredictionService"

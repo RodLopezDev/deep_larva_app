@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.view
+package com.rodrigo.deeplarva.routes.activity.view
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,10 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.view.PictureListEntity
+import com.rodrigo.deeplarva.modules.image.ImageHandler
 import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
-import com.rodrigo.deeplarva.ui.listener.ListEventListener
-import com.rodrigo.deeplarva.utils.image.ImageHandler
+import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
+import com.rodrigo.deeplarva.ui.widget.listHandler.ListHandlerView
 
 
 class PictureActivityView(
@@ -22,7 +23,8 @@ class PictureActivityView(
     private val listener: IPictureViewListener
 ) {
     private val handler = ImageHandler(activity)
-    private var list: ListHandlerView<PictureListEntity> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, object: ListEventListener<PictureListEntity> {
+    private var list: ListHandlerView<PictureListEntity> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, object:
+        ListEventListener<PictureListEntity> {
         override fun onLongClick(item: PictureListEntity, position: Int) {
             showOptionsDialog(item)
         }

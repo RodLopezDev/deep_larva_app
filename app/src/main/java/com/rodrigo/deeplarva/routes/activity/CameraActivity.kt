@@ -16,7 +16,7 @@ import com.rodrigo.deeplarva.modules.camera.CameraPro
 import com.rodrigo.deeplarva.modules.camera.interfaces.CameraActivityViewListener
 import com.rodrigo.deeplarva.modules.camera.interfaces.CameraProListener
 import com.rodrigo.deeplarva.modules.camera.utils.CameraUtils
-import com.rodrigo.deeplarva.ui.view.CameraActivityView
+import com.rodrigo.deeplarva.routes.activity.view.CameraActivityView
 import com.rodrigo.deeplarva.utils.FileUtils
 import java.io.IOException
 

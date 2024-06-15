@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.view
+package com.rodrigo.deeplarva.routes.activity.view
 
 import android.view.TextureView
 import android.view.View

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.utils.image
+package com.rodrigo.deeplarva.modules.image
 
 import android.content.Intent
 import android.graphics.Bitmap

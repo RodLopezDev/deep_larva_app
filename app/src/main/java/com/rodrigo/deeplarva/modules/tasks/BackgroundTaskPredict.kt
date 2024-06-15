@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.tasks
+package com.rodrigo.deeplarva.modules.tasks
 
 import android.content.Context
 import android.graphics.Bitmap
