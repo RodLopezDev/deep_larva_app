@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.image
+package com.rodrigo.deeplarva.helpers.pictureInputHelper
 
 import android.Manifest
 import android.app.Activity
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class PhotoByCameraHandler(override val activity: Activity): IPhotoHandler {
+class PictureByCameraHandler(override val activity: Activity): IPictureReceiverHandler {
 
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
 

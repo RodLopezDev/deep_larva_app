@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.utils
+package com.rodrigo.deeplarva.helpers
 
 import android.content.Context
 import android.content.SharedPreferences

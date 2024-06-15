@@ -18,11 +18,11 @@ import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
-import com.rodrigo.deeplarva.modules.services.BoxDetectionServices
-import com.rodrigo.deeplarva.modules.services.PicturesServices
+import com.rodrigo.deeplarva.modules.prediction.BackgroundTaskPredict
+import com.rodrigo.deeplarva.infraestructure.services.BoxDetectionServices
+import com.rodrigo.deeplarva.infraestructure.services.PicturesServices
 import com.rodrigo.deeplarva.routes.activity.PicturesActivity
 import com.rodrigo.deeplarva.routes.broadcast.PredictionBroadcastSender
-import com.rodrigo.deeplarva.modules.tasks.BackgroundTaskPredict
 
 class PredictionService: Service() {
     private val TAG = "DEEP_LARVA::PredictionService"

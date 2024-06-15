@@ -1,15 +1,15 @@
-package com.rodrigo.deeplarva.modules.image
+package com.rodrigo.deeplarva.helpers.pictureInputHelper
 
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 
-class ImageHandler(private val activity: AppCompatActivity) {
+class PictureInputHelper(private val activity: AppCompatActivity) {
 
-    private val storage: PhotoByStorageHandler = PhotoByStorageHandler(activity)
-    private val cameraPro: PhotoByCameraProHandler = PhotoByCameraProHandler(activity)
+    private val storage: PictureByStorageHandler = PictureByStorageHandler(activity)
+    private val cameraPro: PictureByCameraProHandler = PictureByCameraProHandler(activity)
 
-    private var handlers = mutableListOf<IPhotoHandler>()
+    private var handlers = mutableListOf<IPictureReceiverHandler>()
 
     init {
         handlers.add(cameraPro)

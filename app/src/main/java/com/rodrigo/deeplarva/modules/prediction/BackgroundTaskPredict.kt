@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.tasks
+package com.rodrigo.deeplarva.modules.prediction
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,7 +7,6 @@ import android.os.Environment
 import androidx.annotation.RequiresApi
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.modules.prediction.Detect640x640
 import com.rodrigo.deeplarva.utils.BitmapUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

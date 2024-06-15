@@ -1,11 +1,11 @@
-package com.rodrigo.deeplarva.modules.image
+package com.rodrigo.deeplarva.helpers.pictureInputHelper
 
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
 
-class PhotoByStorageHandler(override val activity: Activity): IPhotoHandler {
+class PictureByStorageHandler(override val activity: Activity): IPictureReceiverHandler {
     private val REQUESTCODE = 101
     override fun launch(){
         val intent = Intent()

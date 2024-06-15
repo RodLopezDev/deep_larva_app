@@ -1,6 +1,5 @@
-package com.rodrigo.deeplarva.modules.services
+package com.rodrigo.deeplarva.infraestructure.services
 
-import android.graphics.Bitmap
 import com.rodrigo.deeplarva.domain.requests.SyncPictureRequest
 import com.rodrigo.deeplarva.domain.response.NewPictureResponse
 import com.rodrigo.deeplarva.modules.requests.RequestListener

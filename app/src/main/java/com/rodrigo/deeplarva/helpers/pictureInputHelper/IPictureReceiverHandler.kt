@@ -1,10 +1,10 @@
-package com.rodrigo.deeplarva.modules.image
+package com.rodrigo.deeplarva.helpers.pictureInputHelper
 
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 
-interface IPhotoHandler {
+interface IPictureReceiverHandler {
     val activity: Activity
 
     fun launch()

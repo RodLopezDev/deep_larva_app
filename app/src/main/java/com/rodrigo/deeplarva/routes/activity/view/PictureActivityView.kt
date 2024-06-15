@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.view.PictureListEntity
-import com.rodrigo.deeplarva.modules.image.ImageHandler
+import com.rodrigo.deeplarva.helpers.pictureInputHelper.PictureInputHelper
 import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
@@ -22,7 +22,7 @@ class PictureActivityView(
     private val binding: ActivityPicturesBinding,
     private val listener: IPictureViewListener
 ) {
-    private val handler = ImageHandler(activity)
+    private val handler = PictureInputHelper(activity)
     private var list: ListHandlerView<PictureListEntity> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, object:
         ListEventListener<PictureListEntity> {
         override fun onLongClick(item: PictureListEntity, position: Int) {

@@ -19,9 +19,9 @@ import com.rodrigo.deeplarva.domain.view.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.modules.requests.RequestListener
-import com.rodrigo.deeplarva.modules.services.BackendPictureServices
-import com.rodrigo.deeplarva.modules.services.BoxDetectionServices
-import com.rodrigo.deeplarva.modules.services.PicturesServices
+import com.rodrigo.deeplarva.infraestructure.services.BackendPictureServices
+import com.rodrigo.deeplarva.infraestructure.services.BoxDetectionServices
+import com.rodrigo.deeplarva.infraestructure.services.PicturesServices
 import com.rodrigo.deeplarva.routes.binder.IBoundService
 import com.rodrigo.deeplarva.ui.widget.progressDialog.ProgressDialog
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
@@ -29,7 +29,7 @@ import com.rodrigo.deeplarva.routes.activity.observables.PictureActivityViewMode
 import com.rodrigo.deeplarva.routes.activity.view.IPictureViewListener
 import com.rodrigo.deeplarva.routes.activity.view.PictureActivityView
 import com.rodrigo.deeplarva.utils.BitmapUtils
-import com.rodrigo.deeplarva.utils.PreferencesHelper
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.image
+package com.rodrigo.deeplarva.helpers.pictureInputHelper
 
 import android.app.Activity
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.routes.activity.CameraActivity
 import com.rodrigo.deeplarva.utils.BitmapUtils
 
-class PhotoByCameraProHandler(override val activity: Activity): IPhotoHandler {
+class PictureByCameraProHandler(override val activity: Activity): IPictureReceiverHandler {
     private val REQUESTCODE = 1000
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
     override fun launch() {

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.services
+package com.rodrigo.deeplarva.infraestructure.services
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.view.BitmapProcessingResult
