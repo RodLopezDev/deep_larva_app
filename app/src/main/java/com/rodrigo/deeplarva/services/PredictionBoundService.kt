@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
+import com.rodrigo.deeplarva.routes.service.PredictionService
 
 class PredictionBoundService(private val activity:AppCompatActivity, private val IBoundService: IBoundService) {
 

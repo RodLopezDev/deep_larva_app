@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes
+package com.rodrigo.deeplarva.routes.activity
 
 import android.Manifest
 import android.content.Intent

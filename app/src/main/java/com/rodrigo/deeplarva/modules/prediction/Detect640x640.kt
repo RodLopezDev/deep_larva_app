@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ml
+package com.rodrigo.deeplarva.modules.prediction
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -7,16 +7,12 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
-import android.os.CountDownTimer
 import android.widget.ImageView
 import android.widget.TextView
 
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.ml.DetectSortedAugmentedXtraHistFloat32Yolov8n
 import org.tensorflow.lite.support.image.ImageProcessor
-import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import java.time.Duration
 import java.time.Instant

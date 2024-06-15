@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.widget.Toast
 import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.routes.CameraActivity
+import com.rodrigo.deeplarva.routes.activity.CameraActivity
 import com.rodrigo.deeplarva.utils.BitmapUtils
 
 class PhotoByCameraProHandler(override val activity: Activity): IPhotoHandler {

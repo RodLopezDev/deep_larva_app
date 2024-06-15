@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes
+package com.rodrigo.deeplarva.routes.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import com.rodrigo.deeplarva.services.IBoundService
 
 import com.rodrigo.deeplarva.services.PredictionBoundService
 import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
-import com.rodrigo.deeplarva.services.PredictionService
+import com.rodrigo.deeplarva.routes.service.PredictionService
 import com.rodrigo.deeplarva.services.ServiceChangesListener
 
 open class BoundedActivity(): AppCompatActivity(), ServiceChangesListener, IBoundService {

@@ -19,6 +19,7 @@ import com.rodrigo.deeplarva.domain.view.BitmapProcessingResult
 import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.modules.requests.RequestListener
+import com.rodrigo.deeplarva.routes.activity.BoundedActivity
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
 import com.rodrigo.deeplarva.routes.services.BackendPictureServices
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.services
+package com.rodrigo.deeplarva.routes.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -21,6 +21,7 @@ import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.routes.PicturesActivity
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
+import com.rodrigo.deeplarva.services.PredictionBroadcastSender
 import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
 
 class PredictionService: Service() {
