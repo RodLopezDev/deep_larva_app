@@ -1,7 +1,7 @@
 package com.rodrigo.deeplarva.modules.requests
 
 import android.util.Log
-import com.rodrigo.deeplarva.domain.Constants
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
