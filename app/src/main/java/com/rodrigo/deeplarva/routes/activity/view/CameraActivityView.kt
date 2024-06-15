@@ -39,8 +39,8 @@ class CameraActivityView(
     fun initializeCommandControl(listener: CameraActivityViewListener, cameraCharacteristic: CameraCharacteristic) {
         this.cameraCharacteristic = cameraCharacteristic
 
-        setISOText(100, cameraCharacteristic!!.isoRange.upper)
-        setSpeedText(100, cameraCharacteristic!!.speedRange.upper)
+        setISOText(100, cameraCharacteristic!!.getIsoRangeUpper())
+        setSpeedText(100, cameraCharacteristic!!.getSpeedRangeUpper())
 
         sbISO.progress = 100
         sbSpeed.progress = 100
@@ -87,27 +87,27 @@ class CameraActivityView(
     }
 
     private fun getISOConverted(value: Int): Int {
-        val min = cameraCharacteristic!!.isoRange.lower
-        val max = cameraCharacteristic!!.isoRange.upper
+        val min = cameraCharacteristic!!.getIsoRangeLower()
+        val max = cameraCharacteristic!!.getIsoRangeUpper()
         return min + (value * (max - min) / 100)
     }
 
     private fun getSpeedConverted(value: Int): Long {
-        val min = cameraCharacteristic!!.speedRange.lower
-        val max = cameraCharacteristic!!.speedRange.upper
+        val min = cameraCharacteristic!!.getSpeedRangeLower()
+        val max = cameraCharacteristic!!.getSpeedRangeUpper()
         return min + (value * (max - min) / 100)
     }
 
     private fun setISOText(percentage: Int, value: Int) {
-        val min = cameraCharacteristic!!.isoRange.lower
-        val max = cameraCharacteristic!!.isoRange.upper
+        val min = cameraCharacteristic!!.getIsoRangeLower()
+        val max = cameraCharacteristic!!.getIsoRangeUpper()
 
         tvISO.text = "[$min-$max] ISO: $value, $percentage%"
     }
 
     private fun setSpeedText(percentage: Int, value: Long) {
-        val min = cameraCharacteristic!!.speedRange.lower
-        val max = cameraCharacteristic!!.speedRange.upper
+        val min = cameraCharacteristic!!.getSpeedRangeLower()
+        val max = cameraCharacteristic!!.getIsoRangeUpper()
         tvSpeed.text = "[$min-$max] Speed: $value, $percentage%"
     }
 

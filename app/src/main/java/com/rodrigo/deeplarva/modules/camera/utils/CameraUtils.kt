@@ -18,7 +18,7 @@ class CameraUtils {
 //            val defaultIso = isoRange?.upper ?: 0
 //            val defaultExposure = exposureRange?.upper ?: 0
 
-            return CameraCharacteristic(largest, isoRange!!, speedRange!!)
+            return CameraCharacteristic(largest, isoRange, speedRange)
         }
     }
 }

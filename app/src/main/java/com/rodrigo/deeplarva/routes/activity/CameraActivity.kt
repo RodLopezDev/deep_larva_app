@@ -83,7 +83,8 @@ class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityView
     }
 
     override fun onDetectCamera(cameraCharacteristics: CameraCharacteristics) {
-        view.initializeCommandControl(this, CameraUtils.getCameraCharacteristic(cameraCharacteristics))
+        val characteristics = CameraUtils.getCameraCharacteristic(cameraCharacteristics)
+        view.initializeCommandControl(this, characteristics)
     }
 
     override fun onChangeISO(exposure: Int) {
