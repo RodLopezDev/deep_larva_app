@@ -2,10 +2,6 @@ package com.rodrigo.deeplarva.domain.view
 
 import com.rodrigo.deeplarva.domain.entity.Picture
 
-data class ProcessingState (
-    var isProcessing: Boolean = false
-)
-
 data class PictureListEntity (
     var picture: Picture,
     val state: ProcessingState? = null

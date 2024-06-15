@@ -6,29 +6,27 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
+import com.rodrigo.deeplarva.services.IBoundService
 
 import com.rodrigo.deeplarva.services.PredictionBoundService
 import com.rodrigo.deeplarva.services.PredictionBroadcastReceiver
 import com.rodrigo.deeplarva.services.PredictionService
 import com.rodrigo.deeplarva.services.ServiceChangesListener
 
-open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
+open class BoundedActivity(): AppCompatActivity(), ServiceChangesListener, IBoundService {
 
     private var receiver = PredictionBroadcastReceiver(this)
-    private var boundService = PredictionBoundService(this)
+    private var boundService = PredictionBoundService(this, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        receiver.register { pictureId, percentaje -> run {
-            when (percentaje) {
+        receiver.register { pictureId, percentage -> run {
+            when (percentage) {
                 0 -> {
                     onStartService(pictureId)
                 }
                 100 -> {
                     onEndService()
-                }
-                else -> {
-//                    updateServiceValue(it)
                 }
             }
         }}
@@ -37,6 +35,13 @@ open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
     override fun onStart() {
         super.onStart()
         boundService.bind()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!boundService.isBounded()) {
+            boundService.bind()
+        }
     }
 
     override fun onStop() {
@@ -50,27 +55,26 @@ open class BoundedActivity: AppCompatActivity(), ServiceChangesListener {
     }
 
     protected fun launchService(picture: Picture){
+        if(boundService.isBounded() && this.hasPictureId() != null) {
+            Toast.makeText(this@BoundedActivity, "Service running", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         var intent = Intent(applicationContext, PredictionService::class.java)
         intent.putExtra("pictureId", picture.id)
         Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_STARTED, Toast.LENGTH_SHORT).show()
         startService(intent)
     }
 
-    protected fun isServiceRunning(): Boolean {
-        return boundService.isRunning()
+    protected fun hasPictureId(): Long? {
+        return boundService.hasPictureId()
     }
 
-    protected fun isServiceBounded(): Boolean {
-        return boundService.isBounded()
-    }
+    override fun onBindToService() {}
 
-//    protected fun updateServiceValue(percentage: Int) {
-//
-//    }
+    override fun onUnBindToService() {}
 
-    override fun onStartService(pictureId: Long) {
-    }
+    override fun onStartService(pictureId: Long) {}
 
-    override fun onEndService() {
-    }
+    override fun onEndService() {}
 }

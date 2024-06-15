@@ -1,15 +1,12 @@
-package com.rodrigo.deeplarva.infraestructure.repository
+package com.rodrigo.deeplarva.infraestructure.internal.repository
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.rodrigo.deeplarva.domain.entity.BoxDetection
-import com.rodrigo.deeplarva.domain.entity.Picture
 
 @Dao
 interface BoxDetectionDAO {
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
     @Insert
     fun insert(box: BoxDetection)
 

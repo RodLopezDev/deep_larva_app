@@ -3,7 +3,6 @@ package com.rodrigo.deeplarva.routes
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -17,8 +16,8 @@ import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.view.BitmapProcessingResult
-import com.rodrigo.deeplarva.infraestructure.DbBuilder
-import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
+import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
+import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.modules.requests.RequestListener
 import com.rodrigo.deeplarva.routes.observables.PictureActivityViewModel
 import com.rodrigo.deeplarva.routes.services.BackendPictureServices
@@ -26,6 +25,7 @@ import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.routes.view.IPictureViewListener
 import com.rodrigo.deeplarva.routes.view.PictureActivityView
+import com.rodrigo.deeplarva.services.IBoundService
 import com.rodrigo.deeplarva.ui.ProgressDialog
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.utils.BitmapUtils
@@ -36,7 +36,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PicturesActivity: BoundedActivity(), IPictureViewListener  {
+class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService  {
     private lateinit var view: PictureActivityView
     private lateinit var binding: ActivityPicturesBinding
 
@@ -66,8 +66,6 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
                 }
             })
         }
-
-        loadPictures()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,9 +87,22 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("", "")
+    override fun onBindToService() {
+        super.onBindToService()
+        load()
+    }
+
+    private fun load() {
+        if(this.hasPictureId() != null) {
+            UseCaseLoadPicturesProcessesRunning(pictureService)
+                .execute(this.hasPictureId()!!) {pictures -> run {
+                    viewModel.updatePictures(pictures)
+                }}
+            return
+        }
+        UseCaseLoadPictures(pictureService).execute {
+            viewModel.updatePictures(it)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -122,7 +133,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
             val okResults = results.filterNotNull()
             withContext(Dispatchers.Main) {
                 pictureService.saveBulk(deviceId, okResults) {
-                    loadPictures()
+                    load()
                     runOnUiThread {
                         dialog.dismiss()
                     }
@@ -142,25 +153,17 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
 
     override fun onEndService() {
         super.onEndService()
-        loadPictures()
+        load()
     }
 
     override fun onStartService(pictureId: Long) {
         super.onStartService(pictureId)
-        UseCaseLoadPicturesProcessesRunning(pictureService).execute(pictureId) {
-            viewModel.updatePictures(it)
-        }
+        load()
     }
 
     override fun onRemovePicture(picture: Picture) {
         pictureService.remove(picture) {
-            loadPictures()
-        }
-    }
-
-    private fun loadPictures() {
-        UseCaseLoadPictures(pictureService).execute {
-            viewModel.updatePictures(it)
+            load()
         }
     }
 
@@ -185,7 +188,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener  {
                 override fun onComplete(result: String) {
                     this@PicturesActivity.runOnUiThread {
                         sync()
-                        loadPictures()
+                        load()
                         Toast.makeText(this@PicturesActivity, "Se cargó una muestras", Toast.LENGTH_SHORT).show()
                     }
                 }

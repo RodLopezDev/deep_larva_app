@@ -7,23 +7,25 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
 
-class PredictionBoundService(private val activity:AppCompatActivity) {
+class PredictionBoundService(private val activity:AppCompatActivity, private val IBoundService: IBoundService) {
 
     private lateinit var predictionService: PredictionService
     private var mBound: Boolean = false
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as PredictionService.LocalBinder
+            val binder = service as PredictionService.PredictionServiceBinder
             predictionService = binder.getService()
-            
             mBound = true
+            IBoundService.onBindToService()
         }
+
         override fun onServiceDisconnected(arg0: ComponentName) {
             mBound = false
+            IBoundService.onUnBindToService()
         }
     }
-    
+
     fun bind() {
         Intent(activity, PredictionService::class.java).also { intent ->
             activity.bindService(intent, connection, Context.BIND_AUTO_CREATE)
@@ -31,14 +33,16 @@ class PredictionBoundService(private val activity:AppCompatActivity) {
     }
 
     fun unbind() {
+        if (!mBound) return
         activity.unbindService(connection)
         mBound = false
     }
 
-    fun isRunning(): Boolean {
-        return predictionService.isRunning
+    fun hasPictureId(): Long? {
+        return predictionService.pictureId
     }
 
+    // This works jut after ServiceConnection.onServiceConnected have been executed
     fun isBounded (): Boolean {
         return mBound
     }

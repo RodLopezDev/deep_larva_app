@@ -1,8 +1,7 @@
 package com.rodrigo.deeplarva.routes.services
 
 import com.rodrigo.deeplarva.domain.entity.BoxDetection
-import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
+import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

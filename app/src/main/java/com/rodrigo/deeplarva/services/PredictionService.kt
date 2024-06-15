@@ -16,19 +16,19 @@ import androidx.core.app.NotificationCompat
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.infraestructure.DbBuilder
-import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
+import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
+import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.routes.PicturesActivity
 import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
 import com.rodrigo.deeplarva.routes.services.PicturesServices
 import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
 
 class PredictionService: Service() {
-
     private val TAG = "DEEP_LARVA::PredictionService"
 
-    var isRunning = false
-    private val binder = LocalBinder()
+    var pictureId: Long? = null
+
+    private val binder = PredictionServiceBinder()
     private val sender = PredictionBroadcastSender(this)
 
     private var backgroundTask = BackgroundTaskPredict(this)
@@ -36,10 +36,6 @@ class PredictionService: Service() {
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
     private lateinit var boxDetectionServices: BoxDetectionServices
-
-    override fun onBind(intent: Intent?): IBinder? {
-        return binder
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -52,6 +48,17 @@ class PredictionService: Service() {
         boxDetectionServices = BoxDetectionServices(db)
     }
 
+    override fun onBind(intent: Intent?): IBinder? {
+        return binder
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "Service Destroyed")
+        pictureId = null
+        stopForeground(STOP_FOREGROUND_REMOVE)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val pictureId = intent!!.getLongExtra("pictureId", 0) ?: 0
@@ -59,13 +66,13 @@ class PredictionService: Service() {
             this.onDestroy()
             return START_STICKY
         }
-        if(isRunning){
+        if(this.pictureId != null){
             this.onDestroy()
             return START_STICKY
         }
 
         Log.d(TAG, "Service Started")
-        isRunning = true
+        this.pictureId = pictureId
         Toast.makeText(this, "$pictureId", Toast.LENGTH_SHORT).show()
         val notificationIntent = Intent(this, PicturesActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
@@ -89,24 +96,21 @@ class PredictionService: Service() {
         if(backgroundTask.isProcessing){
             return
         }
-        pictureService.findOne(pictureId) {
-                picture ->
-            if (picture != null){
-                sender.notify(pictureId, 0)
-                backgroundTask.predictBatchCOROUTINE(
-                    pictureId,
-                    listOf(picture),
-                    ::eventUpdatePredictionProgress,
-                    ::eventEntityPredictionProgress,
-                    ::eventFinishPrediction
-                )
-            } else {
+        pictureService.findOne(pictureId) { picture ->
+            if (picture == null){
                 eventFinishPrediction(pictureId)
+                return@findOne
             }
+            sender.notify(pictureId, 0)
+            backgroundTask.predictBatchCOROUTINE(
+                pictureId,
+                listOf(picture),
+                ::eventUpdatePredictionProgress,
+                ::eventEntityPredictionProgress,
+                ::eventFinishPrediction
+            )
         }
     }
-
-
 
     private fun eventUpdatePredictionProgress(pictureId: Long, status: Int) {
         if(status == 100) return
@@ -140,17 +144,8 @@ class PredictionService: Service() {
 
     private fun eventFinishPrediction(pictureId: Long) {
         sender.notify(pictureId, 100)
-        this.onDestroy()
+        this@PredictionService.onDestroy()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "Service Destroyed")
-
-        isRunning = false
-        stopForeground(STOP_FOREGROUND_REMOVE)
-    }
-    
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -163,8 +158,7 @@ class PredictionService: Service() {
         }
     }
 
-
-    inner class LocalBinder : Binder() {
+    inner class PredictionServiceBinder : Binder() {
         fun getService(): PredictionService = this@PredictionService
     }
 }

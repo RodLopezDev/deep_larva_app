@@ -1,11 +1,9 @@
-package com.rodrigo.deeplarva.infraestructure
+package com.rodrigo.deeplarva.infraestructure.internal.driver
 
-import androidx.room.Room
 import android.content.Context
 import androidx.annotation.NonNull
+import androidx.room.Room
 import com.rodrigo.deeplarva.application.utils.Constants
-
-import com.rodrigo.deeplarva.infraestructure.driver.AppDatabase
 
 class DbBuilder {
     companion object {

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.infraestructure.repository
+package com.rodrigo.deeplarva.infraestructure.internal.repository
 
 import androidx.room.Dao
 import androidx.room.Delete
