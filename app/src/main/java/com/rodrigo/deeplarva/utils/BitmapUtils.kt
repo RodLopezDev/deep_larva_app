@@ -38,5 +38,9 @@ class BitmapUtils {
             }
             return null
         }
+        fun scale (originalBitmap: Bitmap, size: Int = 128): Bitmap {
+            var factor = originalBitmap.width / originalBitmap.height.toFloat()
+            return Bitmap.createScaledBitmap(originalBitmap, size, (size / factor).toInt(), true)
+        }
     }
 }

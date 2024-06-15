@@ -3,16 +3,16 @@ package com.rodrigo.deeplarva.application.utils
 import android.Manifest
 import android.os.Build
 import com.rodrigo.deeplarva.BuildConfig
-import com.rodrigo.deeplarva.utils.Colors
+import com.rodrigo.deeplarva.utils.ColorUtils
 
 class Constants {
     companion object {
         const val SERVICE_BASE_URL = BuildConfig.SERVER_URL
         const val SERVICE_API_KEY = BuildConfig.SERVER_API_KEY
 
-        val OPACITY_GREEN = Colors.green(90)
-        val OPACITY_RED = Colors.red(90)
-        val GREEN_SYNC = Colors.green(40)
+        val OPACITY_GREEN = ColorUtils.green(90)
+        val OPACITY_RED = ColorUtils.red(90)
+        val GREEN_SYNC = ColorUtils.green(40)
 
         const val DB_NAME ="deep-larva-db"
 

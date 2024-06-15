@@ -12,12 +12,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.routes.camera.CameraPro
-import com.rodrigo.deeplarva.routes.camera.interfaces.CameraProListener
-import com.rodrigo.deeplarva.routes.camera.utils.CameraUtils
-import com.rodrigo.deeplarva.routes.view.CameraActivityView
-import com.rodrigo.deeplarva.routes.camera.interfaces.CameraActivityViewListener
-import com.rodrigo.deeplarva.utils.Files
+import com.rodrigo.deeplarva.modules.camera.CameraPro
+import com.rodrigo.deeplarva.modules.camera.interfaces.CameraActivityViewListener
+import com.rodrigo.deeplarva.modules.camera.interfaces.CameraProListener
+import com.rodrigo.deeplarva.modules.camera.utils.CameraUtils
+import com.rodrigo.deeplarva.ui.view.CameraActivityView
+import com.rodrigo.deeplarva.utils.FileUtils
 import java.io.IOException
 
 class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityViewListener {
@@ -58,7 +58,7 @@ class CameraActivity: AppCompatActivity(), CameraProListener, CameraActivityView
     override fun onReceivePicture(image: Image) {
         val fileName = "${System.currentTimeMillis()}-RUNNING-IDENTIFIER"
         try {
-            val file = Files(this).SaveOnStorage(image, "/deep-larva/", fileName)
+            val file = FileUtils(this).saveOnStorage(image, "/deep-larva/", fileName)
             val filePath = file.absolutePath
 
             photos.add(filePath)

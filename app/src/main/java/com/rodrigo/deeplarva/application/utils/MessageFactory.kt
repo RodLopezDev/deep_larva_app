@@ -1,6 +1,6 @@
 package com.rodrigo.deeplarva.application.utils
 
-import com.rodrigo.deeplarva.utils.Time
+import com.rodrigo.deeplarva.utils.TimeUtils
 
 class MessageFactory {
     companion object {
@@ -13,7 +13,7 @@ class MessageFactory {
         }
 
         fun getPictureResults(hasResult: Boolean, count: Int, time: Long): String {
-            return "Conteo: ${count}\nTiempo: ${Time.formatDuration(time)}\nPred: ${if(hasResult){"SI"}else{"NO"}}"
+            return "Conteo: ${count}\nTiempo: ${TimeUtils.formatDuration(time)}\nPred: ${if(hasResult){"SI"}else{"NO"}}"
         }
     }
 }

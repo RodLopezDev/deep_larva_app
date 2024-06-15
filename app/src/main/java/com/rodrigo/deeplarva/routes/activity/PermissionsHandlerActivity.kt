@@ -10,7 +10,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.routes.PicturesActivity
 
 class PermissionsHandlerActivity: AppCompatActivity() {
 

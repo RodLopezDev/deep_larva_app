@@ -18,10 +18,10 @@ import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
-import com.rodrigo.deeplarva.routes.PicturesActivity
-import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
-import com.rodrigo.deeplarva.routes.services.PicturesServices
-import com.rodrigo.deeplarva.services.PredictionBroadcastSender
+import com.rodrigo.deeplarva.modules.services.BoxDetectionServices
+import com.rodrigo.deeplarva.modules.services.PicturesServices
+import com.rodrigo.deeplarva.routes.activity.PicturesActivity
+import com.rodrigo.deeplarva.routes.broadcast.PredictionBroadcastSender
 import com.rodrigo.deeplarva.ui.tasks.BackgroundTaskPredict
 
 class PredictionService: Service() {

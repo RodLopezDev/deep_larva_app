@@ -16,7 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.view.PictureListEntity
-import com.rodrigo.deeplarva.utils.Time
+import com.rodrigo.deeplarva.utils.TimeUtils
 
 class PictureAdapterList (
     context: Context,
@@ -43,9 +43,9 @@ class PictureAdapterList (
             itemView.setBackgroundColor(Constants.GREEN_SYNC)
         }
 
-        tvDatetime.text = Time.longFormatTimestamp(picture.timestamp)
+        tvDatetime.text = TimeUtils.longFormatTimestamp(picture.timestamp)
         tvDuration.text = if (picture.hasMetadata)
-            "Tiempo: ${Time.formatDuration(picture.time)}"
+            "Tiempo: ${TimeUtils.formatDuration(picture.time)}"
         else "Tiempo: 00:00:00"
 
         if(llProcessedView.childCount == 0) {

@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
-import com.rodrigo.deeplarva.routes.services.BoxDetectionServices
-import com.rodrigo.deeplarva.routes.services.PicturesServices
+import com.rodrigo.deeplarva.modules.services.BoxDetectionServices
+import com.rodrigo.deeplarva.modules.services.PicturesServices
 import kotlin.properties.Delegates
 
 class PictureDetailActivity: AppCompatActivity() {
