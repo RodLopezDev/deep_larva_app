@@ -29,7 +29,9 @@ class UseCaseSyncPicture(
                 }
                 override fun onComplete(response: NewPictureResponse) {
                     if(response.circuitBreak == true){
-                        listener.onComplete("")
+                        picturesServices.update(picture.copy(syncWithCloud = true)) {
+                            listener.onComplete("")
+                        }
                         return
                     }
                     backendPictureServices.uploadFile(response, originalBitmap, object: RequestListener<Boolean> {
