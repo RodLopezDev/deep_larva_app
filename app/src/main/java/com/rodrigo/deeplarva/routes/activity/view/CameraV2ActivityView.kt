@@ -2,6 +2,7 @@ package com.rodrigo.deeplarva.routes.activity.view
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.rodrigo.deeplarva.databinding.ActivityCameraV2Binding
 import com.rodrigo.deeplarva.utils.Dimensions
 import kotlin.math.abs
@@ -22,6 +23,9 @@ class CameraV2ActivityView(
             val newDim = Dimensions(activity).dpToPx(if(showControl) { 52F } else { 0F })
             binding.llCommandControl.translationX = newDim
             showControl = !showControl
+        }
+        binding.btnClose.setOnClickListener {
+            listener.onClose()
         }
         binding.btnDownExposure.setOnClickListener {
             val minValue = listener.getMinExposure()
@@ -50,5 +54,8 @@ class CameraV2ActivityView(
     }
     fun getPreview(): PreviewView {
         return binding.viewFinder
+    }
+    fun getLinearLayout(): ConstraintLayout {
+        return binding.clMain
     }
 }

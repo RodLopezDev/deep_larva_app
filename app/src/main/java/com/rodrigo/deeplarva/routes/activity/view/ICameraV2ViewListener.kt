@@ -4,6 +4,7 @@ interface ICameraV2ViewListener {
     // Behavior of View
     fun onTakePicture()
     fun onUpdateExposure(value: Int)
+    fun onClose()
 
     // Functions for get values
     fun getMinExposure(): Int
