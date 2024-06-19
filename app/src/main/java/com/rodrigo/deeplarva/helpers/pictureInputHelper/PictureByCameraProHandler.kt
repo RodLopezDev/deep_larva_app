@@ -6,14 +6,14 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.widget.Toast
 import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.routes.activity.CameraActivity
+import com.rodrigo.deeplarva.routes.activity.CameraV2Activity
 import com.rodrigo.deeplarva.utils.BitmapUtils
 
 class PictureByCameraProHandler(override val activity: Activity): IPictureReceiverHandler {
     private val REQUESTCODE = 1000
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
     override fun launch() {
-        val intent = Intent(activity, CameraActivity::class.java)
+        val intent = Intent(activity, CameraV2Activity::class.java)
         activity.startActivityForResult(intent, REQUESTCODE)
     }
 
@@ -25,7 +25,7 @@ class PictureByCameraProHandler(override val activity: Activity): IPictureReceiv
             try  {
                 BitmapUtils.getBitmapFromPath(it)
             } catch (ex: Exception) {
-            null
+                null
             }
         }
 

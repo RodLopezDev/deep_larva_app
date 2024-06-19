@@ -18,7 +18,7 @@ class Constants {
 
         const val FILE_PROVIDER = "com.rodrigo.deeplarva.fileProvider"
 
-        const val IMAGE_EXTENSION =".png"
+        const val IMAGE_EXTENSION =".jpg"
 
         const val INTENT_PICTURE_DETAIL = "pictureId"
         const val INTENT_CAMERA_PRO_RESULT = "data"

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/activityBg"
     tools:context=".routes.activity.PicturesActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,10 +17,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+            android:background="@color/activityBg"
             android:theme="@style/Theme.App.Dark"
             app:popupTheme="@style/Theme.DeepLarva.PopupOverlay"
-            app:titleTextColor="@color/black" />
+            app:titleTextColor="@color/actionbarText" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -38,7 +39,9 @@
             <ListView
                 android:id="@+id/lv_pictures"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:divider="@color/listDivider"
+                android:dividerHeight="0.5dp"/>
 
             <TextView
                 android:id="@+id/tv_emptyPicturesList"
@@ -47,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:padding="8dp"
                 android:gravity="center"
+                android:textColor="@color/simpleText"
                 android:textSize="16dp"
                 android:visibility="invisible"
                 android:layout_height="wrap_content" />
@@ -59,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
-        android:background="@color/gray200"
+        android:background="@color/dialogBg"
         android:orientation="horizontal"
     >
 
@@ -69,12 +73,12 @@
             android:layout_weight="1"
             android:padding="4dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnLoadPic"
+                android:src="@drawable/ic_menu_gallery"
+                android:background="@color/primary"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Cargar imagen"
-                />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
@@ -84,11 +88,12 @@
             android:layout_weight="1"
             android:padding="4dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnTakePicture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Capturar"
+                android:src="@drawable/ic_menu_camera"
+                android:background="@color/primary"
                 />
 
         </LinearLayout>

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.binder
+package com.rodrigo.deeplarva.routes.service.binder
 
 import android.content.ComponentName
 import android.content.Context

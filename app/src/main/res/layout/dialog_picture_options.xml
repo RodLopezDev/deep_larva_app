@@ -3,12 +3,14 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/dialogBg">
 
     <Button
         android:id="@+id/btnDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete" />
+        android:text="Delete"
+        android:textColor="@color/simpleText"/>
 
 </LinearLayout>

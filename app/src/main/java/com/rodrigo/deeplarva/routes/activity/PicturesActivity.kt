@@ -22,7 +22,7 @@ import com.rodrigo.deeplarva.modules.requests.RequestListener
 import com.rodrigo.deeplarva.infraestructure.services.BackendPictureServices
 import com.rodrigo.deeplarva.infraestructure.services.BoxDetectionServices
 import com.rodrigo.deeplarva.infraestructure.services.PicturesServices
-import com.rodrigo.deeplarva.routes.binder.IBoundService
+import com.rodrigo.deeplarva.routes.service.binder.IBoundService
 import com.rodrigo.deeplarva.ui.widget.progressDialog.ProgressDialog
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.routes.activity.observables.PictureActivityViewModel

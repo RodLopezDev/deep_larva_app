@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.utils.Constants
@@ -116,7 +115,7 @@ class PictureAdapterList (
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 textSize = 12f
-                setTextColor(resources.getColor(android.R.color.black, null))
+                setTextColor(resources.getColor(R.color.listTitle, null))
                 gravity = Gravity.RIGHT
                 text = "Total"
             }
@@ -130,7 +129,7 @@ class PictureAdapterList (
                 textSize = 32f // textSize in sp, not dp
 //                setLineHeight(40) // lineHeight in pixels
 //                setTextColor(ContextCompat.getColor(context, android.R.color.black))
-                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                setTextColor(resources.getColor(R.color.listTitle, null))
 //                setTextColor(resources.getColor(R.color.purple_200, null))
                 gravity = Gravity.RIGHT
                 text = count.toString()

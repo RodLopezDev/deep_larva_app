@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.broadcast
+package com.rodrigo.deeplarva.routes.service.broadcast
 
 import android.app.Service
 import android.content.Intent
