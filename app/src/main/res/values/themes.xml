@@ -8,7 +8,6 @@
     <style name="Theme.DeepLarva.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.DeepLarva.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-
     <style name="CustomFloatingActionButton" parent="Widget.Design.FloatingActionButton">
         <item name="backgroundTint">@color/white</item>
         <!--        <item name="fabSize">mini</item>-->

@@ -13,6 +13,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.rodrigo.deeplarva.application.utils.Constants
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -96,7 +97,7 @@ class CameraV2Pro(private val activity: AppCompatActivity, private val listener:
     }
     fun takePicture() {
         val dir = getOutputDirectoryV2()
-        val photoFile = File(dir, "${listener.getPictureFileName()}.jpg")
+        val photoFile = File(dir, "${listener.getPictureFileName()}${Constants.IMAGE_EXTENSION}")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         imageCapture?.takePicture(

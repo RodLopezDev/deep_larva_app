@@ -50,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:padding="8dp"
                 android:gravity="center"
+                android:textColor="@color/simpleText"
                 android:textSize="16dp"
                 android:visibility="invisible"
                 android:layout_height="wrap_content" />
@@ -62,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
-        android:background="@color/gray200"
+        android:background="@color/dialogBg"
         android:orientation="horizontal"
     >
 

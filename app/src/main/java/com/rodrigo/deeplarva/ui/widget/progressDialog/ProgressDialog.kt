@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import com.rodrigo.deeplarva.R
 
 class ProgressDialog {
     private var progressDialog: AlertDialog? = null
@@ -17,6 +18,7 @@ class ProgressDialog {
         layout.orientation = LinearLayout.VERTICAL
         layout.setPadding(50, 50, 50, 50)
         layout.addView(progressBar)
+        layout.setBackgroundColor(context.getColor(R.color.dialogBg))
 
         builder.setView(layout)
 
