@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/activityBg"
     tools:context=".routes.activity.PicturesActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,10 +17,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+            android:background="@color/activityBg"
             android:theme="@style/Theme.App.Dark"
             app:popupTheme="@style/Theme.DeepLarva.PopupOverlay"
-            app:titleTextColor="@color/black" />
+            app:titleTextColor="@color/actionbarText" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -38,7 +39,9 @@
             <ListView
                 android:id="@+id/lv_pictures"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:divider="@color/listDivider"
+                android:dividerHeight="0.5dp"/>
 
             <TextView
                 android:id="@+id/tv_emptyPicturesList"

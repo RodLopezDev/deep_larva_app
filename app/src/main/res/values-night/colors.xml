@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="activityBg">@color/black</color>
+    <color name="actionbarBg">@color/black</color>
+    <color name="actionbarText">@color/white</color>
+
+    <color name="dialogBg">@color/gray800</color>
+    <color name="simpleText">@color/gray400</color>
+
+    <color name="listDivider">@color/gray700</color>
+    <color name="listTitle">@color/gray400</color>
+</resources>

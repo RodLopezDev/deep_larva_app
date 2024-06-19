@@ -17,7 +17,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="24dp"
-                android:textColor="@color/gray800"
+                android:textColor="@color/listTitle"
                 android:textStyle="bold"
                 android:hint="2024-05-04 10:00:00" />
 
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/listTitle"
                 android:hint="Tiempo: 00:03:00" />
 
     </LinearLayout>
