@@ -69,12 +69,12 @@
             android:layout_weight="1"
             android:padding="4dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnLoadPic"
+                android:src="@drawable/ic_menu_gallery"
+                android:background="@color/primary"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Cargar imagen"
-                />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
@@ -84,11 +84,12 @@
             android:layout_weight="1"
             android:padding="4dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnTakePicture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Capturar"
+                android:src="@drawable/ic_menu_camera"
+                android:background="@color/primary"
                 />
 
         </LinearLayout>

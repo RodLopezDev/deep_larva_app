@@ -59,7 +59,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/rounded_corner_camera_command"
             android:orientation="vertical">
 
             <Button

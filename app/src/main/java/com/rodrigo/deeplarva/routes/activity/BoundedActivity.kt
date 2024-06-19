@@ -6,10 +6,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.routes.binder.IBoundService
+import com.rodrigo.deeplarva.routes.service.binder.IBoundService
 
-import com.rodrigo.deeplarva.routes.binder.PredictionBoundService
-import com.rodrigo.deeplarva.routes.broadcast.PredictionBroadcastReceiver
+import com.rodrigo.deeplarva.routes.service.binder.PredictionBoundService
+import com.rodrigo.deeplarva.routes.service.broadcast.PredictionBroadcastReceiver
 import com.rodrigo.deeplarva.routes.service.PredictionService
 import com.rodrigo.deeplarva.routes.service.ServiceChangesListener
 
