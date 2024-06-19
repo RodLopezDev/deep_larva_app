@@ -54,13 +54,13 @@ class CameraV2Activity: AppCompatActivity() {
             override fun getPreviewView(): PreviewView {
                 return view.getPreview()
             }
-            override fun onPictureReceived(internalUri: String, contentUri: String) {
+            override fun onPictureReceived(picturePath: String) {
                 val cl = view.getLinearLayout()
                 Snackbar.make(cl, "Imagen guardada con éxito", Snackbar.LENGTH_LONG).setAction("OK") {
                     cl.setBackgroundColor(Color.CYAN)
                 }.show()
 
-                pictures.add(internalUri)
+                pictures.add(picturePath)
                 onCloseView()
             }
             override fun onErrorPicture() {

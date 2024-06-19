@@ -6,6 +6,6 @@ interface ICameraV2ProListener {
     fun getFolderName(): String
     fun getPictureFileName(): String
     fun getPreviewView(): PreviewView
-    fun onPictureReceived(internalUri: String, contentUri: String)
+    fun onPictureReceived(picturePath: String)
     fun onErrorPicture()
 }

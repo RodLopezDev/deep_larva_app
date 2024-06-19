@@ -105,7 +105,7 @@ class CameraV2Pro(private val activity: AppCompatActivity, private val listener:
             object: ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val  savedUri = Uri.fromFile(photoFile)
-//
+//                  TO SAVE IN GALLERY: TO-DO Check if we need this
 //                    val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(savedUri.toFile().extension)
 //                    MediaScannerConnection.scanFile(
 //                        activity,
@@ -114,7 +114,7 @@ class CameraV2Pro(private val activity: AppCompatActivity, private val listener:
 //                    ){ _, uri ->
 //                        listener.onPictureReceived(savedUri.toString(), uri.toString())
 //                    }
-                    listener.onPictureReceived(savedUri.toString(), "")
+                    listener.onPictureReceived(savedUri.path.toString())
                 }
                 override fun onError(exception: ImageCaptureException) {
                     listener.onErrorPicture()
