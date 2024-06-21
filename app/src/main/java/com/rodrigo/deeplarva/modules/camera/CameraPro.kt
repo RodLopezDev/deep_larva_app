@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.camerav2
+package com.rodrigo.deeplarva.modules.camera
 
 import android.net.Uri
 import android.os.Environment
@@ -22,7 +22,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class CameraV2Pro(private val activity: AppCompatActivity, private val listener: ICameraV2ProListener) {
+class CameraPro(private val activity: AppCompatActivity, private val listener: ICameraProListener) {
     companion object{
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0

@@ -3,17 +3,17 @@ package com.rodrigo.deeplarva.routes.activity.view
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.rodrigo.deeplarva.databinding.ActivityCameraV2Binding
+import com.rodrigo.deeplarva.databinding.ActivityCameraBinding
 import com.rodrigo.deeplarva.utils.Dimensions
 import kotlin.math.abs
 
-class CameraV2ActivityView(
+class CameraActivityView(
     activity: AppCompatActivity,
-    private val listener: ICameraV2ViewListener
+    private val listener: ICameraViewListener
 ) {
     private var showControl = false
     private var exposure = listener.getDefaultExposure()
-    private val binding = ActivityCameraV2Binding.inflate(activity.layoutInflater)
+    private val binding = ActivityCameraBinding.inflate(activity.layoutInflater)
     init {
         activity.setContentView(binding.root)
         binding.cameraCaptureButton.setOnClickListener {

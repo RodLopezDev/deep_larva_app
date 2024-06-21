@@ -7,24 +7,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.modules.camerav2.CameraPermissionsManager
-import com.rodrigo.deeplarva.modules.camerav2.CameraV2Pro
-import com.rodrigo.deeplarva.modules.camerav2.ICameraPermissionsResult
-import com.rodrigo.deeplarva.modules.camerav2.ICameraV2ProListener
-import com.rodrigo.deeplarva.routes.activity.view.CameraV2ActivityView
-import com.rodrigo.deeplarva.routes.activity.view.ICameraV2ViewListener
+import com.rodrigo.deeplarva.modules.camera.CameraPermissionsManager
+import com.rodrigo.deeplarva.modules.camera.CameraPro
+import com.rodrigo.deeplarva.modules.camera.ICameraPermissionsResult
+import com.rodrigo.deeplarva.modules.camera.ICameraProListener
+import com.rodrigo.deeplarva.routes.activity.view.CameraActivityView
+import com.rodrigo.deeplarva.routes.activity.view.ICameraViewListener
 import java.util.UUID
 
-class CameraV2Activity: AppCompatActivity() {
+class CameraActivity: AppCompatActivity() {
 
     private val pictures = mutableListOf<String>()
-    private lateinit var cameraPro: CameraV2Pro
-    private lateinit var view: CameraV2ActivityView
+    private lateinit var cameraPro: CameraPro
+    private lateinit var view: CameraActivityView
     private lateinit var permissions: CameraPermissionsManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        view = CameraV2ActivityView(this, object: ICameraV2ViewListener {
+        view = CameraActivityView(this, object: ICameraViewListener {
             override fun onTakePicture() {
                 cameraPro.takePicture()
             }
@@ -44,7 +44,7 @@ class CameraV2Activity: AppCompatActivity() {
                 return 0
             }
         })
-        cameraPro = CameraV2Pro(this, object: ICameraV2ProListener {
+        cameraPro = CameraPro(this, object: ICameraProListener {
             override fun getFolderName(): String {
                 return "deep-larva"
             }
