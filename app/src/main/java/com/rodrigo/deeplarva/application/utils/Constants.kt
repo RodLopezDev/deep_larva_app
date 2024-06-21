@@ -31,6 +31,8 @@ class Constants {
         const val MESSAGE_SERVICE_STARTED = "Ejecutando conteo"
 
         const val SHARED_PREFERENCES_DEVICE_ID = "DEVICE-IDENTIFIER"
+        const val SHARED_PREFERENCES_CAMERA_WIDTH = "camera-width"
+        const val SHARED_PREFERENCES_CAMERA_HEIGHT = "camera-height"
 
         fun getPermissionsList (): List<String> {
             // REF: https://stackoverflow.com/questions/75628155/read-external-storage-permission-request-not-showing-on-emulator
