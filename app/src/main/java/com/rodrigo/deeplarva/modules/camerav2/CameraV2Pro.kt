@@ -14,6 +14,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.application.utils.Constants
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -28,6 +29,8 @@ class CameraV2Pro(private val activity: AppCompatActivity, private val listener:
     }
 
     private val lensFacing: Int = CameraSelector.LENS_FACING_BACK
+
+    private val preferences = PreferencesHelper(activity)
 
     private var preview: Preview? = null
     private var imageCapture: ImageCapture? = null
@@ -48,10 +51,22 @@ class CameraV2Pro(private val activity: AppCompatActivity, private val listener:
         cameraExecutor.shutdown()
     }
 
+    private fun getMetrics(): List<Int> {
+        val width = preferences.getInt(Constants.SHARED_PREFERENCES_CAMERA_WIDTH, 0)
+        val height = preferences.getInt(Constants.SHARED_PREFERENCES_CAMERA_HEIGHT, 0)
+        if(width == 0 || height == 0) {
+            val metrics = DisplayMetrics().also { listener.getPreviewView().display?.getRealMetrics(it) }
+            preferences.saveInt(Constants.SHARED_PREFERENCES_CAMERA_WIDTH, metrics.widthPixels)
+            preferences.saveInt(Constants.SHARED_PREFERENCES_CAMERA_HEIGHT, metrics.heightPixels)
+            return listOf(metrics.widthPixels, metrics.heightPixels)
+        }
+        return listOf(width, height)
+    }
+
     private fun bindCamera(isoPreDefined: Int? = null){
-        val metrics = DisplayMetrics().also { listener.getPreviewView().display.getRealMetrics(it) }
-        val screenAspectRatio = aspectRadio(metrics.widthPixels, metrics.heightPixels)
-        val rotation = listener.getPreviewView().display.rotation
+        val metrics = getMetrics()
+        val screenAspectRatio = aspectRadio(metrics[0], metrics[1])
+        val rotation = listener.getPreviewView().display?.rotation ?: 0
 
         val cameraProvider = cameraProvider ?: throw IllegalStateException("Fallo al iniciar la camara")
 
