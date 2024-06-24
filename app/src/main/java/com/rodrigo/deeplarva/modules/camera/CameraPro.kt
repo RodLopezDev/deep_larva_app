@@ -1,253 +1,154 @@
 package com.rodrigo.deeplarva.modules.camera
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.ImageFormat
-import android.graphics.Rect
-import android.graphics.SurfaceTexture
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
-import android.hardware.camera2.CameraMetadata
-import android.hardware.camera2.CaptureRequest
-import android.hardware.camera2.TotalCaptureResult
-import android.hardware.camera2.params.MeteringRectangle
-import android.media.ImageReader
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
-import android.view.Surface
-import android.view.TextureView
+import android.net.Uri
+import android.os.Environment
+import android.util.DisplayMetrics
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.rodrigo.deeplarva.modules.camera.interfaces.CameraProListener
+import com.rodrigo.deeplarva.application.utils.Constants
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
+import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
-class CameraPro(private val activity: AppCompatActivity, private val textureView: TextureView, private val listener: CameraProListener) {
-
-    private lateinit var imageReader: ImageReader
-    private lateinit var cameraDevice: CameraDevice
-    private lateinit var captureRequestBuilder: CaptureRequest.Builder
-    private lateinit var cameraCaptureSession: CameraCaptureSession
-    private lateinit var scaleGestureDetector: ScaleGestureDetector
-
-    private var currentZoomLevel = 1f
-    private var maxZoomLevel = 1f
-
-    init {
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), 1)
-        } else {
-            this.init()
-        }
-
-        // TODO: THIS JUST COPIED
-        scaleGestureDetector = ScaleGestureDetector(activity, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector): Boolean {
-                cameraDevice?.let {
-                    val scaleFactor = detector.scaleFactor
-                    currentZoomLevel = (currentZoomLevel * scaleFactor).coerceIn(1f, maxZoomLevel)
-                    val characteristics = (activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
-                        .getCameraCharacteristics(it.id)
-                    val maxZoom = characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM) ?: 1f
-                    maxZoomLevel = maxZoom
-                    val rect = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE) ?: return false
-                    val cropWidth = (rect.width() / currentZoomLevel).toInt()
-                    val cropHeight = (rect.height() / currentZoomLevel).toInt()
-                    val cropRect = Rect(
-                        rect.centerX() - cropWidth / 2,
-                        rect.centerY() - cropHeight / 2,
-                        rect.centerX() + cropWidth / 2,
-                        rect.centerY() + cropHeight / 2
-                    )
-                    captureRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, cropRect)
-                    updateCameraThread()
-                }
-                return true
-            }
-        })
+class CameraPro(private val activity: AppCompatActivity, private val listener: ICameraProListener) {
+    companion object{
+        private const val RATIO_4_3_VALUE = 4.0 / 3.0
+        private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
-    fun init() {
-        textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-                openCamera()
-            }
-            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
-            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
-            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean = true
-        }
+    private val lensFacing: Int = CameraSelector.LENS_FACING_BACK
 
-        textureView.setOnTouchListener { _, event ->
-            scaleGestureDetector.onTouchEvent(event)
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                focusOnTouch(event.x, event.y)
-            }
-            true
-        }
+    private val preferences = PreferencesHelper(activity)
+
+    private var preview: Preview? = null
+    private var imageCapture: ImageCapture? = null
+    private var cameraProvider: ProcessCameraProvider? = null
+
+    private lateinit var camera: Camera
+    private val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+
+    fun startCamera() {
+        val cameraProviderFinally = ProcessCameraProvider.getInstance(activity)
+        cameraProviderFinally.addListener(Runnable {
+            cameraProvider = cameraProviderFinally.get()
+            bindCamera()
+        }, ContextCompat.getMainExecutor(activity))
     }
 
-    private fun openCamera() {
-        val cameraManager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    fun offCamera() {
+        cameraExecutor.shutdown()
+    }
+
+    private fun getMetrics(): List<Int> {
+        val width = preferences.getInt(Constants.SHARED_PREFERENCES_CAMERA_WIDTH, 0)
+        val height = preferences.getInt(Constants.SHARED_PREFERENCES_CAMERA_HEIGHT, 0)
+        if(width == 0 || height == 0) {
+            val metrics = DisplayMetrics().also { listener.getPreviewView().display?.getRealMetrics(it) }
+            preferences.saveInt(Constants.SHARED_PREFERENCES_CAMERA_WIDTH, metrics.widthPixels)
+            preferences.saveInt(Constants.SHARED_PREFERENCES_CAMERA_HEIGHT, metrics.heightPixels)
+            return listOf(metrics.widthPixels, metrics.heightPixels)
+        }
+        return listOf(width, height)
+    }
+
+    private fun bindCamera(isoPreDefined: Int? = null){
+        val metrics = getMetrics()
+        val screenAspectRatio = aspectRadio(metrics[0], metrics[1])
+        val rotation = listener.getPreviewView().display?.rotation ?: 0
+
+        val cameraProvider = cameraProvider ?: throw IllegalStateException("Fallo al iniciar la camara")
+
+        val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+
+        preview = Preview.Builder()
+            .setTargetAspectRatio(screenAspectRatio)
+            .setTargetRotation(rotation)
+            .build()
+
+        imageCapture = ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .setTargetAspectRatio(screenAspectRatio)
+            .setTargetRotation(rotation)
+            .build()
+
+        cameraProvider.unbindAll()
         try {
-            val cameraId = cameraManager.cameraIdList[0]
-            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                return
-            }
-
-            val characteristics = cameraManager.getCameraCharacteristics(cameraId)
-            listener.onDetectCamera(characteristics)
-            cameraManager.openCamera(cameraId, stateCallback, null)
-        } catch (e: CameraAccessException) {
-            listener.onLogError("CameraPro.openCamera.CameraAccessException::${e.message}")
-            listener.onError()
+            camera = cameraProvider.bindToLifecycle(activity, cameraSelector, preview, imageCapture)
+            camera.cameraInfo.exposureState.exposureCompensationRange
+            updateISO(isoPreDefined)
+        } catch(exc: Exception) {
+            Log.e("CameraWildRunning", "Fallo al vincular la camara", exc)
         }
     }
-
-    private val stateCallback = object : CameraDevice.StateCallback() {
-        override fun onOpened(camera: CameraDevice) {
-            cameraDevice = camera
-            createCameraPreviewSession()
-            listener.onCameraLoaded()
+    private fun aspectRadio(width: Int, height: Int): Int{
+        val previewRatio = max(width, height).toDouble() / min(width, height)
+        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)){
+            return AspectRatio.RATIO_4_3
         }
-        override fun onDisconnected(camera: CameraDevice) {
-            camera.close()
-        }
-        override fun onError(camera: CameraDevice, error: Int) {
-            camera.close()
-            when (error) {
-                CameraDevice.StateCallback.ERROR_CAMERA_IN_USE -> {
-                    val message = "CameraPro.stateCallback.onError::ERROR_CAMERA_IN_USE"
-                    listener.onLogError(message)
-                }
-                CameraDevice.StateCallback.ERROR_MAX_CAMERAS_IN_USE -> {
-                    val message = "CameraPro.stateCallback.onError::ERROR_MAX_CAMERAS_IN_USE"
-                    listener.onLogError(message)
-                }
-                CameraDevice.StateCallback.ERROR_CAMERA_DISABLED -> {
-                    val message = "CameraPro.stateCallback.onError::ERROR_CAMERA_DISABLED"
-                    listener.onLogError(message)
-                }
-                CameraDevice.StateCallback.ERROR_CAMERA_DEVICE -> {
-                    val message = "CameraPro.stateCallback.onError::ERROR_CAMERA_DEVICE"
-                    listener.onLogError(message)
-                }
-                CameraDevice.StateCallback.ERROR_CAMERA_SERVICE -> {
-                    val message = "CameraPro.stateCallback.onError::ERROR_CAMERA_SERVICE"
-                    listener.onLogError(message)
-                }
-                else -> {
-                    val message = "CameraPro.stateCallback.onError::DEFAULT"
-                    listener.onLogError(message)
-                }
+        return AspectRatio.RATIO_16_9
+    }
+    fun updateISO(isoPreDefined: Int? = null) {
+        if(camera == null || preview == null) return
+        val exposureState = camera.cameraInfo.exposureState
+        if (exposureState.isExposureCompensationSupported) {
+            val range = exposureState.exposureCompensationRange
+            if (isoPreDefined != null && range.contains(isoPreDefined)) {
+                camera.cameraControl.setExposureCompensationIndex(isoPreDefined)
             }
         }
+        preview?.setSurfaceProvider(listener.getPreviewView().surfaceProvider)
     }
-
-    private fun createCameraPreviewSession() {
-        val texture = textureView.surfaceTexture!!
-        texture.setDefaultBufferSize(textureView.width, textureView.height)
-        val surface = Surface(texture)
-
-        captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-        captureRequestBuilder.addTarget(surface)
-
-        imageReader = ImageReader.newInstance(textureView.width, textureView.height, ImageFormat.JPEG, 1)
-        imageReader.setOnImageAvailableListener({ reader ->
-            val image = reader.acquireLatestImage()
-            if(image == null) {
-                listener.onLogError("CameraPro.createCameraPreviewSession.imageReader.setOnImageAvailableListener::image is null")
-                return@setOnImageAvailableListener
-            }
-            listener.onReceivePicture(image)
-            image.close()
-        }, null)
-
-        cameraDevice.createCaptureSession(listOf(surface, imageReader.surface), object : CameraCaptureSession.StateCallback() {
-            override fun onConfigured(session: CameraCaptureSession) {
-                if (cameraDevice == null) {
-                    listener.onLogError("CameraPro.cameraDevice.createCaptureSession.onConfigured::cameraDevice is null")
-                    return
-                }
-                cameraCaptureSession = session
-                updateCameraThread()
-            }
-
-            override fun onConfigureFailed(session: CameraCaptureSession) {}
-        }, null)
-    }
-
-    private fun updateCameraThread() {
-        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-        cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, null)
-    }
-
     fun takePicture() {
-        if (cameraDevice == null) {
-            listener.onLogError("CameraPro.captureStillPicture::cameraDevice is null")
-            return
-        }
-        try {
-            val captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
-            captureBuilder.addTarget(imageReader.surface)
-            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-            captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
+        val dir = getOutputDirectoryV2()
+        val photoFile = File(dir, "${listener.getPictureFileName()}${Constants.IMAGE_EXTENSION}")
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
-            cameraCaptureSession.stopRepeating()
-            cameraCaptureSession.abortCaptures()
-            cameraCaptureSession.capture(captureBuilder.build(), object : CameraCaptureSession.CaptureCallback() {
-                override fun onCaptureCompleted(session: CameraCaptureSession, request: CaptureRequest, result: TotalCaptureResult) {
-                    cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, null)
+        imageCapture?.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(activity),
+            object: ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val  savedUri = Uri.fromFile(photoFile)
+//                  TO SAVE IN GALLERY: TO-DO Check if we need this
+//                    val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(savedUri.toFile().extension)
+//                    MediaScannerConnection.scanFile(
+//                        activity,
+//                        arrayOf(savedUri.toFile().absolutePath),
+//                        arrayOf(mimeType)
+//                    ){ _, uri ->
+//                        listener.onPictureReceived(savedUri.toString(), uri.toString())
+//                    }
+                    listener.onPictureReceived(savedUri.path.toString())
                 }
-            }, null)
-        } catch (e: CameraAccessException) {
-            listener.onLogError("CameraPro.takePicture.CameraAccessException::${e.message}")
-            listener.onError()
-        }
-    }
-
-    fun updateISO(value: Int){
-        captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, value)
-        updateCameraThread()
-    }
-
-    fun updateSpeed(value: Long){
-        captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, value)
-        updateCameraThread()
-    }
-
-    // TODO: THIS JUST COPIED
-    private fun focusOnTouch(x: Float, y: Float) {
-        cameraDevice?.let {
-            val characteristics = (activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
-                .getCameraCharacteristics(it.id)
-            val sensorArraySize = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE) ?: return
-
-            val focusAreaSize = 200
-            val focusArea = Rect(
-                (x / textureView.width * sensorArraySize.width()).toInt() - focusAreaSize / 2,
-                (y / textureView.height * sensorArraySize.height()).toInt() - focusAreaSize / 2,
-                (x / textureView.width * sensorArraySize.width()).toInt() + focusAreaSize / 2,
-                (y / textureView.height * sensorArraySize.height()).toInt() + focusAreaSize / 2
-            )
-
-            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(MeteringRectangle(focusArea, MeteringRectangle.METERING_WEIGHT_MAX)))
-            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO)
-            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START)
-
-            cameraCaptureSession.capture(captureRequestBuilder.build(), object : CameraCaptureSession.CaptureCallback() {
-                override fun onCaptureCompleted(
-                    session: CameraCaptureSession,
-                    request: CaptureRequest,
-                    result: TotalCaptureResult
-                ) {
-                    super.onCaptureCompleted(session, request, result)
-                    captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE)
-                    updateCameraThread()
+                override fun onError(exception: ImageCaptureException) {
+                    listener.onErrorPicture()
                 }
-            }, null)
+            })
+    }
+    private fun getOutputDirectory(): File{
+        val mediaDir = activity.externalMediaDirs.firstOrNull()?.let{
+            File(it, listener.getFolderName()).apply {  mkdirs() }
         }
+        return if (mediaDir != null && mediaDir.exists()) mediaDir else activity.filesDir
+    }
+
+    private fun getOutputDirectoryV2 (): File {
+        val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), listener.getFolderName())
+        if (!imageFolder.exists()) {
+            imageFolder.mkdirs()
+        }
+        return imageFolder
     }
 }

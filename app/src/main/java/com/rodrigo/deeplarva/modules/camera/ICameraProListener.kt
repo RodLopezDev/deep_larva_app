@@ -1,8 +1,8 @@
-package com.rodrigo.deeplarva.modules.camerav2
+package com.rodrigo.deeplarva.modules.camera
 
 import androidx.camera.view.PreviewView
 
-interface ICameraV2ProListener {
+interface ICameraProListener {
     fun getFolderName(): String
     fun getPictureFileName(): String
     fun getPreviewView(): PreviewView

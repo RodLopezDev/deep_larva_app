@@ -1,6 +1,6 @@
 package com.rodrigo.deeplarva.routes.activity.view
 
-interface ICameraV2ViewListener {
+interface ICameraViewListener {
     // Behavior of View
     fun onTakePicture()
     fun onUpdateExposure(value: Int)
