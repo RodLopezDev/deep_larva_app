@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -74,6 +75,8 @@ dependencies {
 
     //implementation("com.google.android.gms:play-services-tflite-impl:16.1.0")
     //implementation("com.google.android.gms:play-services-tflite-gpu:16.2.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     val room_version = "2.4.0"
     implementation("androidx.room:room-runtime:$room_version")

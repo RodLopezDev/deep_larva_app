@@ -1,4 +1,5 @@
 package com.rodrigo.deeplarva.ml
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -7,24 +8,21 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
-import android.os.CountDownTimer
 import android.widget.ImageView
 import android.widget.TextView
-
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.ml.DetectSortedAugmentedXtraHistFloat32Yolov8n
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.tensorflow.lite.support.image.ImageProcessor
-import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
+import java.io.File
+import java.io.FileWriter
 import java.time.Duration
 import java.time.Instant
-
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class Detect640x640(private val activity: Context) {
 
@@ -56,13 +54,16 @@ class Detect640x640(private val activity: Context) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun iniciarProcesoGlobalPrediction(
+        context: Context,
         bitmap: Bitmap,
         splitWidth: Int,
         splitHeight: Int,
         overlap: Float,
         miCustomConfidenceThreshold: Float,
-        miCustomIoUThresholdNMS: Float
+        miCustomIoUThresholdNMS: Float,
+        imageName: String // Aceptar el nombre del archivo aquí
     ): FinalResult {
+        //: FinalResult
         // Dividir la imagen en partes usando la función splitImages
         val splits_results = splitImages(bitmap, splitWidth, splitHeight, overlap)
 
@@ -77,7 +78,9 @@ class Detect640x640(private val activity: Context) {
         // Llamada a la función para realizar la predicción en las imágenes divididas
         val initialTime = Instant.now()
 
-        val modelPath = "detect_sorted_augmented_xtra_hist_float32_yolov8n.tflite" // TODO: CHANGED
+        //val modelPath = "detect_sorted_augmented_xtra_hist_float32_yolov8n.tflite" // TODO: CHANGED
+        val modelPath = "best_weight_ds_official_epch50_float32.tflite" // TODO: CHANGED
+
         val labelPath = "labels_2.txt"
 
         val detector2 = Detector(activity, modelPath, labelPath)
@@ -116,6 +119,33 @@ class Detect640x640(private val activity: Context) {
         // Aplicar NMS
         val selectedBoxes = applyNMS(boundingBoxes, miCustomIoUThresholdNMS)
 
+        // Aplicar NMS con diferentes umbrales
+        val selectedBoxes_0_2 = applyNMS(boundingBoxes, 0.2f)
+        val selectedBoxes_0_3 = applyNMS(boundingBoxes, 0.3f)
+        val selectedBoxes_0_4 = applyNMS(boundingBoxes, 0.4f)
+        val selectedBoxes_0_5 = applyNMS(boundingBoxes, 0.5f)
+
+        // Obtener el número total de predicciones para cada umbral
+        val total_predictions_0_2 = selectedBoxes_0_2.size
+        val total_predictions_0_3 = selectedBoxes_0_3.size
+        val total_predictions_0_4 = selectedBoxes_0_4.size
+        val total_predictions_0_5 = selectedBoxes_0_5.size
+
+        println("Con nivel de confianza de $miCustomConfidenceThreshold y un nms de 0.2f el total de predicciones es $total_predictions_0_2")
+        println("Con nivel de confianza de $miCustomConfidenceThreshold y un nms de 0.3f el total de predicciones es $total_predictions_0_3")
+        println("Con nivel de confianza de $miCustomConfidenceThreshold y un nms de 0.4f el total de predicciones es $total_predictions_0_4")
+        println("Con nivel de confianza de $miCustomConfidenceThreshold y un nms de 0.5f el total de predicciones es $total_predictions_0_5")
+
+        // Guardar los resultados en un archivo de texto
+        val predictions = mapOf(
+            0.2f to total_predictions_0_2,
+            0.3f to total_predictions_0_3,
+            0.4f to total_predictions_0_4,
+            0.5f to total_predictions_0_5
+        )
+        val outputFileName = "${imageName}_${miCustomConfidenceThreshold}_conf_predictions.txt" // Cambia el nombre del archivo según tu necesidad
+        savePredictionsToTextFile(context, imageName, miCustomConfidenceThreshold, predictions, outputFileName)
+
         // Convertir selectedBoxes a GroupedAnnotation
         val groupedAnnotations = selectedBoxes.map { box ->
             GroupedAnnotation(
@@ -125,8 +155,77 @@ class Detect640x640(private val activity: Context) {
                 categoryIds = mutableListOf(box.cls)
             )
         }
+
+        val groupedAnnotations_0_2 = selectedBoxes_0_2.map { box ->
+            GroupedAnnotation(
+                scores = mutableListOf(box.cnf),
+                centroids = mutableListOf(listOf(box.cy, box.cx)),
+                bboxs = mutableListOf(listOf(box.y1, box.x1, box.y2, box.x2)),
+                categoryIds = mutableListOf(box.cls)
+            )
+        }
+
+        val groupedAnnotations_0_3 = selectedBoxes_0_3.map { box ->
+            GroupedAnnotation(
+                scores = mutableListOf(box.cnf),
+                centroids = mutableListOf(listOf(box.cy, box.cx)),
+                bboxs = mutableListOf(listOf(box.y1, box.x1, box.y2, box.x2)),
+                categoryIds = mutableListOf(box.cls)
+            )
+        }
+
+        val groupedAnnotations_0_4 = selectedBoxes_0_4.map { box ->
+            GroupedAnnotation(
+                scores = mutableListOf(box.cnf),
+                centroids = mutableListOf(listOf(box.cy, box.cx)),
+                bboxs = mutableListOf(listOf(box.y1, box.x1, box.y2, box.x2)),
+                categoryIds = mutableListOf(box.cls)
+            )
+        }
+
+        val groupedAnnotations_0_5 = selectedBoxes_0_5.map { box ->
+            GroupedAnnotation(
+                scores = mutableListOf(box.cnf),
+                centroids = mutableListOf(listOf(box.cy, box.cx)),
+                bboxs = mutableListOf(listOf(box.y1, box.x1, box.y2, box.x2)),
+                categoryIds = mutableListOf(box.cls)
+            )
+        }
+        val img_name = imageName
         val finalBbox = groupedAnnotations.flatMap { it.bboxs }
         // Llamada a la función para plotear las anotaciones predichas
+        // Guardar el JSON
+        val jsonString_20 = generateAndSaveJson(
+            context,
+            img_name,
+            groupedAnnotations_0_2,
+            miCustomConfidenceThreshold,
+            0.2f
+        )
+
+        val jsonString_30 = generateAndSaveJson(
+            context,
+            img_name,
+            groupedAnnotations_0_3,
+            miCustomConfidenceThreshold,
+            0.3f
+        )
+
+        val jsonString_40 = generateAndSaveJson(
+            context,
+            img_name,
+            groupedAnnotations_0_4,
+            miCustomConfidenceThreshold,
+            0.4f
+        )
+
+        val jsonString_50 = generateAndSaveJson(
+            context,
+            img_name,
+            groupedAnnotations_0_5,
+            miCustomConfidenceThreshold,
+            0.5f
+        )
 
         return plotPredictedODAnnotationsDataForAndroid(groupedAnnotations, bitmap, finalBbox,labels)
     }
@@ -270,11 +369,79 @@ class Detect640x640(private val activity: Context) {
         val predictedAnnotation = PredictedAnnotation(custom_scores, custom_centroids, custom_bboxs, custom_categoryIds, custom_keys)
         return obtenerDatosEscaladoPrediccionODV1(predictedAnnotation)
     }
+
+    @kotlinx.serialization.Serializable
+    data class AnnotationDetail(
+        val score: Float,
+        val centroid: List<Float>,
+        val bbox: List<Float>,
+        val categoryId: Int
+    )
+
+    @Serializable
+    data class ImageAnnotations(
+        val imageName: String,
+        val annotations: List<AnnotationDetail>
+    )
+
+    fun savePredictionsToTextFile(
+        context: Context,
+        imageName: String,
+        confidenceThreshold: Float,
+        predictions: Map<Float, Int>,
+        outputFileName: String
+    ) {
+        val file = File(context.getExternalFilesDir(null), outputFileName)
+        val writer = FileWriter(file, true)
+
+        writer.append("imageName,ConfidenceThreshold,nmsThreshold,totalPredicciones\n")
+        for ((nmsThreshold, totalPredicciones) in predictions) {
+            writer.append("$imageName,$confidenceThreshold,$nmsThreshold,$totalPredicciones\n")
+        }
+        writer.flush()
+        writer.close()
+
+        println("Archivo de texto guardado en: ${file.absolutePath}")
+    }
+    fun generateAndSaveJson(
+        context: Context,
+        imageName: String,
+        filteredAnnotations: List<GroupedAnnotation>,
+        miCustomConfidenceThreshold: Float,
+        miCustomIoUThresholdNMS: Float
+    ): String {
+        val annotationDetails = filteredAnnotations.flatMap { group ->
+            group.scores.indices.map { idx ->
+                AnnotationDetail(
+                    score = group.scores[idx],
+                    centroid = group.centroids[idx],
+                    bbox = group.bboxs[idx],
+                    categoryId = group.categoryIds[idx]
+                )
+            }
+        }
+
+        val imageAnnotations = ImageAnnotations(
+            imageName = imageName,
+            annotations = annotationDetails
+        )
+
+        val jsonString = Json.encodeToString(imageAnnotations)
+
+        val fileName = "${imageName}_${miCustomConfidenceThreshold}_conf_${miCustomIoUThresholdNMS}_nms.json"
+        val file = File(context.getExternalFilesDir(null), fileName)
+        file.writeText(jsonString)
+
+        println("JSON guardado en: ${file.absolutePath}")
+
+        return jsonString
+    }
     fun plotPredictedODAnnotationsDataForAndroid(
         filteredAnnotations: List<GroupedAnnotation>,
         bitmap: Bitmap,
         boxes: List<List<Float>>,
-        labels: List<String>): FinalResult {
+        labels: List<String>
+    ): FinalResult {
 
         val name_fun = "plotPredictedODAnnotationsDataForAndroid"
         println("Dentro de la funcion: $name_fun")
@@ -326,7 +493,7 @@ class Detect640x640(private val activity: Context) {
             }
 
             val resizedBitmap = resizeBitmapByPercentage(mutable, 0.4f)
-            
+
             return FinalResult(resizedBitmap, total_predictions,boxes)
 
         } else {
@@ -379,6 +546,8 @@ class Detect640x640(private val activity: Context) {
 
         for (i in yPoints) {
             for (j in xPoints) {
+//                val key = "$i:${i + splitHeight},${j}:${j + splitWidth}"
+//                val key = "$i:${j},${splitHeight}:${splitWidth}"
                 val key = "${i?.toFloat()}:${j?.toFloat()},${splitHeight?.toFloat()}:${splitWidth?.toFloat()}"
                 customPrint(j,"j")
                 customPrint(j,"i")
@@ -397,7 +566,6 @@ class Detect640x640(private val activity: Context) {
         return SplitImagesResult(splitImagesDict, imageSplitsKeys, imageSplits)
 
     }
-
 
     fun getRandomColorsForAndroid(numColors: Int): List<Int> {
         val colors = mutableListOf<Int>()

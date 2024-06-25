@@ -27,13 +27,14 @@ class BackgroundTaskPredict(private val my: Context) {
 
     private var processingIndex = 0
     private var processingRateProgress = 0
-    private var processingList:List<Picture> = mutableListOf<Picture>()
+    private var processingList: List<Picture> = mutableListOf()
 
     private lateinit var updateStatus: (status: Int) -> Unit
     private lateinit var updateEntity: (id: Long, counter: Int, boxes: List<List<Float>>, time: Long, bitmapPath: String, callBack: () -> Unit) -> Unit
     private lateinit var finish: () -> Unit
 
     private var model = Detect640x640(my)
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun predictBatchCOROUTINE(
@@ -56,44 +57,52 @@ class BackgroundTaskPredict(private val my: Context) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun recursivePredictionCOROUTINE() {
-        if(processingIndex >= processingList.size) {
+        if (processingIndex >= processingList.size) {
             finishPrediction()
             return
         }
 
-        var currentItem = processingList[processingIndex]
-        var bitmap = BitmapUtils.getBitmapFromPath(currentItem.filePath)
-            ?:  throw IllegalArgumentException("BITMAP_NOT_FOUND: $processingIndex")
+        val currentItem = processingList[processingIndex]
+        val bitmap = BitmapUtils.getBitmapFromPath(currentItem.filePath)
+            ?: throw IllegalArgumentException("BITMAP_NOT_FOUND: $processingIndex")
 
-        predictBitmapCOROUTINE(bitmap) {
-                processedBitmap, counter, boxes, processedFile, time -> run {
-            var processedFilePath = if(processedBitmap != null) {
-                // TODO: Guardar en galeria
-                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "deep-larva")
-                if (!imageFolder.exists()) {
-                    imageFolder.mkdirs()
+        // Extraer el nombre del archivo desde filePath
+        val file = File(currentItem.filePath)
+        val originalFileName = file.name
+
+        //val originalFileName = currentItem.originalFileName
+        println(originalFileName)
+        predictBitmapCOROUTINE(my, bitmap, originalFileName) { processedBitmap, counter, boxes, processedFile, time ->
+            run {
+                val processedFilePath = if (processedBitmap != null) {
+                    // TODO: Guardar en galeria
+                    val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "deep-larva")
+                    if (!imageFolder.exists()) {
+                        imageFolder.mkdirs()
+                    }
+
+                    val fileName = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(Date()) + ".jpg"
+                    val imageFile = File(imageFolder, fileName)
+                    FileOutputStream(imageFile).use {
+                        processedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+                    }
+                    // TODO: Guardar en galeria
+                    BitmapUtils.saveBitmapToStorage(my, processedBitmap, processedFile)
+                        ?: throw IllegalArgumentException("FILE_PROCESSED_NOT_SAVED: $processingIndex")
+                    imageFile.absolutePath
+                } else {
+                    ""
                 }
 
-                val fileName = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(
-                    Date()
-                ) + ".jpg"
-                val imageFile = File(imageFolder, fileName)
-                FileOutputStream(imageFile)
-                // TODO: Guardar en galeria
-                BitmapUtils.saveBitmapToStorage(my, processedBitmap, processedFile)
-                    ?: throw IllegalArgumentException("FILE_PROCESSED_NOT_SAVED: $processingIndex")
-            } else {
-                ""
+                processingIndex++
+                if (processingIndex != processingList.size - 1) {
+                    updateStatus(processingRateProgress * processingIndex)
+                }
+                updateEntity(currentItem.id, counter, boxes, time, processedFilePath) {
+                    recursivePredictionCOROUTINE()
+                }
             }
-
-            processingIndex++
-            if(processingIndex != processingList.size - 1) {
-                updateStatus(processingRateProgress * processingIndex)
-            }
-            updateEntity(currentItem.id, counter, boxes, time, processedFilePath) {
-                recursivePredictionCOROUTINE()
-            }
-        }}
+        }
     }
 
     private fun finishPrediction() {
@@ -103,16 +112,18 @@ class BackgroundTaskPredict(private val my: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, boxes: List<List<Float>>, fileName: String, time: Long) -> Unit) {
+    private fun predictBitmapCOROUTINE(context: Context, bitmap: Bitmap, fileName: String, callback: (bitmap: Bitmap?, counter: Int, boxes: List<List<Float>>, fileName: String, time: Long) -> Unit) {
         val startTimeMillis = System.currentTimeMillis()
         GlobalScope.launch {
-            var result = model.iniciarProcesoGlobalPrediction(
+            val result = model.iniciarProcesoGlobalPrediction(
+                context,
                 bitmap,
                 splitWidth = 640,
                 splitHeight = 640,
                 overlap = 0.75f,
-                miCustomConfidenceThreshold = 0.60F,
-                miCustomIoUThresholdNMS = 0.3f
+                miCustomConfidenceThreshold = 0.70F,
+                miCustomIoUThresholdNMS = 0.3f,
+                imageName = fileName // Pasar el nombre del archivo aquí
             )
             val endTimeMillis = System.currentTimeMillis()
             val totalTime = endTimeMillis - startTimeMillis

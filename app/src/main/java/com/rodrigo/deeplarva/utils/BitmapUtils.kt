@@ -26,7 +26,7 @@ class BitmapUtils {
                 val fos = FileOutputStream(file)
 
                 // Compress the bitmap to a PNG with 100% quality
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
 
                 // Close the file output stream
                 fos.close()
