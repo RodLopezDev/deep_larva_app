@@ -1,5 +1,5 @@
 import java.util.Properties
-import org.gradle.kotlin.dsl.*
+import kotlin.collections.set
 
 plugins {
     id("com.android.application")
@@ -74,9 +74,11 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
 
     implementation("com.google.android.material:material:1.11.0")
-    
-    implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
-    implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
+
+
+    implementation("org.tensorflow:tensorflow-lite:2.10.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.0-rc0")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.4.0-rc0")
 
     val room_version = "2.4.0"
     implementation("androidx.room:room-runtime:$room_version")
