@@ -1,5 +1,5 @@
 import java.util.Properties
-import kotlin.collections.set
+import org.gradle.kotlin.dsl.*
 
 plugins {
     id("com.android.application")
