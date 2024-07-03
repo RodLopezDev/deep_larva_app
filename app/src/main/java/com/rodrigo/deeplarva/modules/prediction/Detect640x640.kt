@@ -1,4 +1,5 @@
 package com.rodrigo.deeplarva.modules.prediction
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -9,15 +10,12 @@ import android.graphics.RectF
 import android.os.Build
 import android.widget.ImageView
 import android.widget.TextView
-
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import java.time.Duration
 import java.time.Instant
-
-import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -55,11 +53,8 @@ class Detect640x640(private val activity: Context) {
         splitWidth: Int,
         splitHeight: Int,
         overlap: Float,
-        miBatchSize: Int,
-
         miCustomConfidenceThreshold: Float,
-        miCustomIoUThreshold: Float,
-        distanceThreshold: Float
+        miCustomIoUThresholdNMS: Float
     ): FinalResult {
         // Dividir la imagen en partes usando la función splitImages
         val splits_results = splitImages(bitmap, splitWidth, splitHeight, overlap)
@@ -89,13 +84,11 @@ class Detect640x640(private val activity: Context) {
 
         detector2.setup()
 
-        allResults = realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
-            detector2, // Agrega este parámetro
+        val predictedAnnotations = realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
+            detector2,
             imageSplits,
             imageSplitsKeys,
-            miBatchSize,
-            miCustomConfidenceThreshold,
-            miCustomIoUThreshold
+            miCustomConfidenceThreshold
         )
 
         val finalTime = Instant.now()
@@ -104,173 +97,141 @@ class Detect640x640(private val activity: Context) {
         val timeDifferenceOutput = calculateTimeDifference(initialTime, finalTime)
         println("timeDifferenceOutput: $timeDifferenceOutput")
 
-        // Obtener los resultados de la predicción
-        val variable_triple = getAllPredictedAnnotations(allResults)
+        // Convertir PredictedAnnotation a una lista de BoundingBox
+        val boundingBoxes = predictedAnnotations.bboxs.mapIndexed { index, box ->
+            BoundingBox(
+                x1 = box[1],
+                y1 = box[0],
+                x2 = box[3],
+                y2 = box[2],
+                cx = (box[1] + box[3]) / 2,
+                cy = (box[0] + box[2]) / 2,
+                w = box[3] - box[1],
+                h = box[2] - box[0],
+                cnf = predictedAnnotations.scores[index],
+                cls = predictedAnnotations.categoryIds[index],
+                clsName = "" // Suponiendo que no tienes el nombre de la clase aquí
+            )
+        }
 
-        // Imprimir los resultados actuales
-        customPrint(variable_triple.scores, "[CURRENT] scores", false, false, true, true)
-        customPrint(variable_triple.centroids, "[CURRENT] centroids", false, false, true, true)
-        customPrint(variable_triple.bboxs, "[CURRENT] bboxs", false, false, true, true)
-        customPrint(variable_triple.categoryIds, "[CURRENT] categoryIds", false, false, true, true)
-        customPrint(variable_triple.keys, "[CURRENT] keys", false, false, true, true)
+        // Aplicar NMS
+        val selectedBoxes = applyNMS(boundingBoxes, miCustomIoUThresholdNMS)
 
-        // Escalar los resultados de la predicción
-        val variable_triple_actualizado = obtenerDatosEscaladoPrediccionODV1(variable_triple)
-
-        println("\n")
-
-        // Imprimir los resultados actualizados
-        customPrint(variable_triple_actualizado.scores, "[ACTUALIZADO] scores", false, false, true, true)
-        customPrint(variable_triple_actualizado.centroids, "[ACTUALIZADO] centroids", false, false, true, true)
-        customPrint(variable_triple_actualizado.bboxs, "[ACTUALIZADO] bboxs", false, false, true, true)
-        customPrint(variable_triple_actualizado.categoryIds, "[ACTUALIZADO] categoryIds", false, false, true, true)
-        customPrint(variable_triple_actualizado.keys, "[ACTUALIZADO] keys", false, false, true, true)
-
-        // Llamada a la función para agrupar las anotaciones
-        val groupedAnnotations = groupODAnnotationsDataV1(variable_triple_actualizado, distanceThreshold)
-
-//        println("groupedAnnotations: $groupedAnnotations")
-
-//        // Imprimir resultados agrupados
-        println("\nGrouped Annotations:")
-//        for ((i_idx, group) in groupedAnnotations.withIndex()) {
-//            for ((j_idx, sub_group) in groupedAnnotations[i_idx].bboxs.withIndex()) {
-//                customPrint("", "[$i_idx][$j_idx]", false, false, false, false)
-//            }
-//        }
-
-        customPrint((groupedAnnotations as? Collection<*>)?.size ?: 0, "[len_groupedAnnotations] ", true, true, false, false)
-        customPrint(groupedAnnotations, "[GET_LEN] groupedAnnotations", false, false, true, true, false)
-
-        // Llamada a la función para filtrar las anotaciones agrupadas
-        val filteredAnnotations = filterGroupedAnnotationsDataV2(groupedAnnotations)
-
-//        println("filteredAnnotations: $filteredAnnotations")
-
-//        // Imprimir resultados filtrados
-//        println("\nFiltered Annotations:")
-//        for ((i_idx, group) in filteredAnnotations.withIndex()) {
-//            for ((j_idx, sub_group) in filteredAnnotations[i_idx].bboxs.withIndex()) {
-//                customPrint("", "[$i_idx][$j_idx]", false, false, false, false)
-//            }
-//        }
-
-        println("[len_filteredAnnotations] : ${(filteredAnnotations as? Collection<*>)?.size ?: 0}")
-
-        customPrint((filteredAnnotations as? Collection<*>)?.size ?: 0, "[len_filteredAnnotations] ", true, true, false, false)
-        customPrint(filteredAnnotations, "[GET_LEN] filteredAnnotations", false, false, true, true, false)
-
+        // Convertir selectedBoxes a GroupedAnnotation
+        val groupedAnnotations = selectedBoxes.map { box ->
+            GroupedAnnotation(
+                scores = mutableListOf(box.cnf),
+                centroids = mutableListOf(listOf(box.cy, box.cx)),
+                bboxs = mutableListOf(listOf(box.y1, box.x1, box.y2, box.x2)),
+                categoryIds = mutableListOf(box.cls)
+            )
+        }
+        val finalBbox = groupedAnnotations.flatMap { it.bboxs }
         // Llamada a la función para plotear las anotaciones predichas
-        val finalBbox = filteredAnnotations.flatMap { it.bboxs }
-        return plotPredictedODAnnotationsDataForAndroid(filteredAnnotations, bitmap, finalBbox, labels)
+
+        return plotPredictedODAnnotationsDataForAndroid(groupedAnnotations, bitmap, finalBbox,labels)
     }
 
+    private fun applyNMS(boxes: List<BoundingBox>, iouThreshold: Float): MutableList<BoundingBox> {
+        val sortedBoxes = boxes.sortedByDescending { it.cnf }.toMutableList()
+        val selectedBoxes = mutableListOf<BoundingBox>()
 
+        while (sortedBoxes.isNotEmpty()) {
+            val first = sortedBoxes.first()
+            selectedBoxes.add(first)
+            sortedBoxes.remove(first)
 
-    fun realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
-        custom_detector: Detector, // Agrega este parámetro
-        imageSplits: Array<Bitmap?>,
-        imageSplitsKeys: Array<String?>,
-        batchSize: Int,
-        customConfidenceThreshold: Float,
-        customIoUThreshold: Float
-    ): List<Map<String, Any>> {
-
-        val allResults = mutableListOf<Map<String, Any>>()
-
-        for (startIdx in 0 until imageSplits.size step batchSize) {
-            val endIdx = min(startIdx + batchSize, imageSplits.size)
-            val batchSplits = imageSplits.copyOfRange(startIdx, endIdx)
-            val batchSplitsKeys = imageSplitsKeys.copyOfRange(startIdx, endIdx)
-
-            for ((batchIndex, batchImgElement) in batchSplits.withIndex()) {
-
-                val batchSplitsKey = batchSplitsKeys.getOrNull(batchIndex)
-                println("Batch Index: $batchIndex")
-                println("Batch Splits Key: $batchSplitsKey")
-                println("Batch Img Element: $batchImgElement")
-                println("-------------")
-
-                var mutableBatchImgElement: Bitmap? = null
-                var mutableBatchImgElement2: Bitmap? = null
-
-                var split_imgWidth: Int? = null
-                var split_imgHeight: Int? = null
-
-                batchImgElement?.let {
-                    mutableBatchImgElement = it // Declarar como variable mutable
-                    split_imgWidth = it.width
-                    split_imgHeight = it.height
-
-                    mutableBatchImgElement2 = it
-
-                    // Redimensionar el Bitmap directamente
-                    mutableBatchImgElement = Bitmap.createScaledBitmap(mutableBatchImgElement!!, split_imgWidth!!, split_imgHeight!!, false)
-
-                    // Aquí puedes realizar cualquier otra lógica específica de tu aplicación
-                    // También puedes llamar a "model.process(batchImgElement)" si es necesario
-                } ?: println("Bitmap Element es nulo")
-
-                val dkmfkjnfmdffd = "dkmfkjnfmdffd"
-                println("dkmfkjnfmdffd: $dkmfkjnfmdffd")
-
-
-                val BoxesapplyNMS2 = custom_detector.detect(mutableBatchImgElement2!!, customConfidenceThreshold, customIoUThreshold)
-
-                val dkmfkjnfmdffd2 = "dkmfkjnfmdffd2"
-                println("dkmfkjnfmdffd2: $dkmfkjnfmdffd2")
-
-                var new_locations_List2 = mutableListOf<List<Float>>()
-                val classes2 = mutableListOf<Float>()
-                val scores2 = mutableListOf<Float>()
-
-
-
-                if (BoxesapplyNMS2 != null) {
-                    BoxesapplyNMS2.forEach { box ->
-
-                        var left = box.x1 * split_imgWidth!! // x_min // x1
-                        var top = box.y1 * split_imgHeight!! // y_min // y1
-                        var right = box.x2 * split_imgWidth!! // x_max // x2
-                        var bottom = box.y2 * split_imgHeight!! // y_max // y2
-
-
-                        customPrint(top, "top", hasLen = false)
-                        customPrint(left, "left", hasLen = false)
-                        customPrint(bottom, "bottom", hasLen = false)
-                        customPrint(right, "right", hasLen = false)
-
-                        val subList = listOf(top, left, bottom, right)
-                        new_locations_List2.add(subList as List<Float>)
-
-                        // Agregar el valor de la clase a la lista
-                        classes2.add(box.cls.toFloat())
-                        scores2.add(box.cnf.toFloat())
-                    }
+            val iterator = sortedBoxes.iterator()
+            while (iterator.hasNext()) {
+                val nextBox = iterator.next()
+                val iou = calculateIoU(first, nextBox)
+                if (iou > iouThreshold) {
+                    iterator.remove()
                 }
-
-                if (BoxesapplyNMS2 != null) {
-                    if (BoxesapplyNMS2.isNotEmpty()) {
-
-                        allResults.add(
-                            mapOf(
-                                "boxes" to new_locations_List2,
-                                "classes" to classes2.toFloatArray(),
-                                "scores" to scores2.toFloatArray(),
-                                "image_splits_keys" to batchSplitsKey.toString()
-                            )
-                        )  // Creando el diccionario directamente
-                    }
-                }
-
             }
         }
 
-        println("allResults: $allResults")
-        val dkmfkjnfmdffd23 = "dkmfkjnfmdffd23"
-        println("dkmfkjnfmdffd23: $dkmfkjnfmdffd23")
+        return selectedBoxes
+    }
 
-        return allResults
+    private fun calculateIoU(box1: BoundingBox, box2: BoundingBox): Float {
+        val x1 = maxOf(box1.x1, box2.x1)
+        val y1 = maxOf(box1.y1, box2.y1)
+        val x2 = minOf(box1.x2, box2.x2)
+        val y2 = minOf(box1.y2, box2.y2)
+        val intersectionArea = maxOf(0F, x2 - x1) * maxOf(0F, y2 - y1)
+        val box1Area = box1.w * box1.h
+
+        val box1Area_v2 = (box1.x2 - box1.x1) * (box1.y2 - box1.y1)
+        val box2Area_v2 = (box2.x2 - box2.x1) * (box2.y2 - box2.y1)
+
+        val union = box1Area_v2 + box2Area_v2 - intersectionArea
+
+        return intersectionArea / union
+    }
+
+    fun realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
+        custom_detector: Detector,
+        imageSplits: Array<Bitmap?>,
+        imageSplitsKeys: Array<String?>,
+        customConfidenceThreshold: Float
+    ): PredictedAnnotation {
+
+        val custom_scores = mutableListOf<Float>()
+        val custom_centroids = mutableListOf<List<Float>>()
+        val custom_bboxs = mutableListOf<List<Float>>()
+        val custom_categoryIds = mutableListOf<Int>()
+        val custom_keys = mutableListOf<String>()
+
+        for ((batchIndex, batchImgElement) in imageSplits.withIndex()) {
+            val batchSplitsKey = imageSplitsKeys.getOrNull(batchIndex)
+            println("Batch Index: $batchIndex")
+            println("Batch Splits Key: $batchSplitsKey")
+            println("Batch Img Element: $batchImgElement")
+            println("-------------")
+
+            var mutableBatchImgElement: Bitmap? = null
+            var mutableBatchImgElement2: Bitmap? = null
+
+            var split_imgWidth: Int? = null
+            var split_imgHeight: Int? = null
+
+            batchImgElement?.let {
+                mutableBatchImgElement = it
+                split_imgWidth = it.width
+                split_imgHeight = it.height
+
+                mutableBatchImgElement2 = it
+
+                mutableBatchImgElement = Bitmap.createScaledBitmap(mutableBatchImgElement!!, split_imgWidth!!, split_imgHeight!!, false)
+            } ?: println("Bitmap Element es nulo")
+
+            val BoxesapplyNMS2 = custom_detector.detect(mutableBatchImgElement2!!, customConfidenceThreshold)
+
+            if (BoxesapplyNMS2 != null) {
+                BoxesapplyNMS2.forEach { box ->
+                    val left = box.x1 * split_imgWidth!! // x_min // x1
+                    val top = box.y1 * split_imgHeight!! // y_min // y1
+                    val right = box.x2 * split_imgWidth!! // x_max // x2
+                    val bottom = box.y2 * split_imgHeight!! // y_max // y2
+
+                    val value_box = listOf(top, left, bottom, right)
+                    val value_score = box.cnf.toFloat()
+                    val rawValue = box.cls.toInt()
+                    val value_category_id = if (rawValue > 0) rawValue - 1 else rawValue
+                    val value_key = batchSplitsKey.toString()
+
+                    custom_scores.add(value_score)
+                    custom_centroids.add(listOf(1.1f, 1.1f)) // Placeholder for centroids
+                    custom_bboxs.add(value_box)
+                    custom_categoryIds.add(value_category_id)
+                    custom_keys.add(value_key)
+                }
+            }
+        }
+
+        val predictedAnnotation = PredictedAnnotation(custom_scores, custom_centroids, custom_bboxs, custom_categoryIds, custom_keys)
+        return obtenerDatosEscaladoPrediccionODV1(predictedAnnotation)
     }
 
     fun plotPredictedODAnnotationsDataForAndroid(
