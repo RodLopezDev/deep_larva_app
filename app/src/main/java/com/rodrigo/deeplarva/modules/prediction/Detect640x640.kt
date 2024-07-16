@@ -76,7 +76,7 @@ class Detect640x640(private val activity: Context) {
 //        var allResults: List<Map<String, Any>>
         var allResults: List<Map<String, Any>> = emptyList()
 
-        val modelPath = "detect_sorted_augmented_xtra_hist_float32_yolov8n.tflite" // TODO: CHANGED
+        val modelPath = "best_weight_ds_official_epch50_float32.tflite" // TODO: CHANGED
 
         val labelPath = "labels_2.txt"
 
