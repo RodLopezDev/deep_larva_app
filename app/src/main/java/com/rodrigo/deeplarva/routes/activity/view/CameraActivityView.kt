@@ -23,6 +23,7 @@ class CameraActivityView(
             val newDim = Dimensions(activity).dpToPx(if(showControl) { 52F } else { 0F })
             binding.llCommandControl.translationX = newDim
             showControl = !showControl
+            binding.btnShowControl.text = "Controles (${if(showControl) "-" else "+"})"
         }
         binding.btnClose.setOnClickListener {
             listener.onClose()

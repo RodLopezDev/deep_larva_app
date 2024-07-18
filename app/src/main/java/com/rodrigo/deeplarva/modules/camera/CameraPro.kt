@@ -14,6 +14,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.application.utils.Constants
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import java.io.File
 import kotlin.math.abs
 import kotlin.math.max
@@ -37,7 +38,9 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
         val cameraProviderFinally = ProcessCameraProvider.getInstance(activity)
         cameraProviderFinally.addListener(Runnable {
             cameraProvider = cameraProviderFinally.get()
-            bindCamera()
+
+            val default = PreferencesHelper(activity).getInt(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE, 0)
+            bindCamera(default)
         }, ContextCompat.getMainExecutor(activity))
     }
     private fun bindCamera(exposurePreDefined: Int? = null){
@@ -63,7 +66,6 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
         cameraProvider.unbindAll()
         try {
             camera = cameraProvider.bindToLifecycle(activity, cameraSelector, preview, imageCapture)
-            camera.cameraInfo.exposureState.exposureCompensationRange
             updateExposure(exposurePreDefined)
         } catch(exc: Exception) {
             Log.e("CameraWildRunning", "Fallo al vincular la camara", exc)
