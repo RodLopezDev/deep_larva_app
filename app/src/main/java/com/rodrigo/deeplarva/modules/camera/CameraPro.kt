@@ -63,7 +63,7 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
         return listOf(width, height)
     }
 
-    private fun bindCamera(isoPreDefined: Int? = null){
+    private fun bindCamera(exposurePreDefined: Int? = null){
         val metrics = getMetrics()
         val screenAspectRatio = aspectRadio(metrics[0], metrics[1])
         val rotation = listener.getPreviewView().display?.rotation ?: 0
@@ -87,7 +87,7 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
         try {
             camera = cameraProvider.bindToLifecycle(activity, cameraSelector, preview, imageCapture)
             camera.cameraInfo.exposureState.exposureCompensationRange
-            updateISO(isoPreDefined)
+            updateExposure(exposurePreDefined)
         } catch(exc: Exception) {
             Log.e("CameraWildRunning", "Fallo al vincular la camara", exc)
         }
@@ -99,13 +99,13 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
         }
         return AspectRatio.RATIO_16_9
     }
-    fun updateISO(isoPreDefined: Int? = null) {
+    fun updateExposure(exposurePreDefined: Int? = null) {
         if(camera == null || preview == null) return
         val exposureState = camera.cameraInfo.exposureState
         if (exposureState.isExposureCompensationSupported) {
             val range = exposureState.exposureCompensationRange
-            if (isoPreDefined != null && range.contains(isoPreDefined)) {
-                camera.cameraControl.setExposureCompensationIndex(isoPreDefined)
+            if (exposurePreDefined != null && range.contains(exposurePreDefined)) {
+                camera.cameraControl.setExposureCompensationIndex(exposurePreDefined)
             }
         }
         preview?.setSurfaceProvider(listener.getPreviewView().surfaceProvider)

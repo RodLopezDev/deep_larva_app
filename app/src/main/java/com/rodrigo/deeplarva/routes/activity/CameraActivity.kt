@@ -29,7 +29,7 @@ class CameraActivity: AppCompatActivity() {
                 cameraPro.takePicture()
             }
             override fun onUpdateExposure(value: Int) {
-                cameraPro.updateISO(value)
+                cameraPro.updateExposure(value)
             }
             override fun onClose() {
                 onCloseView()
