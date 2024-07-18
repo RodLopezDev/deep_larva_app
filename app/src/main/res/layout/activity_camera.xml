@@ -8,7 +8,7 @@
     tools:context=".routes.activity.CameraActivity">
 
     <androidx.camera.view.PreviewView
-        android:id="@+id/viewFinder"
+        android:id="@+id/viewPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -16,7 +16,6 @@
 
 
     <Button
-
         android:id="@+id/btnClose"
         android:layout_width="40dp"
         android:layout_height="40dp"

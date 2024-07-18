@@ -2,7 +2,6 @@ package com.rodrigo.deeplarva.routes.activity
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
 import com.google.android.material.snackbar.Snackbar
@@ -23,8 +22,8 @@ class CameraActivity: AppCompatActivity() {
     private lateinit var view: CameraActivityView
     private lateinit var permissions: CameraPermissionsManager
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onResume() {
+        super.onResume()
         val preferencesHelper = PreferencesHelper(this)
         view = CameraActivityView(this, object: ICameraViewListener {
             override fun onTakePicture() {
@@ -80,20 +79,14 @@ class CameraActivity: AppCompatActivity() {
                 cameraPro.startCamera()
             }
         })
-    }
-    override fun onResume() {
-        super.onResume()
-        permissions.openWithRequest()
+        view.getPreview().post {
+            permissions.openWithRequest()
+        }
     }
     override fun onRequestPermissionsResult(requestCode: Int, ps: Array<out String>,grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, ps, grantResults)
         permissions.onRequestPermissionsResult(requestCode, ps, grantResults)
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraPro.offCamera()
-    }
-
     private fun onCloseView() {
         val returnIntent = Intent()
         if(pictures.isEmpty()) {

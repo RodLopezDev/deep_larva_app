@@ -53,7 +53,7 @@ class CameraActivityView(
         binding.tvExposure.text = expo.toString()
     }
     fun getPreview(): PreviewView {
-        return binding.viewFinder
+        return binding.viewPreview
     }
     fun getLinearLayout(): ConstraintLayout {
         return binding.clMain
