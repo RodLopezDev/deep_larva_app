@@ -29,6 +29,7 @@ class Constants {
         const val BROADCAST_ACTION = "com.deeplarva.broadcast.NOTIFICATION"
 
         const val MESSAGE_SERVICE_STARTED = "Ejecutando conteo"
+        const val MESSAGE_SERVICE_IS_RUNNING = "El conteo se está ejecutando"
 
         const val SHARED_PREFERENCES_DEVICE_ID = "DEVICE-IDENTIFIER"
         const val SHARED_PREFERENCES_CAMERA_WIDTH = "camera-width"
