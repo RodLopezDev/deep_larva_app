@@ -16,8 +16,6 @@ import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import java.io.File
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -30,42 +28,24 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
 
     private val lensFacing: Int = CameraSelector.LENS_FACING_BACK
 
-    private val preferences = PreferencesHelper(activity)
-
     private var preview: Preview? = null
     private var imageCapture: ImageCapture? = null
     private var cameraProvider: ProcessCameraProvider? = null
 
     private lateinit var camera: Camera
-    private val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
 
     fun startCamera() {
         val cameraProviderFinally = ProcessCameraProvider.getInstance(activity)
         cameraProviderFinally.addListener(Runnable {
             cameraProvider = cameraProviderFinally.get()
-            bindCamera()
+
+            val default = PreferencesHelper(activity).getInt(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE, 0)
+            bindCamera(default)
         }, ContextCompat.getMainExecutor(activity))
     }
-
-    fun offCamera() {
-        cameraExecutor.shutdown()
-    }
-
-    private fun getMetrics(): List<Int> {
-        val width = preferences.getInt(Constants.SHARED_PREFERENCES_CAMERA_WIDTH, 0)
-        val height = preferences.getInt(Constants.SHARED_PREFERENCES_CAMERA_HEIGHT, 0)
-        if(width == 0 || height == 0) {
-            val metrics = DisplayMetrics().also { listener.getPreviewView().display?.getRealMetrics(it) }
-            preferences.saveInt(Constants.SHARED_PREFERENCES_CAMERA_WIDTH, metrics.widthPixels)
-            preferences.saveInt(Constants.SHARED_PREFERENCES_CAMERA_HEIGHT, metrics.heightPixels)
-            return listOf(metrics.widthPixels, metrics.heightPixels)
-        }
-        return listOf(width, height)
-    }
-
-    private fun bindCamera(isoPreDefined: Int? = null){
-        val metrics = getMetrics()
-        val screenAspectRatio = aspectRadio(metrics[0], metrics[1])
+    private fun bindCamera(exposurePreDefined: Int? = null){
+        val metrics = DisplayMetrics().also { listener.getPreviewView().display?.getRealMetrics(it) }
+        val screenAspectRatio = aspectRadio(metrics.widthPixels, metrics.heightPixels)
         val rotation = listener.getPreviewView().display?.rotation ?: 0
 
         val cameraProvider = cameraProvider ?: throw IllegalStateException("Fallo al iniciar la camara")
@@ -86,8 +66,7 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
         cameraProvider.unbindAll()
         try {
             camera = cameraProvider.bindToLifecycle(activity, cameraSelector, preview, imageCapture)
-            camera.cameraInfo.exposureState.exposureCompensationRange
-            updateISO(isoPreDefined)
+            updateExposure(exposurePreDefined)
         } catch(exc: Exception) {
             Log.e("CameraWildRunning", "Fallo al vincular la camara", exc)
         }
@@ -99,13 +78,13 @@ class CameraPro(private val activity: AppCompatActivity, private val listener: I
         }
         return AspectRatio.RATIO_16_9
     }
-    fun updateISO(isoPreDefined: Int? = null) {
+    fun updateExposure(exposurePreDefined: Int? = null) {
         if(camera == null || preview == null) return
         val exposureState = camera.cameraInfo.exposureState
         if (exposureState.isExposureCompensationSupported) {
             val range = exposureState.exposureCompensationRange
-            if (isoPreDefined != null && range.contains(isoPreDefined)) {
-                camera.cameraControl.setExposureCompensationIndex(isoPreDefined)
+            if (exposurePreDefined != null && range.contains(exposurePreDefined)) {
+                camera.cameraControl.setExposureCompensationIndex(exposurePreDefined)
             }
         }
         preview?.setSurfaceProvider(listener.getPreviewView().surfaceProvider)

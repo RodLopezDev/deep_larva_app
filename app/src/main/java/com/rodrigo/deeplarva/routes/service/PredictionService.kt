@@ -74,7 +74,6 @@ class PredictionService: Service() {
 
         Log.d(TAG, "Service Started")
         this.pictureId = pictureId
-        Toast.makeText(this, "$pictureId", Toast.LENGTH_SHORT).show()
         val notificationIntent = Intent(this, PicturesActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
 

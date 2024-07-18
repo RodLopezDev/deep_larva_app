@@ -3,7 +3,6 @@ package com.rodrigo.deeplarva.routes.activity.view
 import android.content.Intent
 import android.graphics.Bitmap
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
@@ -26,16 +25,9 @@ class PictureActivityView(
     private var list: ListHandlerView<PictureListEntity> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, object:
         ListEventListener<PictureListEntity> {
         override fun onLongClick(item: PictureListEntity, position: Int) {
-            showOptionsDialog(item)
+//            showOptionsDialog(item) TO-DO: Disabled temporally
         }
         override fun onClick(item: PictureListEntity, position: Int) {
-            activity.runOnUiThread {
-                Toast.makeText(activity, "Click", Toast.LENGTH_SHORT).show()
-            }
-            // TODO: DISABLE TEMPORALLY, REQUIRE ESTIMATION TIME TO IMPLEMENT
-//            val intent = Intent(activity, PictureDetailActivity::class.java)
-//            intent.putExtra(Constants.INTENT_PICTURE_DETAIL, item.id)
-//            activity.startActivity(intent)
         }
     })
 

@@ -56,7 +56,7 @@ open class BoundedActivity(): AppCompatActivity(), ServiceChangesListener, IBoun
 
     protected fun launchService(picture: Picture){
         if(boundService.isBounded() && this.hasPictureId() != null) {
-            Toast.makeText(this@BoundedActivity, "Service running", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@BoundedActivity, Constants.MESSAGE_SERVICE_IS_RUNNING, Toast.LENGTH_SHORT).show()
             return
         }
 

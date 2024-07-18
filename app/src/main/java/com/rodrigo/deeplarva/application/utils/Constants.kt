@@ -29,10 +29,14 @@ class Constants {
         const val BROADCAST_ACTION = "com.deeplarva.broadcast.NOTIFICATION"
 
         const val MESSAGE_SERVICE_STARTED = "Ejecutando conteo"
+        const val MESSAGE_SERVICE_IS_RUNNING = "El conteo se está ejecutando"
 
         const val SHARED_PREFERENCES_DEVICE_ID = "DEVICE-IDENTIFIER"
         const val SHARED_PREFERENCES_CAMERA_WIDTH = "camera-width"
         const val SHARED_PREFERENCES_CAMERA_HEIGHT = "camera-height"
+        const val SHARED_PREFERENCES_EXPOSURE_VALUE = "exposure-camera-value"
+
+        const val FOLDER_PICTURES = "deep-larva"
 
         fun getPermissionsList (): List<String> {
             // REF: https://stackoverflow.com/questions/75628155/read-external-storage-permission-request-not-showing-on-emulator
