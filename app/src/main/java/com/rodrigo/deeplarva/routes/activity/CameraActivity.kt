@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigo.deeplarva.application.utils.Constants
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import com.rodrigo.deeplarva.modules.camera.CameraPermissionsManager
 import com.rodrigo.deeplarva.modules.camera.CameraPro
 import com.rodrigo.deeplarva.modules.camera.ICameraPermissionsResult
@@ -24,15 +25,17 @@ class CameraActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val preferencesHelper = PreferencesHelper(this)
         view = CameraActivityView(this, object: ICameraViewListener {
             override fun onTakePicture() {
                 cameraPro.takePicture()
             }
-            override fun onUpdateExposure(value: Int) {
-                cameraPro.updateExposure(value)
-            }
             override fun onClose() {
                 onCloseView()
+            }
+            override fun onUpdateExposure(value: Int) {
+                preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE, value)
+                cameraPro.updateExposure(value)
             }
             override fun getMinExposure(): Int {
                 return -20
@@ -41,12 +44,13 @@ class CameraActivity: AppCompatActivity() {
                 return 20
             }
             override fun getDefaultExposure(): Int {
-                return 0
+                val exposure = preferencesHelper.getInt(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE, 0)
+                return exposure
             }
         })
         cameraPro = CameraPro(this, object: ICameraProListener {
             override fun getFolderName(): String {
-                return "deep-larva"
+                return Constants.FOLDER_PICTURES
             }
             override fun getPictureFileName(): String {
                 return UUID.randomUUID().toString()
