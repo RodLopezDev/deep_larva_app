@@ -1,8 +1,13 @@
 package com.rodrigo.deeplarva.routes.activity
 
+import android.content.Context
 import android.content.Intent
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.media.Image
 import android.os.Bundle
+import android.view.Surface
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
@@ -13,6 +18,7 @@ import com.rodrigo.deeplarva.modules.camera.ICameraPermissionsResult
 import com.rodrigo.deeplarva.routes.activity.stores.CameraParameterStore
 import com.rodrigo.deeplarva.routes.activity.view.CameraActivityView
 import com.rodrigo.deeplarva.routes.activity.view.ICameraViewListener
+import com.rodrigo.deeplarva.utils.BitmapUtils
 import com.rodrigo.deeplarva.utils.FileUtils
 import java.io.IOException
 
@@ -32,6 +38,13 @@ class CameraActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val characteristics = manager.getCameraCharacteristics("0")
+        val sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
+
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val rotation = windowManager.defaultDisplay.rotation
+
         view = CameraActivityView(this, cameraStore.getCameraValues(), object: ICameraViewListener {
             override fun onTakePicture() {
                 cameraProHW.takePicture()
@@ -52,17 +65,32 @@ class CameraActivity: AppCompatActivity() {
                 cameraProHW.updateSpeed(value.toLong())
             }
         })
-        cameraProHW = CameraProHardware(this, view.getPreview(), cameraStore.getCameraValues(), object: CameraProHardwareListener {
-            override fun onReceivePicture(image: Image) {
+        cameraProHW = CameraProHardware(this, view.getPreview(), cameraStore.getCameraValues(), sensorOrientation, rotation, object: CameraProHardwareListener {
+            override fun onReceivePicture(image: Image, sensorOrientationOut: Int, windowRotationOut: Int) {
+                val bitmap = BitmapUtils.imageToBitmap(image)
+                if(bitmap == null) {
+                    Toast.makeText(this@CameraActivity, "Error getting image", Toast.LENGTH_SHORT).show()
+                    onCloseView()
+                    return
+                }
+                val rotateDegrees = when (windowRotationOut) {
+                    Surface.ROTATION_0 -> 90
+                    Surface.ROTATION_90 -> 0
+                    Surface.ROTATION_270 -> 180
+                    else -> 0
+                }
+                val bitmapRotated = BitmapUtils.rotateBitmap(bitmap, rotateDegrees.toFloat())
                 val fileName = "${System.currentTimeMillis()}-RUNNING-IDENTIFIER"
+
                 try {
-                    val file = FileUtils(this@CameraActivity).saveOnStorage(image, "/deep-larva/", fileName)
+                    val file = FileUtils(this@CameraActivity).saveBitmapToExternalStorage(bitmapRotated, "/deep-larva/", fileName)
                     val filePath = file.absolutePath
 
                     pictures.add(filePath)
                     runOnUiThread {
                         Toast.makeText(this@CameraActivity, "Image Added: $filePath", Toast.LENGTH_SHORT).show()
                     }
+                    onCloseView()
                 } catch (e: IOException) {
 //                    listener.onError("CameraActivity.onReceivePicture.SaveOnStorage::${e?.message}")
                 }

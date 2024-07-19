@@ -4,15 +4,20 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
+import android.graphics.Matrix
+import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCaptureSession
+import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.TotalCaptureResult
 import android.media.ImageReader
+import android.util.Size
+import android.view.ScaleGestureDetector
 import android.view.Surface
 import android.view.TextureView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,12 +28,18 @@ class CameraProHardware(
     private val activity: AppCompatActivity,
     private val textureView: TextureView,
     private val cameraValues: CameraValues,
+    private val sensorOrientation: Int,
+    private val windowRotation: Int,
     private val listener: CameraProHardwareListener
 ) {
     private lateinit var imageReader: ImageReader
     private lateinit var cameraDevice: CameraDevice
     private lateinit var captureRequestBuilder: CaptureRequest.Builder
     private lateinit var cameraCaptureSession: CameraCaptureSession
+
+    private var currentZoomLevel = 1f
+    private var maxZoomLevel = 1f
+    private lateinit var scaleGestureDetector: ScaleGestureDetector
 
     fun onStart() {
         textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
@@ -38,6 +49,35 @@ class CameraProHardware(
             override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
             override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean = true
+        }
+
+        scaleGestureDetector = ScaleGestureDetector(activity, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                cameraDevice?.let {
+                    val scaleFactor = detector.scaleFactor
+                    currentZoomLevel = (currentZoomLevel * scaleFactor).coerceIn(1f, maxZoomLevel)
+                    val characteristics = (activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
+                        .getCameraCharacteristics(it.id)
+                    val maxZoom = characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM) ?: 1f
+                    maxZoomLevel = maxZoom
+                    val rect = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE) ?: return false
+                    val cropWidth = (rect.width() / currentZoomLevel).toInt()
+                    val cropHeight = (rect.height() / currentZoomLevel).toInt()
+                    val cropRect = Rect(
+                        rect.centerX() - cropWidth / 2,
+                        rect.centerY() - cropHeight / 2,
+                        rect.centerX() + cropWidth / 2,
+                        rect.centerY() + cropHeight / 2
+                    )
+                    captureRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, cropRect)
+                    updateCameraThread()
+                }
+                return true
+            }
+        })
+
+        textureView.setOnTouchListener { _, event ->
+            scaleGestureDetector.onTouchEvent(event)
         }
     }
 
@@ -72,6 +112,7 @@ class CameraProHardware(
     private fun createCameraPreviewSession() {
         val texture = textureView.surfaceTexture!!
         texture.setDefaultBufferSize(textureView.width, textureView.height)
+        configureTransform(textureView)
         val surface = Surface(texture)
 
         captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
@@ -84,7 +125,7 @@ class CameraProHardware(
                 listener.onError("CameraPro.createCameraPreviewSession.imageReader.setOnImageAvailableListener::image is null")
                 return@setOnImageAvailableListener
             }
-            listener.onReceivePicture(image)
+            listener.onReceivePicture(image, sensorOrientation, windowRotation)
             image.close()
         }, null)
 
@@ -143,5 +184,31 @@ class CameraProHardware(
         } catch (e: CameraAccessException) {
             listener.onError("CameraPro.takePicture.CameraAccessException::${e.message}", true)
         }
+    }
+
+    private fun configureTransform(view: TextureView) {
+        val viewSize = Size(textureView.width, textureView.height)
+
+        val rotateDegrees = when (windowRotation) {
+            Surface.ROTATION_0 -> sensorOrientation - 90
+            Surface.ROTATION_90 -> sensorOrientation - 180
+            Surface.ROTATION_180 -> sensorOrientation - 270
+            Surface.ROTATION_270 -> sensorOrientation
+            else -> sensorOrientation
+        }
+
+        val validHeight = if (windowRotation == Surface.ROTATION_0) viewSize.width  else viewSize.height
+
+        val matrix = Matrix()
+        val viewRect = android.graphics.RectF(0f, 0f, viewSize.width.toFloat(), validHeight.toFloat())
+        val bufferRect = android.graphics.RectF(0f, 0f, viewSize.height.toFloat(), viewSize.width.toFloat())
+        val centerX = viewRect.centerX()
+        val centerY = viewRect.centerY()
+
+        bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
+        matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL)
+        matrix.postRotate(rotateDegrees.toFloat(), centerX, centerY)
+
+        view.setTransform(matrix)
     }
 }
