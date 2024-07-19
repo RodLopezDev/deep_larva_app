@@ -197,11 +197,12 @@ class CameraProHardware(
             else -> sensorOrientation
         }
 
-        val validHeight = if (windowRotation == Surface.ROTATION_0) viewSize.width  else viewSize.height
+        val validHeight = if (windowRotation == Surface.ROTATION_0) viewSize.width  else viewSize.height // Modify aspect ratio of TextureView in vertical
+        val validWidth = if (windowRotation == Surface.ROTATION_180) viewSize.height  else viewSize.width // Modify aspect ratio of TextureView in vertical inverted
 
         val matrix = Matrix()
         val viewRect = android.graphics.RectF(0f, 0f, viewSize.width.toFloat(), validHeight.toFloat())
-        val bufferRect = android.graphics.RectF(0f, 0f, viewSize.height.toFloat(), viewSize.width.toFloat())
+        val bufferRect = android.graphics.RectF(0f, 0f, viewSize.height.toFloat(), validWidth.toFloat())
         val centerX = viewRect.centerX()
         val centerY = viewRect.centerY()
 
