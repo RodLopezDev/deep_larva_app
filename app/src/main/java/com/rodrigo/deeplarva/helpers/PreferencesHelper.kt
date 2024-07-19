@@ -25,12 +25,6 @@ class PreferencesHelper(context: Context) {
         editor.apply()
     }
 
-    fun saveFloat(key: String, value: Float) {
-        val editor = sharedPreferences.edit()
-        editor.putFloat(key, value)
-        editor.apply()
-    }
-
     fun saveLong(key: String, value: Long) {
         val editor = sharedPreferences.edit()
         editor.putLong(key, value)
@@ -49,11 +43,11 @@ class PreferencesHelper(context: Context) {
         return sharedPreferences.getBoolean(key, defaultValue)
     }
 
-    fun getFloat(key: String, defaultValue: Float = 0.0f): Float {
-        return sharedPreferences.getFloat(key, defaultValue)
-    }
-
     fun getLong(key: String, defaultValue: Long = 0L): Long {
         return sharedPreferences.getLong(key, defaultValue)
+    }
+
+    fun exists(key: String): Boolean {
+        return sharedPreferences.contains(key)
     }
 }
