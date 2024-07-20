@@ -4,10 +4,13 @@ import android.content.Context
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
+import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.view.CameraValues
 import com.rodrigo.deeplarva.helpers.PreferencesHelper
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class CameraParameterStore(private val activity: AppCompatActivity) {
     private lateinit var cameraValues: CameraValues
@@ -36,7 +39,8 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             val speedRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
             val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             val availableDimensions = streamConfigurationMap?.getOutputSizes(ImageFormat.JPEG)
-            val largestSize = availableDimensions?.maxByOrNull { it.width * it.height }
+            val dimsWith916 = getDimension916(availableDimensions!!)
+            val largestSize = dimsWith916?.maxByOrNull { it.width * it.height }
 
             val initialISO = isoRange!!.upper
             val initialSpeed = speedRange!!.upper
@@ -54,6 +58,21 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MAX, speedRange.upper.toInt())
         }
         initValues()
+    }
+
+    private fun getDimension916(dimensions: Array<Size>): List<Size> {
+        val result = mutableListOf<Size>()
+        val globalFactor = BigDecimal((16F / 9F).toDouble()).setScale(3, RoundingMode.HALF_UP).toFloat()
+        for(item in dimensions) {
+            val factor = BigDecimal(item.width.toDouble() / item.height.toDouble()).setScale(3, RoundingMode.HALF_UP).toFloat()
+            if(globalFactor == factor) {
+                result.add(item)
+            }
+        }
+        if(result.isEmpty()){
+            return dimensions.toList()
+        }
+        return result
     }
 
     private fun initValues() {
