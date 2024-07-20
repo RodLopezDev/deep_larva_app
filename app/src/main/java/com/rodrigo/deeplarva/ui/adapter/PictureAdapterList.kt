@@ -15,12 +15,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.view.PictureListEntity
+import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
 import com.rodrigo.deeplarva.utils.TimeUtils
 
 class PictureAdapterList (
     context: Context,
     private val dataList: List<PictureListEntity>,
-    private val listener: PictureItemListListener
+    private val listener: PictureItemListListener,
+    private val listener2: ListEventListener<PictureListEntity>
 ) :
     ArrayAdapter<PictureListEntity>(context, R.layout.item_list_picture, dataList) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -52,10 +54,13 @@ class PictureAdapterList (
                 llProcessedView.addView(getCountView(context, picture.count))
             } else if(currentItem.state == null){
                 llProcessedView.addView(getButtonForPredict(context) { listener.onPredict(picture) })
+                itemView.setOnClickListener { listener2.onClick(currentItem, position) }
             } else if (currentItem.state.isProcessing) {
                 llProcessedView.addView(getProcessing(context))
+                itemView.setOnClickListener { listener2.onClick(currentItem, position) }
             } else {
                 llProcessedView.addView(getButtonForPredict(context))
+                itemView.setOnClickListener { listener2.onClick(currentItem, position) }
             }
         }
 

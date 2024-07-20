@@ -3,11 +3,9 @@ package com.rodrigo.deeplarva.helpers.pictureInputHelper
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.net.Uri
 import android.provider.MediaStore
-import java.io.IOException
+import com.rodrigo.deeplarva.utils.BitmapUtils
 
 class PictureByStorageHandler(override val activity: Activity): IPictureReceiverHandler {
     private val REQUESTCODE = 101
@@ -25,7 +23,7 @@ class PictureByStorageHandler(override val activity: Activity): IPictureReceiver
             val filePath = getRealPathFromURI(uri)
 
             // Corregir la orientación del bitmap
-            val correctedBitmap = correctBitmapOrientation(bitmap, filePath)
+            val correctedBitmap = BitmapUtils.correctBitmapOrientation(bitmap, filePath)
 
             return listOf(correctedBitmap)
         }
@@ -44,26 +42,6 @@ class PictureByStorageHandler(override val activity: Activity): IPictureReceiver
             cursor.close()
         }
         return filePath
-    }
-
-    private fun correctBitmapOrientation(bitmap: Bitmap, filePath: String): Bitmap {
-        val exif = try {
-            ExifInterface(filePath)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return bitmap
-        }
-
-        val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-
-        val matrix = Matrix()
-        when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
-        }
-
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     override fun getRequestCode(): Int{

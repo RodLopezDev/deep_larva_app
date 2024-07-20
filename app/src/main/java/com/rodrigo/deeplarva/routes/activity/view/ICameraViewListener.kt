@@ -5,9 +5,6 @@ interface ICameraViewListener {
     fun onTakePicture()
     fun onClose()
     fun onUpdateExposure(value: Int)
-
-    // Functions for get values
-    fun getMinExposure(): Int
-    fun getMaxExposure(): Int
-    fun getDefaultExposure(): Int
+    fun onUpdateSensitivitySensor(value: Int)
+    fun onUpdateShootSpeed(value: Int)
 }

@@ -6,9 +6,11 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.view.PictureListEntity
 import com.rodrigo.deeplarva.helpers.pictureInputHelper.PictureInputHelper
+import com.rodrigo.deeplarva.routes.activity.PictureDetailActivity
 import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
@@ -22,14 +24,17 @@ class PictureActivityView(
     private val listener: IPictureViewListener
 ) {
     private val handler = PictureInputHelper(activity)
-    private var list: ListHandlerView<PictureListEntity> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, object:
+    private val itemListener = object:
         ListEventListener<PictureListEntity> {
         override fun onLongClick(item: PictureListEntity, position: Int) {
-//            showOptionsDialog(item) TO-DO: Disabled temporally
         }
         override fun onClick(item: PictureListEntity, position: Int) {
+            val intent = Intent(activity, PictureDetailActivity::class.java)
+            intent.putExtra(Constants.INTENT_PICTURE_DETAIL, item.picture.id)
+            activity.startActivity(intent)
         }
-    })
+    }
+    private var list: ListHandlerView<PictureListEntity> = ListHandlerView(binding.lvPictures, binding.tvEmptyPicturesList, itemListener)
 
     init {
         activity.setContentView(binding.root)
@@ -44,7 +49,7 @@ class PictureActivityView(
     }
 
     fun loadPictures(pictures: List<PictureListEntity>, listener: PictureItemListListener) {
-        val adapter = PictureAdapterList(activity, pictures, listener)
+        val adapter = PictureAdapterList(activity, pictures, listener, itemListener)
         list.populate(pictures, adapter)
     }
 

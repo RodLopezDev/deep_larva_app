@@ -32,9 +32,18 @@ class Constants {
         const val MESSAGE_SERVICE_IS_RUNNING = "El conteo se está ejecutando"
 
         const val SHARED_PREFERENCES_DEVICE_ID = "DEVICE-IDENTIFIER"
-        const val SHARED_PREFERENCES_CAMERA_WIDTH = "camera-width"
-        const val SHARED_PREFERENCES_CAMERA_HEIGHT = "camera-height"
+
+        const val SHARED_PREFERENCES_RESOLUTION_MAX_WIDTH = "camera-resolution-max-width"
+        const val SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT = "camera-resolution-max-height"
         const val SHARED_PREFERENCES_EXPOSURE_VALUE = "exposure-camera-value"
+        const val SHARED_PREFERENCES_EXPOSURE_MIN = "exposure-camera-min"
+        const val SHARED_PREFERENCES_EXPOSURE_MAX = "exposure-camera-max"
+        const val SHARED_PREFERENCES_SENSOR_SENSITIVITY_VALUE = "sensor-sensitivity-camera-value"
+        const val SHARED_PREFERENCES_SENSOR_SENSITIVITY_MIN = "sensor-sensitivity-camera-min"
+        const val SHARED_PREFERENCES_SENSOR_SENSITIVITY_MAX = "sensor-sensitivity-camera-max"
+        const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_VALUE = "sensor-exposure-time-camera-value"
+        const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MIN = "sensor-exposure-time-camera-min"
+        const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MAX = "sensor-exposure-time-camera-max"
 
         const val FOLDER_PICTURES = "deep-larva"
 

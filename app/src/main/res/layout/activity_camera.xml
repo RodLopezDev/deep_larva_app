@@ -7,13 +7,12 @@
     android:id="@+id/clMain"
     tools:context=".routes.activity.CameraActivity">
 
-    <androidx.camera.view.PreviewView
-        android:id="@+id/viewPreview"
+    <TextureView
+        android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
-    </androidx.camera.view.PreviewView>
-
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
 
     <Button
         android:id="@+id/btnClose"
@@ -58,7 +57,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.4"
-        android:translationX="52dp"
+        android:translationX="156dp"
         >
 
         <LinearLayout
@@ -102,6 +101,102 @@
 
             <Button
                 android:id="@+id/btnDownExposure"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:textSize="18dp"
+                android:text="-"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner_camera_command"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnUpISO"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:textSize="18dp"
+                android:text="+"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ISO"
+                    android:textSize="8dp"
+                    android:lineHeight="8dp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/tvISO"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:lineHeight="24dp"
+                    android:textSize="24dp"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btnDownISO"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:textSize="18dp"
+                android:text="-"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner_camera_command"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnUpSpeed"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:textSize="18dp"
+                android:text="+"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SPEED"
+                    android:textSize="8dp"
+                    android:lineHeight="8dp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/tvSpeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:lineHeight="24dp"
+                    android:textSize="24dp"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btnDownSpeed"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:textSize="18dp"
