@@ -3,6 +3,7 @@ package com.rodrigo.deeplarva.domain.view
 data class CameraValues (
     val maxWidth: Int,
     val maxHeight: Int,
+    val maxHeightScreen: Int,
     var sensorSensitivity: Int,
     val sensorSensitivityMin: Int,
     val sensorSensitivityMax: Int,

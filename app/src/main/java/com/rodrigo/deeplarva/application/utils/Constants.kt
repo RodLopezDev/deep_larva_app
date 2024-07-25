@@ -35,6 +35,7 @@ class Constants {
 
         const val SHARED_PREFERENCES_RESOLUTION_MAX_WIDTH = "camera-resolution-max-width"
         const val SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT = "camera-resolution-max-height"
+        const val SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT_SCREEN = "camera-resolution-max-height-screen"
         const val SHARED_PREFERENCES_EXPOSURE_VALUE = "exposure-camera-value"
         const val SHARED_PREFERENCES_EXPOSURE_MIN = "exposure-camera-min"
         const val SHARED_PREFERENCES_EXPOSURE_MAX = "exposure-camera-max"
