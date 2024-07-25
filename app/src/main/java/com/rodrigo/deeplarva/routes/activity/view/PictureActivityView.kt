@@ -3,14 +3,16 @@ package com.rodrigo.deeplarva.routes.activity.view
 import android.content.Intent
 import android.graphics.Bitmap
 import android.widget.Button
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.R
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.view.PictureListEntity
 import com.rodrigo.deeplarva.helpers.pictureInputHelper.PictureInputHelper
 import com.rodrigo.deeplarva.routes.activity.PictureDetailActivity
+import com.rodrigo.deeplarva.routes.activity.PicturesActivity
 import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
@@ -19,7 +21,7 @@ import com.rodrigo.deeplarva.ui.widget.listHandler.ListHandlerView
 
 class PictureActivityView(
     private val deviceId: String,
-    private val activity: AppCompatActivity,
+    private val activity: PicturesActivity,
     private val binding: ActivityPicturesBinding,
     private val listener: IPictureViewListener
 ) {
@@ -44,7 +46,13 @@ class PictureActivityView(
             title = "Muestras"
         }
 
-        binding.btnLoadPic.setOnClickListener { handler.launchStorage() }
+        binding.btnLoadPic.setOnClickListener {
+            if(Constants.REQUIRE_CONTRACT_FOR_GALLERY){
+                activity.photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                return@setOnClickListener
+            }
+            handler.launchStorage()
+        }
         binding.btnTakePicture.setOnClickListener { handler.launchCamera() }
     }
 

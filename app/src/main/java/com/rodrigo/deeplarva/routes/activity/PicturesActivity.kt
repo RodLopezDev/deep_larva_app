@@ -1,11 +1,13 @@
 package com.rodrigo.deeplarva.routes.activity
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.rodrigo.deeplarva.R
@@ -17,6 +19,8 @@ import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
 import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.domain.view.BitmapProcessingResult
 import com.rodrigo.deeplarva.helpers.PreferencesHelper
+import com.rodrigo.deeplarva.helpers.pictureInputHelper.PictureByCameraProHandler
+import com.rodrigo.deeplarva.helpers.pictureInputHelper.PictureByStorageHandler
 import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.services.BackendPictureServices
@@ -45,6 +49,17 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
     private lateinit var viewModel: PictureActivityViewModel
 
     private lateinit var deviceId: String
+
+    val photoPickerLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        uri?.let {
+            val bitmaps = BitmapUtils.getBitmapFromUri(applicationContext, uri)
+            val dialog = ProgressDialog()
+            dialog.show(this@PicturesActivity)
+            processBitmaps(bitmaps) {
+                dialog.dismiss()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,11 +123,20 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(data == null || resultCode == 0) return
+        if(listOf(PictureByStorageHandler.REQUESTCODE, PictureByCameraProHandler.REQUESTCODE).indexOf(requestCode) == -1) {
+            return
+        }
 
         val dialog = ProgressDialog()
         dialog.show(this@PicturesActivity)
 
         val bitmaps = view.resolve(requestCode, resultCode, data)
+        processBitmaps(bitmaps) {
+            dialog.dismiss()
+        }
+    }
+
+    private fun processBitmaps(bitmaps: List<Bitmap>, callback: () -> Unit){
         GlobalScope.launch {
             val results = bitmaps.map {
                 var thumbnail = BitmapUtils.scale(it)
@@ -134,13 +158,12 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
                 pictureService.saveBulk(deviceId, okResults) {
                     load()
                     runOnUiThread {
-                        dialog.dismiss()
+                        callback()
                     }
                 }
             }
         }
     }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
