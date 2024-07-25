@@ -12,6 +12,8 @@ class Constants {
 
         val GREEN_SYNC = ColorUtils.green(40)
 
+        val REQUIRE_CONTRACT_FOR_GALLERY: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
         const val MAX_ISO = 3200
         const val MIN_ISO = 100
         const val MAX_SHOOT_SPEED = 10000000

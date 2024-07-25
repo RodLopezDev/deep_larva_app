@@ -10,8 +10,11 @@ import com.rodrigo.deeplarva.routes.activity.CameraActivity
 import com.rodrigo.deeplarva.utils.BitmapUtils
 
 class PictureByCameraProHandler(override val activity: Activity): IPictureReceiverHandler {
-    private val REQUESTCODE = 1000
-    private val CAMERA_PERMISSION_REQUEST_CODE = 100
+    companion object {
+        val REQUESTCODE = 1000
+        val CAMERA_PERMISSION_REQUEST_CODE = 100
+    }
+
     override fun launch() {
         val intent = Intent(activity, CameraActivity::class.java)
         activity.startActivityForResult(intent, REQUESTCODE)

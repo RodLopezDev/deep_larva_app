@@ -50,7 +50,7 @@ class PictureDetailActivity: AppCompatActivity() {
             binding.imgBasePicture.setImageBitmap(bitmapFile)
         }
         if(picture.hasMetadata) {
-            val bitmapProcessed = BitmapUtils.getBitmapFromPath(picture.filePath)
+            val bitmapProcessed = BitmapUtils.getBitmapFromPath(picture.processedFilePath)
             runOnUiThread {
                 binding.imgProcessedPicture.setImageBitmap(bitmapProcessed)
             }

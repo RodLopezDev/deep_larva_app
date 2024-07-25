@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
+import android.net.Uri
+import android.provider.MediaStore
 import com.rodrigo.deeplarva.application.utils.Constants
 import java.io.File
 import java.io.FileOutputStream
@@ -17,7 +19,7 @@ class BitmapUtils {
         fun getRandomBitmapName(): String {
             var uuid: UUID = UUID.randomUUID()
             var uuidString: String = uuid.toString()
-            return "$uuidString.${Constants.IMAGE_EXTENSION}"
+            return "${uuidString}${Constants.IMAGE_EXTENSION}"
         }
         fun getBitmapFromPath(filePath: String): Bitmap? {
             return BitmapFactory.decodeFile(filePath)
@@ -93,6 +95,29 @@ class BitmapUtils {
             val matrix = Matrix()
             matrix.postRotate(rotationDegrees)
             return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        }
+        fun getBitmapFromUri(context: Context, uri: Uri): List<Bitmap> {
+            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+
+            val filePath = getRealPathFromURI(context, uri)
+
+            // Corregir la orientación del bitmap
+            val correctedBitmap = correctBitmapOrientation(bitmap, filePath)
+
+            return listOf(correctedBitmap)
+        }
+        private fun getRealPathFromURI(context: Context, uri: Uri): String {
+            var filePath = ""
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            if (cursor != null) {
+                cursor.moveToFirst()
+                val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+                if (idx != -1) {
+                    filePath = cursor.getString(idx)
+                }
+                cursor.close()
+            }
+            return filePath
         }
     }
 }
