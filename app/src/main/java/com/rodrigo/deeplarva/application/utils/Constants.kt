@@ -10,9 +10,12 @@ class Constants {
         const val SERVICE_BASE_URL = BuildConfig.SERVER_URL
         const val SERVICE_API_KEY = BuildConfig.SERVER_API_KEY
 
-        val OPACITY_GREEN = ColorUtils.green(90)
-        val OPACITY_RED = ColorUtils.red(90)
         val GREEN_SYNC = ColorUtils.green(40)
+
+        const val MAX_ISO = 3200
+        const val MIN_ISO = 100
+        const val MAX_SHOOT_SPEED = 10000000
+        const val MIN_SHOOT_SPEED = 100000
 
         const val DB_NAME ="deep-larva-db"
 
