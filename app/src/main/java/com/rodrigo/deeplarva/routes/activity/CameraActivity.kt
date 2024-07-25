@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import com.rodrigo.deeplarva.modules.camera.CameraPermissionsManager
 import com.rodrigo.deeplarva.modules.camera.CameraProHardware
 import com.rodrigo.deeplarva.modules.camera.CameraProHardwareListener
@@ -29,17 +30,20 @@ class CameraActivity: AppCompatActivity() {
     private lateinit var view: CameraActivityView
     private lateinit var permissions: CameraPermissionsManager
 
+    private var deviceID: String = ""
     private lateinit var cameraStore: CameraParameterStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraStore = CameraParameterStore(this)
+        deviceID = PreferencesHelper(this).getString(Constants.SHARED_PREFERENCES_DEVICE_ID) ?: ""
     }
 
     override fun onResume() {
         super.onResume()
-        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        val characteristics = manager.getCameraCharacteristics("0")
+        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = cameraManager.cameraIdList[0]
+        val characteristics = cameraManager.getCameraCharacteristics(cameraId)
         val sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
 
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -80,7 +84,7 @@ class CameraActivity: AppCompatActivity() {
                     else -> 0
                 }
                 val bitmapRotated = BitmapUtils.rotateBitmap(bitmap, rotateDegrees.toFloat())
-                val fileName = "${System.currentTimeMillis()}-RUNNING-IDENTIFIER"
+                val fileName = "${deviceID}-${System.currentTimeMillis()}"
 
                 try {
                     val file = FileUtils(this@CameraActivity).saveBitmapToExternalStorage(bitmapRotated, "/deep-larva/", fileName)
