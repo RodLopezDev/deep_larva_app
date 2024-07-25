@@ -20,7 +20,6 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
         if(
             !preferencesHelper.exists(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_WIDTH) or
             !preferencesHelper.exists(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT) or
-            !preferencesHelper.exists(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT_SCREEN) or
             !preferencesHelper.exists(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE) or
             !preferencesHelper.exists(Constants.SHARED_PREFERENCES_EXPOSURE_MIN) or
             !preferencesHelper.exists(Constants.SHARED_PREFERENCES_EXPOSURE_MAX) or
@@ -39,16 +38,13 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             val availableDimensions = streamConfigurationMap?.getOutputSizes(ImageFormat.JPEG)
             val dimsWith916 = getDimension916(availableDimensions!!)
-            val largestSize = availableDimensions?.maxByOrNull { it.width * it.height }
             val largest916Size = dimsWith916?.maxByOrNull { it.width * it.height }
 
             val maxWidth = if(largest916Size!!.width > largest916Size.height) { largest916Size.height } else { largest916Size.width }
             val maxHeight = if(largest916Size!!.width > largest916Size.height) { largest916Size.width } else { largest916Size.height }
-            val maxHeightScreen = if(largestSize!!.width > largestSize.height) { largestSize.width } else { largestSize.height }
 
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_WIDTH, maxWidth)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT, maxHeight)
-            preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT_SCREEN, maxHeightScreen)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE, 0)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_EXPOSURE_MIN, exposureRange!!.lower)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_EXPOSURE_MAX, exposureRange.upper)
@@ -80,7 +76,6 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
     private fun initValues() {
         val maxWidth = preferencesHelper.getInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_WIDTH, 0)
         val maxHeight = preferencesHelper.getInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT, 0)
-        val maxHeightScreen = preferencesHelper.getInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT_SCREEN, 0)
         val exposure = preferencesHelper.getInt(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE, 0)
         val exposureMin = preferencesHelper.getInt(Constants.SHARED_PREFERENCES_EXPOSURE_MIN, 0)
         val exposureMax = preferencesHelper.getInt(Constants.SHARED_PREFERENCES_EXPOSURE_MAX, 0)
@@ -93,7 +88,6 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
         cameraValues = CameraValues(
             maxWidth,
             maxHeight,
-            maxHeightScreen,
             sensorSensitivity,
             sensorSensitivityMin,
             sensorSensitivityMax,

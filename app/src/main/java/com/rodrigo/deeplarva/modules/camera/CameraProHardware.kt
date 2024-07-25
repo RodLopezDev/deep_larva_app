@@ -145,9 +145,6 @@ class CameraProHardware(
             captureBuilder.addTarget(imageReader.surface)
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
             captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
-//            captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, value)
-//            captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, value)
-//            captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, value)
 
             cameraCaptureSession.stopRepeating()
             cameraCaptureSession.abortCaptures()
@@ -160,28 +157,4 @@ class CameraProHardware(
             listener.onError("CameraPro.takePicture.CameraAccessException::${e.message}", true)
         }
     }
-
-//    private fun configureTransform(view: TextureView) {
-//        val viewSize = Size((view.width), (view.height))
-//
-//        val viewHeight = viewSize.height.toFloat()
-//        val viewWidth = viewSize.width.toFloat()
-//
-//        val ratioHeight = .34F//viewHeight / cameraValues.maxHeight
-//        val ratioWidth = .66F//viewWidth / cameraValues.maxWidth
-//
-//        val cameraHeight = cameraValues.maxHeight.toFloat() * ratioHeight
-//        val cameraWidth = cameraValues.maxWidth.toFloat() * ratioWidth
-//
-//        val matrix = Matrix()
-//        val viewRect = android.graphics.RectF(0f, 0f, viewWidth, viewHeight)
-//        val bufferRect = android.graphics.RectF(0f, 0f, cameraWidth, cameraHeight)
-//        val centerX = viewRect.centerX()
-//        val centerY = viewRect.centerY()
-//
-//        bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
-//        matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.CENTER)
-//
-//        view.setTransform(matrix)
-//    }
 }
