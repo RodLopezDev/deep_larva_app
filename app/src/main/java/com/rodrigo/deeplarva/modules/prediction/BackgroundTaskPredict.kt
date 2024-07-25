@@ -119,7 +119,7 @@ class BackgroundTaskPredict(private val my: Context) {
             withContext(Dispatchers.Main) {
                 val uuid: UUID = UUID.randomUUID()
                 val uuidString: String = uuid.toString()
-                val filename = "$uuidString-processed.${Constants.IMAGE_EXTENSION}"
+                val filename = "$uuidString-processed${Constants.IMAGE_EXTENSION}"
                 callback(result.finalBitmap, result.counter, result.boxes, filename, totalTime)
             }
         }

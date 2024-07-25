@@ -19,7 +19,7 @@ class BitmapUtils {
         fun getRandomBitmapName(): String {
             var uuid: UUID = UUID.randomUUID()
             var uuidString: String = uuid.toString()
-            return "$uuidString.${Constants.IMAGE_EXTENSION}"
+            return "${uuidString}${Constants.IMAGE_EXTENSION}"
         }
         fun getBitmapFromPath(filePath: String): Bitmap? {
             return BitmapFactory.decodeFile(filePath)
