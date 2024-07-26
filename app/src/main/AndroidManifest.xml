@@ -28,6 +28,7 @@
             android:name=".routes.activity.SplashActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +40,7 @@
             android:name=".routes.activity.PermissionsHandlerActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,6 +51,7 @@
             android:name=".routes.activity.PicturesActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,6 +62,7 @@
             android:name=".routes.activity.PictureDetailActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
