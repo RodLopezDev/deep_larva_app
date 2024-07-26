@@ -1,5 +1,4 @@
 package com.rodrigo.deeplarva.modules.prediction
-
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -10,17 +9,20 @@ import android.graphics.RectF
 import android.os.Build
 import android.widget.ImageView
 import android.widget.TextView
+
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import java.time.Duration
 import java.time.Instant
-import kotlin.math.pow
-import kotlin.math.sqrt
+
+
+import java.io.File
+import java.io.FileWriter
+
 
 class Detect640x640(private val activity: Context) {
-
 
     val paint = Paint()
 
@@ -45,17 +47,21 @@ class Detect640x640(private val activity: Context) {
         //labels = FileUtil.loadLabels(this, "labels.txt")
         labels = listOf("objeto_interes")
     }
-
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun iniciarProcesoGlobalPrediction(
+        fileName: String,
         bitmap: Bitmap,
         splitWidth: Int,
         splitHeight: Int,
         overlap: Float,
+        miBatchSize: Int,
         miCustomConfidenceThreshold: Float,
-        miCustomIoUThresholdNMS: Float
+        miCustomIoUThreshold: Float
     ): FinalResult {
+
+        val initialTime = Instant.now()
+        val startTimeMillis = System.currentTimeMillis()
+
         // Dividir la imagen en partes usando la función splitImages
         val splits_results = splitImages(bitmap, splitWidth, splitHeight, overlap)
 
@@ -67,128 +73,62 @@ class Detect640x640(private val activity: Context) {
         println("imageSplitsKeys: $imageSplitsKeys")
         println("imageSplits: $imageSplits")
 
+        var allResults: List<Map<String, Any>>
 
-        // Llamada a la función para realizar la predicción en las imágenes divididas
-        val initialTime = Instant.now()
-
-//        var allResults
-
-//        var allResults: List<Map<String, Any>>
-        var allResults: List<Map<String, Any>> = emptyList()
-
-        val modelPath = "best_weight_ds_official_epch250_float32_v2.tflite"
-
+        val modelPath = "best_weight_ds_official_epch250_float32_v2.tflite" // TODO: CHANGED
         val labelPath = "labels_2.txt"
-
         val detector2 = Detector(activity, modelPath, labelPath)
-
         detector2.setup()
 
-        val predictedAnnotations = realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
-            detector2,
+        allResults = realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
+            detector2, // Agrega este parámetro
             imageSplits,
             imageSplitsKeys,
-            miCustomConfidenceThreshold
+            miCustomConfidenceThreshold,
+            miCustomIoUThreshold
         )
-
-        val finalTime = Instant.now()
-
-        // Calcular el tiempo de diferencia
-        val timeDifferenceOutput = calculateTimeDifference(initialTime, finalTime)
-        println("timeDifferenceOutput: $timeDifferenceOutput")
-
-        // Convertir PredictedAnnotation a una lista de BoundingBox
-        val boundingBoxes = predictedAnnotations.bboxs.mapIndexed { index, box ->
-            BoundingBox(
-                x1 = box[1],
-                y1 = box[0],
-                x2 = box[3],
-                y2 = box[2],
-                cx = (box[1] + box[3]) / 2,
-                cy = (box[0] + box[2]) / 2,
-                w = box[3] - box[1],
-                h = box[2] - box[0],
-                cnf = predictedAnnotations.scores[index],
-                cls = predictedAnnotations.categoryIds[index],
-                clsName = "" // Suponiendo que no tienes el nombre de la clase aquí
-            )
-        }
+        val scaledPredictedAnnotations = getAllPredictedAnnotationsAndScaledData(allResults)
 
         // Aplicar NMS
-        val selectedBoxes = applyNMS(boundingBoxes, miCustomIoUThresholdNMS)
+        val nmsScaledPredictedAnnotations = applyNms(
+            scaledPredictedAnnotations.scores,
+            scaledPredictedAnnotations.centroids,
+            scaledPredictedAnnotations.bboxs,
+            scaledPredictedAnnotations.categoryIds,
+            scaledPredictedAnnotations.keys,
+            customIouThreshold = miCustomIoUThreshold // Umbral de IoU personalizado
+        )
 
-        // Convertir selectedBoxes a GroupedAnnotation
-        val groupedAnnotations = selectedBoxes.map { box ->
-            GroupedAnnotation(
-                scores = mutableListOf(box.cnf),
-                centroids = mutableListOf(listOf(box.cy, box.cx)),
-                bboxs = mutableListOf(listOf(box.y1, box.x1, box.y2, box.x2)),
-                categoryIds = mutableListOf(box.cls)
-            )
-        }
-        val finalBbox = groupedAnnotations.flatMap { it.bboxs }
-        // Llamada a la función para plotear las anotaciones predichas
+        val tiempo_tomado = calculateTimeDifference(initialTime, Instant.now())
+        val totalTime = System.currentTimeMillis() - startTimeMillis
 
-        return plotPredictedODAnnotationsDataForAndroid(groupedAnnotations, bitmap, finalBbox,labels)
+        // Obtener el conteo total con el algoritmo Golden
+        val TotalPredictions = mapOf(
+            miCustomIoUThreshold to nmsScaledPredictedAnnotations.scores.size
+        )
+
+        val outputFileName = "${fileName}_${miCustomConfidenceThreshold}_conf_predictions.txt" // Cambia el nombre del archivo según tu necesidad
+        savePredictionsToTextFile(activity, fileName, miCustomConfidenceThreshold, TotalPredictions, tiempo_tomado, outputFileName)
+
+        return plotPredictedODAnnotationsDataForAndroid(nmsScaledPredictedAnnotations, bitmap, totalTime)
+
     }
-
-    private fun applyNMS(boxes: List<BoundingBox>, iouThreshold: Float): MutableList<BoundingBox> {
-        val sortedBoxes = boxes.sortedByDescending { it.cnf }.toMutableList()
-        val selectedBoxes = mutableListOf<BoundingBox>()
-
-        while (sortedBoxes.isNotEmpty()) {
-            val first = sortedBoxes.first()
-            selectedBoxes.add(first)
-            sortedBoxes.remove(first)
-
-            val iterator = sortedBoxes.iterator()
-            while (iterator.hasNext()) {
-                val nextBox = iterator.next()
-                val iou = calculateIoU(first, nextBox)
-                if (iou > iouThreshold) {
-                    iterator.remove()
-                }
-            }
-        }
-
-        return selectedBoxes
-    }
-
-    private fun calculateIoU(box1: BoundingBox, box2: BoundingBox): Float {
-        val x1 = maxOf(box1.x1, box2.x1)
-        val y1 = maxOf(box1.y1, box2.y1)
-        val x2 = minOf(box1.x2, box2.x2)
-        val y2 = minOf(box1.y2, box2.y2)
-        val intersectionArea = maxOf(0F, x2 - x1) * maxOf(0F, y2 - y1)
-        val box1Area = box1.w * box1.h
-
-        val box1Area_v2 = (box1.x2 - box1.x1) * (box1.y2 - box1.y1)
-        val box2Area_v2 = (box2.x2 - box2.x1) * (box2.y2 - box2.y1)
-
-        val union = box1Area_v2 + box2Area_v2 - intersectionArea
-
-        return intersectionArea / union
-    }
-
     fun realizarProcesoPrediccionUltralyticsYolov8TFLite1DeImagenesSpliteadasV1(
-        custom_detector: Detector,
+        custom_detector: Detector, // Agrega este parámetro
         imageSplits: Array<Bitmap?>,
         imageSplitsKeys: Array<String?>,
-        customConfidenceThreshold: Float
-    ): PredictedAnnotation {
+        customConfidenceThreshold: Float,
+        customIoUThreshold: Float
+    ): List<Map<String, Any>> {
+        // Crear el título de la barra de progreso
+        val progressBarTitle = "results_${customConfidenceThreshold}_conf_thr_${customIoUThreshold}_iou_thr"
 
-        val custom_scores = mutableListOf<Float>()
-        val custom_centroids = mutableListOf<List<Float>>()
-        val custom_bboxs = mutableListOf<List<Float>>()
-        val custom_categoryIds = mutableListOf<Int>()
-        val custom_keys = mutableListOf<String>()
+        val allResults = mutableListOf<Map<String, Any>>()
+        val totalBatches = imageSplits.size
 
         for ((batchIndex, batchImgElement) in imageSplits.withIndex()) {
+
             val batchSplitsKey = imageSplitsKeys.getOrNull(batchIndex)
-            println("Batch Index: $batchIndex")
-            println("Batch Splits Key: $batchSplitsKey")
-            println("Batch Img Element: $batchImgElement")
-            println("-------------")
 
             var mutableBatchImgElement: Bitmap? = null
             var mutableBatchImgElement2: Bitmap? = null
@@ -197,165 +137,110 @@ class Detect640x640(private val activity: Context) {
             var split_imgHeight: Int? = null
 
             batchImgElement?.let {
-                mutableBatchImgElement = it
+                mutableBatchImgElement = it // Declarar como variable mutable
                 split_imgWidth = it.width
                 split_imgHeight = it.height
 
                 mutableBatchImgElement2 = it
 
+                // Redimensionar el Bitmap directamente
                 mutableBatchImgElement = Bitmap.createScaledBitmap(mutableBatchImgElement!!, split_imgWidth!!, split_imgHeight!!, false)
+
             } ?: println("Bitmap Element es nulo")
 
             val BoxesapplyNMS2 = custom_detector.detect(mutableBatchImgElement2!!, customConfidenceThreshold)
 
+            var new_locations_List2 = mutableListOf<List<Float>>()
+            val classes2 = mutableListOf<Float>()
+            val scores2 = mutableListOf<Float>()
+
             if (BoxesapplyNMS2 != null) {
                 BoxesapplyNMS2.forEach { box ->
-                    val left = box.x1 * split_imgWidth!! // x_min // x1
-                    val top = box.y1 * split_imgHeight!! // y_min // y1
-                    val right = box.x2 * split_imgWidth!! // x_max // x2
-                    val bottom = box.y2 * split_imgHeight!! // y_max // y2
 
-                    val value_box = listOf(top, left, bottom, right)
-                    val value_score = box.cnf.toFloat()
-                    val rawValue = box.cls.toInt()
-                    val value_category_id = if (rawValue > 0) rawValue - 1 else rawValue
-                    val value_key = batchSplitsKey.toString()
+                    var left = box.x1 * split_imgWidth!! // x_min // x1
+                    var top = box.y1 * split_imgHeight!! // y_min // y1
+                    var right = box.x2 * split_imgWidth!! // x_max // x2
+                    var bottom = box.y2 * split_imgHeight!! // y_max // y2
 
-                    custom_scores.add(value_score)
-                    custom_centroids.add(listOf(1.1f, 1.1f)) // Placeholder for centroids
-                    custom_bboxs.add(value_box)
-                    custom_categoryIds.add(value_category_id)
-                    custom_keys.add(value_key)
+                    val custom_box = listOf(left, top, right, bottom)
+                    new_locations_List2.add(custom_box)
+
+                    // Agregar el valor de la clase a la lista
+                    classes2.add(box.cls.toFloat())
+                    scores2.add(box.cnf.toFloat())
                 }
             }
+
+            if (BoxesapplyNMS2 != null && BoxesapplyNMS2.isNotEmpty()) {
+                allResults.add(
+                    mapOf(
+                        "boxes" to new_locations_List2,
+                        "classes" to classes2.toFloatArray(),
+                        "scores" to scores2.toFloatArray(),
+                        "image_splits_keys" to batchSplitsKey.toString()
+                    )
+                )
+            }
+
+            // Actualizar la barra de progreso con título
+            printProgressBar(batchIndex + 1, totalBatches, progressBarTitle)
+
         }
 
-        val predictedAnnotation = PredictedAnnotation(custom_scores, custom_centroids, custom_bboxs, custom_categoryIds, custom_keys)
-        return obtenerDatosEscaladoPrediccionODV1(predictedAnnotation)
+        return allResults
     }
-
     fun plotPredictedODAnnotationsDataForAndroid(
-        filteredAnnotations: List<GroupedAnnotation>,
+        nmsAnnotations: PredictedAnnotation,
         bitmap: Bitmap,
-        boxes: List<List<Float>>,
-        labels: List<String>): FinalResult {
+        totalTime: Long
+    ): FinalResult {
 
-        val dsmkdmskmkmsmds = "dsmkdmskmkmsmds"
-        println("dsmkdmskmkmsmds: $dsmkdmskmkmsmds")
+        val totalPredictions = nmsAnnotations.scores.size.takeIf { it > 0 } ?: 0
 
-        val mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-        val canvas = Canvas(mutable)
-
-        val total_predictions = (filteredAnnotations as? Collection<*>)?.size ?: 0
-
-        val dsmkdmskmkmsmdsede = "dsmkdmskmkmsmdsede"
-        println("dsmkdmskmkmsmdsede: $dsmkdmskmkmsmdsede")
-
-
-        // Mostrar un Toast por 4 segundos
-        var toast: Toast
-
-        if (total_predictions != 0) {
-            // La variable total_predictions es diferente de cero
-            println("El total de predicciones es: $total_predictions")
-            // Puedes poner aquí cualquier otra acción que desees realizar
-
-            var colors2 = getRandomColorsForAndroid(total_predictions)
-
-            val h = mutable.height
-
-            for ((i_idx, group) in filteredAnnotations.withIndex()) {
-                for ((j_idx, sub_group) in filteredAnnotations[i_idx].bboxs.withIndex()) {
-                    val my_bbox = filteredAnnotations[i_idx].bboxs[j_idx]
-                    val my_score = filteredAnnotations[i_idx].scores[j_idx]
-                    val my_category_id = filteredAnnotations[i_idx].categoryIds[j_idx]
-
-                    val custom_top = my_bbox[0]
-                    val custom_left = my_bbox[1]
-                    val custom_bottom = my_bbox[2]
-                    val custom_right = my_bbox[3]
-
-                    paint.textSize = h / 15f
-
-                    val dsmkdmskmkmsmds = "dsmkdmskmkmsmds"
-                    println("dsmkdmskmkmsmds: $dsmkdmskmkmsmds")
-
-                    paint.strokeWidth = h / 85f
-                    // paint.color = colors2[i_idx]
-                    paint.color = colors2[my_category_id]
-                    paint.style = Paint.Style.STROKE
-
-                    val dsmkdmskmkmsmds2 = "dsmkdmskmkmsmds2"
-                    println("dsmkdmskmkmsmds2: $dsmkdmskmkmsmds2")
-
-                    canvas.drawRect(RectF(custom_left, custom_top, custom_right, custom_bottom), paint)
-
-                    val dsmkdmskmkmsmds244 = "dsmkdmskmkmsmds244"
-                    println("dsmkdmskmkmsmds244: $dsmkdmskmkmsmds244")
-
-                    paint.style = Paint.Style.FILL
-                    // Puedes descomentar la línea siguiente si deseas dibujar también el texto
-                    // canvas.drawText(labels[my_category_id] + " " + my_score.toString(), custom_left, custom_top, paint)
-                }
+        if (totalPredictions != 0) {
+            var mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+            val canvas = Canvas(mutableBitmap)
+            val colors = getRandomRedColorsForAndroid(totalPredictions)
+            val paint = Paint().apply {
+                style = Paint.Style.STROKE
+                strokeWidth = 4f
             }
+            nmsAnnotations.bboxs.forEachIndexed { iIdx, bbox ->
+                paint.color = colors[0]
+                val customLeft = bbox[0]
+                val customTop = bbox[1]
+                val customRight = bbox[2]
+                val customBottom = bbox[3]
+                canvas.drawRect(customLeft, customTop, customRight, customBottom, paint)
 
-            val resizedBitmap = resizeBitmapByPercentage(mutable, 0.4f)
-
-            val mjmdjmdjmf = "mjmdjmdjmf"
-            println("mjmdjmdjmf: $mjmdjmdjmf")
-            //imageView.setImageBitmap(resizedBitmap)
-
-//            imageView.setImageBitmap(mutable)
-
-            // Actualizar el texto del textView
-            //textView.text = "$total_predictions ${labels[filteredAnnotations[0].categoryIds[0]]} detectadas"
-
-            //var finalText = "$total_predictions detected"
-
-            return FinalResult(resizedBitmap, total_predictions, boxes)
+            }
+//            mutableBitmap = resizeBitmapByPercentage(mutableBitmap, 0.4f)
+            return FinalResult(mutableBitmap, totalPredictions, nmsAnnotations.bboxs, totalTime)
+//            return FinalResult(bitmap, totalPredictions, boxes.map { listOf(it) })
         } else {
-            // La variable total_predictions es igual a cero
-            println("No hay predicciones disponibles.")
-            // Puedes poner aquí cualquier otra acción que desees realizar cuando total_predictions sea igual a cero
-//            toast = Toast.makeText(activity, "No se ha detectado ningún objeto.", Toast.LENGTH_LONG)
-//            throw Exception("NO SE ENCONTRARON NADA")
-            return FinalResult(null, 0, listOf())
+            return FinalResult(null, 0, listOf(), totalTime)
         }
-//
-//        val timer = object : CountDownTimer(4000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-////                toast.show()
-//            }
-//
-//            override fun onFinish() {
-////                toast.cancel()
-//            }
-//        }
-//
-//
-//        timer.start()
     }
+    fun savePredictionsToTextFile(
+        context: Context,
+        imageName: String,
+        confidenceThreshold: Float,
+        predictions: Map<Float, Int>,
+        tiempo_tomado: String,
+        outputFileName: String
+    ) {
+        val file = File(context.getExternalFilesDir(null), outputFileName)
+        val writer = FileWriter(file, true)
 
+        writer.append("imageName,ConfidenceThreshold,nmsThreshold,totalPredicciones,tiempoTomado\n")
+        for ((nmsThreshold, totalPredicciones) in predictions) {
+            writer.append("$imageName,$confidenceThreshold,$nmsThreshold,$totalPredicciones,$tiempo_tomado\n")
+        }
+        writer.flush()
+        writer.close()
 
-    fun resizeBitmapByPercentage(originalBitmap: Bitmap, percentage: Float): Bitmap {
-        val width = (originalBitmap.width * percentage).toInt()
-        val height = (originalBitmap.height * percentage).toInt()
-
-        return resizeBitmap(originalBitmap, width, height)
+        println("Archivo de texto guardado en: ${file.absolutePath}")
     }
-
-    fun resizeBitmap(originalBitmap: Bitmap, newWidth: Int, newHeight: Int): Bitmap {
-        val scaleWidth = newWidth.toFloat() / originalBitmap.width
-        val scaleHeight = newHeight.toFloat() / originalBitmap.height
-
-        val matrix = Matrix()
-        matrix.postScale(scaleWidth, scaleHeight)
-
-        return Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.width, originalBitmap.height, matrix, false)
-    }
-
-    // Nueva función splitImages
-//    fun splitImages(image: Bitmap, splitWidth: Int, splitHeight: Int, overlap: Float): Map<String, Bitmap> {
     fun splitImages(image: Bitmap, splitWidth: Int, splitHeight: Int, overlap: Float): SplitImagesResult {
         val imgWidth = image.width
         val imgHeight = image.height
@@ -364,11 +249,8 @@ class Detect640x640(private val activity: Context) {
         val yPoints = startPoints(imgHeight, splitHeight, overlap)
 
         val numSplits = xPoints.size * yPoints.size
-
         val imageSplitsKeys = arrayOfNulls<String>(numSplits)
-
         val imageSplits = arrayOfNulls<Bitmap>(numSplits)
-
         val splitImagesDict = mutableMapOf<String, Bitmap>() // Cambiado el tipo a Bitmap
 
 
@@ -376,8 +258,6 @@ class Detect640x640(private val activity: Context) {
 
         for (i in yPoints) {
             for (j in xPoints) {
-//                val key = "$i:${i + splitHeight},${j}:${j + splitWidth}"
-//                val key = "$i:${j},${splitHeight}:${splitWidth}"
                 val key = "${i?.toFloat()}:${j?.toFloat()},${splitHeight?.toFloat()}:${splitWidth?.toFloat()}"
                 customPrint(j,"j")
                 customPrint(j,"i")
@@ -412,105 +292,43 @@ class Detect640x640(private val activity: Context) {
 
         return colors
     }
-    // Función para obtener el tipo y la longitud de un array
-    fun getTypeAndLength(array: FloatArray): String {
-        val type = array.javaClass.componentType.simpleName
-        val length = array.size
-        return "Type: $type, Length: $length"
-    }
 
-    fun euclideanDistance(points1: List<Float>, points2: List<Float>): Float {
-        return sqrt((points1[1] - points2[1]).pow(2) + (points1[0] - points2[0]).pow(2))
-    }
+    fun getRandomBlueColorsForAndroid(numColors: Int): List<Int> {
+        val colors = mutableListOf<Int>()
 
-
-
-    fun filterGroupedAnnotationsDataV2(annotationsData: List<GroupedAnnotation>): List<GroupedAnnotation> {
-        val filteredAnnotationsData = mutableListOf<GroupedAnnotation>()
-
-        for (iIdx in annotationsData.indices) {
-            val categories = mutableMapOf<Int, MutableMap<String, Any>>()
-
-            for ((jIdx, score) in annotationsData[iIdx].scores.withIndex()) {
-                val centroid = annotationsData[iIdx].centroids[jIdx]
-                val bbox = annotationsData[iIdx].bboxs[jIdx] as MutableList<Float>
-                val categoryId = annotationsData[iIdx].categoryIds[jIdx]
-
-                if (categoryId !in categories) {
-                    categories[categoryId] = mutableMapOf(
-                        "count" to 1,
-                        "locations" to mutableListOf(jIdx)
-                    )
-                } else {
-                    categories[categoryId]!!["count"] = (categories[categoryId]!!["count"] as Int) + 1
-                    (categories[categoryId]!!["locations"] as MutableList<Int>).add(jIdx)
-                }
-            }
-
-            var datosJIdxOrdenados = listOf<CustomDataJIdx>()
-
-            for ((category, info) in categories) {
-                val sumCentroidsOfCategory = floatArrayOf(0f, 0f)
-
-                for (jIdx in info["locations"] as List<Int>) {
-                    val centroid = annotationsData[iIdx].centroids[jIdx]
-                    sumCentroidsOfCategory[0] += centroid[0]
-                    sumCentroidsOfCategory[1] += centroid[1]
-                }
-
-                val averageCentroidOfCategory = sumCentroidsOfCategory.map { it / (info["locations"] as List<Int>).size }
-
-                var bestScoreJIdx = 0.0f
-                var locationBestScoreJIdx = 0
-
-                for (jIdx in info["locations"] as List<Int>) {
-                    val score = annotationsData[iIdx].scores[jIdx]
-
-                    if (score > bestScoreJIdx) {
-                        bestScoreJIdx = score
-                        locationBestScoreJIdx = jIdx
-                    }
-                }
-
-                val referenceBox = moveBoxToCentroid(annotationsData[iIdx].bboxs[locationBestScoreJIdx].toMutableList(), averageCentroidOfCategory)
-
-                // Inicializar datos como una lista vacía mutable
-                val datosJIdx = mutableListOf<CustomDataJIdx>()
-
-                for (jIdx in info["locations"] as List<Int>) {
-                    val bbox_2 = annotationsData[iIdx].bboxs[jIdx]
-                    val boxIOU = calculateBoxIoU(referenceBox, bbox_2)
-
-                    // Agregar datos a la lista
-                    datosJIdx += CustomDataJIdx(jIdx, annotationsData[iIdx].scores[jIdx], boxIOU.toFloat())
-                }
-
-                datosJIdxOrdenados = ordenarDataJIdx(datosJIdx)
-
-            }
-
-            val newGroup = GroupedAnnotation(
-                scores = mutableListOf(annotationsData[iIdx].scores[datosJIdxOrdenados.first().jIdx]),
-                centroids = mutableListOf(annotationsData[iIdx].centroids[datosJIdxOrdenados.first().jIdx]),
-                bboxs = mutableListOf(annotationsData[iIdx].bboxs[datosJIdxOrdenados.first().jIdx]),
-                categoryIds = mutableListOf(annotationsData[iIdx].categoryIds[datosJIdxOrdenados.first().jIdx])
+        repeat(numColors) {
+            val randomBlue = Color.rgb(
+                0,                   // Componente rojo (R) fijo en 0
+                0,                   // Componente verde (G) fijo en 0
+                (128..255).random()  // Componente azul (B) aleatorio
             )
-            filteredAnnotationsData.add(newGroup)
-
+            colors.add(randomBlue)
         }
 
-        return filteredAnnotationsData
+        return colors
     }
 
+    fun getRandomRedColorsForAndroid(numColors: Int): List<Int> {
+        val colors = mutableListOf<Int>()
+
+        repeat(numColors) {
+            val randomRed = Color.rgb(
+                (128..255).random(), // Componente rojo (R) aleatorio
+                0,                   // Componente verde (G) fijo en 0
+                0                    // Componente azul (B) fijo en 0
+            )
+            colors.add(randomRed)
+        }
+
+        return colors
+    }
 
     fun getScaledDataOverBbox(predictionBboxData: MutableList<Float>, splitBboxData: List<Float>): MutableList<Float> {
 
-        // aqui_toy
-        predictionBboxData[0] += splitBboxData[0] // top // y
-        predictionBboxData[1] += splitBboxData[1] // left // x
-        predictionBboxData[2] += splitBboxData[0] // bottom // y
-        predictionBboxData[3] += splitBboxData[1] // right // x
-
+        predictionBboxData[0] += splitBboxData[1] // left // x // x1
+        predictionBboxData[1] += splitBboxData[0] // top // y // y1
+        predictionBboxData[2] += splitBboxData[1] // left // x // x2
+        predictionBboxData[3] += splitBboxData[0] // top // y // y2
 
         return mutableListOf(
             predictionBboxData[0],
@@ -519,9 +337,6 @@ class Detect640x640(private val activity: Context) {
             predictionBboxData[3]
         )
     }
-
-
-
     // Nueva función startPoints
     fun startPoints(size: Int, splitSize: Int, overlap: Float = 0f): List<Int> {
         val points = mutableListOf(0)
@@ -540,21 +355,22 @@ class Detect640x640(private val activity: Context) {
         }
         return points
     }
-
-
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun formatDuration(duration: Duration): String {
         val seconds = duration.seconds
         val hours = seconds / 3600
         val minutes = (seconds % 3600) / 60
         val remainingSeconds = seconds % 60
-        val milliseconds = duration.toMillis() % 1000
+//        val milliseconds = duration.toMillis() % 1000
 
-        return "Tiempo transcurrido: ${String.format("%02d", hours)} hrs " +
-                "${String.format("%02d", minutes)} min " +
-                "${String.format("%02d", remainingSeconds)} s " +
-                "${String.format("%03d", milliseconds)} ms"
+//        return "Tiempo transcurrido: ${String.format("%02d", hours)} hrs " +
+//                "${String.format("%02d", minutes)} min " +
+//                "${String.format("%02d", remainingSeconds)} s " +
+//                "${String.format("%03d", milliseconds)} ms"
+
+        return "${String.format("%02d", hours)}:" +
+                "${String.format("%02d", minutes)}:" +
+                "${String.format("%02d", remainingSeconds)}"
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -563,169 +379,118 @@ class Detect640x640(private val activity: Context) {
         return formatDuration(duration)
     }
 
-    fun groupODAnnotationsDataV1(annotationsData: PredictedAnnotation, threshold: Float): List<GroupedAnnotation> {
-        val (scores, centroids, bboxs, categoryIds, _) = annotationsData
+    fun getAllPredictedAnnotationsAndScaledData(getallResults: List<Map<String, Any>>): PredictedAnnotation {
+        val customScores = mutableListOf<Float>()
+        val updatedCentroids = mutableListOf<List<Float>>()
+        val scaledBboxes = mutableListOf<List<Float>>()
+        val customCategoryIds = mutableListOf<Int>()
+        val customKeys = mutableListOf<String>()
 
-        val groupedAnnotationsData = mutableListOf<GroupedAnnotation>()
+        getallResults.forEach { eachResult ->
+            val boxesList = eachResult["boxes"] as? List<List<Float>> ?: emptyList()
+            val classesArray = eachResult["classes"] as? FloatArray ?: FloatArray(0)
+            val scoresArray = eachResult["scores"] as? FloatArray ?: FloatArray(0)
+            val imageSplitsKey = eachResult["image_splits_keys"] as? String ?: ""
 
-        for (idx in bboxs.indices) {
-            var foundGroup = false
+            boxesList.forEachIndexed { idx, boxValue ->
+                val score = scoresArray.getOrNull(idx) ?: 0.0f
+                val categoryId = (classesArray.getOrNull(idx)?.toInt()?.minus(1) ?: 0).coerceAtLeast(0)
+                val keyValues = Regex("\\d+(\\.\\d+)?").findAll(imageSplitsKey).map { it.value.toFloat() }.toList()
 
-            // Check if the point is close to any existing group
-            for (group in groupedAnnotationsData) {
-                for (groupCentroid in group.centroids) {
-                    if (euclideanDistance(centroids[idx], groupCentroid) < threshold) {
-                        group.scores.add(scores[idx])
-                        group.centroids.add(centroids[idx])
-                        group.bboxs.add(bboxs[idx])
-                        group.categoryIds.add(categoryIds[idx])
-                        foundGroup = true
-                        break
-                    }
-                }
-                if (foundGroup) break
+                val scaledBbox = getScaledDataOverBbox(boxValue.toMutableList(), keyValues)
+
+                val (xMin, yMin, xMax, yMax) = scaledBbox
+
+                val centroidX = (xMin + xMax) / 2
+                val centroidY = (yMin + yMax) / 2
+
+                customScores.add(score)
+                customCategoryIds.add(categoryId)
+                customKeys.add(imageSplitsKey)
+                scaledBboxes.add(scaledBbox)
+                updatedCentroids.add(listOf(centroidY, centroidX))
             }
-
-            // If the point is not close to any existing group, create a new group
-            if (!foundGroup) {
-                val newGroup = GroupedAnnotation(
-                    scores = mutableListOf(scores[idx]),
-                    centroids = mutableListOf(centroids[idx]),
-                    bboxs = mutableListOf(bboxs[idx]),
-                    categoryIds = mutableListOf(categoryIds[idx])
-                )
-                groupedAnnotationsData.add(newGroup)
-            }
-        }
-
-        return groupedAnnotationsData
-    }
-
-
-    fun getAllPredictedAnnotations(getallResults: List<Map<String, Any>>): PredictedAnnotation {
-
-        val custom_scores = mutableListOf<Float>()
-        val custom_centroids = mutableListOf<List<Float>>()
-        val custom_bboxs = mutableListOf<List<Float>>()
-        val custom_categoryIds = mutableListOf<Int>()
-        val custom_keys = mutableListOf<String>()
-
-        for ((index, eachResult) in getallResults.withIndex()) {
-            val boxesList = eachResult["boxes"] as MutableList<*>
-            val classesArray = eachResult["classes"] as? FloatArray
-            val scoresArray = eachResult["scores"] as? FloatArray
-            val imageSplitsKeys = eachResult["image_splits_keys"] as? String
-
-            boxesList.forEachIndexed { jIdx, box_value ->
-                val value_centroid = listOf(1.1f, 1.1f)
-                val value_score = scoresArray?.get(jIdx) ?: 0.0f
-
-
-                val value_box = box_value as List<Float>
-
-                val rawValue = classesArray?.get(jIdx)?.toInt() ?: 0
-                val value_category_id = if (rawValue > 0) rawValue - 1 else rawValue
-                val value_key = imageSplitsKeys.toString()
-
-
-                custom_scores.add(value_score)
-                custom_centroids.add(value_centroid)
-                custom_bboxs.add(value_box)
-                custom_categoryIds.add(value_category_id)
-                custom_keys.add(value_key)
-            }
-
-        }
-
-        return PredictedAnnotation(custom_scores, custom_centroids, custom_bboxs, custom_categoryIds, custom_keys)
-
-    }
-
-
-
-    fun moveBoxToCentroid(box: List<Float>, centroidRef: List<Float>): List<Float> {
-        val xMin = box[0]
-        val yMin = box[1]
-        val xMax = box[2]
-        val yMax = box[3]
-
-        val oldBoxCentroid = listOf((yMin + yMax) / 2, (xMin + xMax) / 2)
-        val displacement = listOf(centroidRef[0] - oldBoxCentroid[0], centroidRef[1] - oldBoxCentroid[1])
-
-        return listOf(xMin + displacement[1], yMin + displacement[0], xMax + displacement[1], yMax + displacement[0])
-    }
-
-
-    fun obtenerDatosEscaladoPrediccionODV1(variable_triple: PredictedAnnotation): PredictedAnnotation {
-        val bboxs = mutableListOf<List<Float>>()
-        val centroids = mutableListOf<List<Float>>()
-        // iIdx
-        for (jIdx in variable_triple.bboxs.indices) {
-
-            // val keyValues = variable_triple.keys[jIdx].split("\\d+".toRegex()).filter { it.isNotEmpty() }.map { it.toInt() }
-
-
-            // Obtener el valor correspondiente para keys
-            val value_key = variable_triple.keys[jIdx]
-            // Aplicar la expresión regular y convertir los resultados a floats
-            // val keyValues = Regex("\\d+").findAll(value_key).map { it.value.toFloat() }.toList()
-            val keyValues = Regex("\\d+(\\.\\d+)?").findAll(value_key).map { it.value.toFloat() }.toList()
-
-            val scaledBbox = getScaledDataOverBbox(variable_triple.bboxs[jIdx] as MutableList<Float>, keyValues)
-
-
-            val x_min = scaledBbox[1]
-            val y_min = scaledBbox[0]
-            val x_max = scaledBbox[3]
-            val y_max = scaledBbox[2]
-
-            val fkmfdmfkd = "fkmfdmfkd"
-            println("fkmfdmfkd: $fkmfdmfkd")
-
-            val centroid_x: Float = ((x_min + x_max) / 2).toFloat()
-            val centroid_y: Float = ((y_min + y_max) / 2).toFloat()
-
-            bboxs.add(scaledBbox)
-            centroids.add(listOf(centroid_y, centroid_x))  // x: centroid[1] | y: centroid[0]
         }
 
         return PredictedAnnotation(
-            variable_triple.scores,
-            centroids,
-            bboxs,
-            variable_triple.categoryIds,
-            variable_triple.keys
+            customScores,
+            updatedCentroids,
+            scaledBboxes,
+            customCategoryIds,
+            customKeys
         )
     }
 
-    fun calculateBoxIoU(box1: List<Float>, box2: List<Float>): Float {
-        val xMin1 = box1[0]
-        val yMin1 = box1[1]
-        val xMax1 = box1[2]
-        val yMax1 = box1[3]
+    fun applyNms(
+        scores: List<Float>,
+        centroids: List<List<Float>>,
+        bboxs: List<List<Float>>,
+        categoryIds: List<Int>,
+        keys: List<String>,
+        customIouThreshold: Float
+    ): PredictedAnnotation {
+        // Ordenar las detecciones existentes por puntaje de confianza (de mayor a menor)
+        val sortedIndices = scores.indices.sortedByDescending { scores[it] }.toMutableList()
 
-        val xMin2 = box2[0]
-        val yMin2 = box2[1]
-        val xMax2 = box2[2]
-        val yMax2 = box2[3]
+        // Crear lista vacía para almacenar las mejores detecciones
+        val selectedIndices = mutableListOf<Int>()
 
-        val interXMin = maxOf(xMin1, xMin2)
-        val interYMin = maxOf(yMin1, yMin2)
-        val interXMax = minOf(xMax1, xMax2)
-        val interYMax = minOf(yMax1, yMax2)
+        // Mientras queden detecciones existentes por revisar
+        while (sortedIndices.isNotEmpty()) {
+            // Elegir la detección con mayor puntaje
+            val currentIndex = sortedIndices.first()
+            // Agregar la detección con mayor puntaje a las mejores detecciones
+            selectedIndices.add(currentIndex)
+            // Quitar la detección con mayor puntaje de las detecciones existentes
+            sortedIndices.removeAt(0)
 
-        val interArea = maxOf(0f, interXMax - interXMin + 1) * maxOf(0f, interYMax - interYMin + 1)
-        val areaBox1 = (xMax1 - xMin1 + 1) * (yMax1 - yMin1 + 1)
-        val areaBox2 = (xMax2 - xMin2 + 1) * (yMax2 - yMin2 + 1)
+            // Crear lista vacía para los elementos a eliminar
+            val removeIndices = mutableListOf<Int>()
 
-        val unionArea = areaBox1 + areaBox2 - interArea
+            // Para cada detección restante en las detecciones existentes
+            for (i in sortedIndices.indices) {
+                // Calcular superposición con la detección con mayor puntaje
+                val iou = calculateIou(bboxs[currentIndex], bboxs[sortedIndices[i]])
+                // ¿La superposición es mayor al límite permitido?
+                if (iou >= customIouThreshold) {
+                    // Agregar elemento no deseado a la lista de elementos a eliminar
+                    removeIndices.add(i)
+                }
+            }
+            // Quitar los elementos no deseados de la lista de detecciones existentes
+            removeIndices.sortedDescending().forEach { sortedIndices.removeAt(it) }
+        }
 
-        return if (unionArea == 0f) 0f else interArea / unionArea
+        // Recopilar resultados finales de la lista de mejores detecciones
+        val selectedScores = selectedIndices.map { scores[it] }
+        val selectedCentroids = selectedIndices.map { centroids[it] }
+        val selectedBboxs = selectedIndices.map { bboxs[it] }
+        val selectedCategoryIds = selectedIndices.map { categoryIds[it] }
+        val selectedKeys = selectedIndices.map { keys[it] }
+
+        // Devolver resultados finales
+        return PredictedAnnotation(
+            selectedScores,
+            selectedCentroids,
+            selectedBboxs,
+            selectedCategoryIds,
+            selectedKeys
+        )
     }
 
-    fun ordenarDataJIdx(datos: List<CustomDataJIdx>): List<CustomDataJIdx> {
-        // Ordenar los datos por score y luego por boxIOU de forma descendente
-        return datos.sortedWith(compareByDescending<CustomDataJIdx> { it.score }.thenByDescending { it.boxIOU })
+    // Función para calcular IoU (Intersection over Union)
+    fun calculateIou(box1: List<Float>, box2: List<Float>): Float {
+        val x1 = maxOf(box1[0], box2[0])
+        val y1 = maxOf(box1[1], box2[1])
+        val x2 = minOf(box1[2], box2[2])
+        val y2 = minOf(box1[3], box2[3])
+
+        val intersectionArea = maxOf(0.0f, x2 - x1) * maxOf(0.0f, y2 - y1)
+        val box1Area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+        val box2Area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+        val unionArea = box1Area + box2Area - intersectionArea
+
+        return if (unionArea > 0) intersectionArea / unionArea else 0.0f
     }
 
     fun customPrint(data: Any, dataName: String, saltoLineaTipo1: Boolean = false, saltoLineaTipo2: Boolean = false, displayData: Boolean = true, hasLen: Boolean = true, wannaExit: Boolean = false) {
@@ -753,7 +518,6 @@ class Detect640x640(private val activity: Context) {
         }
     }
 
-
     data class SplitImagesResult(
         val splitImagesDict: Map<String, Bitmap>,
         val imageSplitsKeys: Array<String?>,
@@ -767,37 +531,15 @@ class Detect640x640(private val activity: Context) {
         val categoryIds: List<Int>,
         val keys: List<String>
     )
-
-    data class GroupedAnnotation(
-        val scores: MutableList<Float>,
-        val centroids: MutableList<List<Float>>,
-        val bboxs: MutableList<List<Float>>,
-        val categoryIds: MutableList<Int>
-    )
-
-    data class FilteredAnnotation(
-        val scores: MutableList<Float>,
-        val centroids: MutableList<List<Float>>,
-        val bboxs: MutableList<List<Float>>,
-        val categoryIds: MutableList<Int>
-    )
-
-
-    data class CustomDataJIdx(val jIdx: Int, val score: Float, val boxIOU: Float)
-
-
-
-    data class BoundingBox(
-        val x1: Float,
-        val y1: Float,
-        val x2: Float,
-        val y2: Float,
-        val cx: Float,
-        val cy: Float,
-        val w: Float,
-        val h: Float,
-        val cnf: Float,
-        val cls: Int,
-        val clsName: String
-    )
+    fun printProgressBar(current: Int, total: Int, title: String) {
+        val progressBarLength = 50
+        val progress = (current.toDouble() / total.toDouble() * progressBarLength).toInt()
+        val progressBar = "=".repeat(progress) + " ".repeat(progressBarLength - progress)
+        println() // Salto de línea antes de imprimir la barra de progreso
+        print("\r$title: [$progressBar] ${current * 100 / total}% [$current/$total]")
+        println() // Salto de línea antes de imprimir la barra de progreso
+        if (current == total) {
+            println() // Para saltar a la siguiente línea cuando se complete la barra de progreso
+        }
+    }
 }

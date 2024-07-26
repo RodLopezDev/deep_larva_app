@@ -64,8 +64,9 @@ class BackgroundTaskPredict(private val my: Context) {
         var currentItem = processingList[processingIndex]
         var bitmap = BitmapUtils.getBitmapFromPath(currentItem.filePath)
             ?:  throw IllegalArgumentException("BITMAP_NOT_FOUND: $processingIndex")
+        val file_name = File(currentItem.filePath).name
 
-        predictBitmapCOROUTINE(bitmap) {
+        predictBitmapCOROUTINE(bitmap, file_name) {
                 processedBitmap, counter, boxes, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
                 // TODO: Guardar en galeria
@@ -103,24 +104,24 @@ class BackgroundTaskPredict(private val my: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun predictBitmapCOROUTINE(bitmap: Bitmap, callback: (bitmap: Bitmap?, counter: Int, boxes: List<List<Float>>, fileName: String, time: Long) -> Unit) {
-        val startTimeMillis = System.currentTimeMillis()
+    private fun predictBitmapCOROUTINE(bitmap: Bitmap, file_name: String, callback: (bitmap: Bitmap?, counter: Int, boxes: List<List<Float>>, fileName: String, time: Long) -> Unit) {
         GlobalScope.launch {
             var result = model.iniciarProcesoGlobalPrediction(
+                fileName = file_name,
                 bitmap,
                 splitWidth = 640,
                 splitHeight = 640,
                 overlap = 0.75f,
-                miCustomConfidenceThreshold = 0.60F,
-                miCustomIoUThresholdNMS = 0.3f
+                miBatchSize = 6,
+                miCustomConfidenceThreshold = 0.60f,
+                miCustomIoUThreshold = 0.30f
             )
-            val endTimeMillis = System.currentTimeMillis()
-            val totalTime = endTimeMillis - startTimeMillis
+
             withContext(Dispatchers.Main) {
                 val uuid: UUID = UUID.randomUUID()
                 val uuidString: String = uuid.toString()
                 val filename = "$uuidString-processed${Constants.IMAGE_EXTENSION}"
-                callback(result.finalBitmap, result.counter, result.boxes, filename, totalTime)
+                callback(result.finalBitmap, result.counter, result.boxes, filename, result.totalTime)
             }
         }
     }
