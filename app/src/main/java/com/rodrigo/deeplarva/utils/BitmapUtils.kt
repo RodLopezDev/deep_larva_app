@@ -6,13 +6,16 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import com.rodrigo.deeplarva.application.utils.Constants
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.UUID
+import com.rodrigo.deeplarva.modules.prediction.Detect640x640_recorte_imagen_region_interes
 
 class BitmapUtils {
     companion object {
@@ -24,6 +27,25 @@ class BitmapUtils {
         fun getBitmapFromPath(filePath: String): Bitmap? {
             return BitmapFactory.decodeFile(filePath)
         }
+        fun getRealPathFromURI(context: Context, uri: Uri): String {
+            var filePath = ""
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            if (cursor != null) {
+                cursor.moveToFirst()
+                val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+                if (idx != -1) {
+                    filePath = cursor.getString(idx)
+                }
+                cursor.close()
+            }
+            return filePath
+        }
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun autoCropImage(context: Context, bitmap: Bitmap): Bitmap? {
+            // Auto-recortado de bitmap según región de interés detectada
+            return Detect640x640_recorte_imagen_region_interes(context).obtenerImagenAutoRecortado(bitmap)
+        }
+
         fun saveBitmapToStorage(context: Context, bitmap: Bitmap, filename: String): String? {
             val file = File(context.getExternalFilesDir(null), filename)
             try {
@@ -66,25 +88,6 @@ class BitmapUtils {
 
             return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
         }
-
-        fun fixBitmapOrientation(filePath: String, defaultBitmap: Bitmap): Bitmap {
-            val exif = try {
-                ExifInterface(filePath)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                return defaultBitmap
-            }
-            val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-
-            val matrix = Matrix()
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
-                ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
-                ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
-            }
-
-            return Bitmap.createBitmap(defaultBitmap, 0, 0, defaultBitmap.width, defaultBitmap.height, matrix, true)
-        }
         fun imageToBitmap(image: android.media.Image): Bitmap? {
             val buffer: ByteBuffer = image.planes[0].buffer
             val bytes = ByteArray(buffer.remaining())
@@ -105,19 +108,6 @@ class BitmapUtils {
             val correctedBitmap = correctBitmapOrientation(bitmap, filePath)
 
             return listOf(correctedBitmap)
-        }
-        private fun getRealPathFromURI(context: Context, uri: Uri): String {
-            var filePath = ""
-            val cursor = context.contentResolver.query(uri, null, null, null, null)
-            if (cursor != null) {
-                cursor.moveToFirst()
-                val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-                if (idx != -1) {
-                    filePath = cursor.getString(idx)
-                }
-                cursor.close()
-            }
-            return filePath
         }
     }
 }

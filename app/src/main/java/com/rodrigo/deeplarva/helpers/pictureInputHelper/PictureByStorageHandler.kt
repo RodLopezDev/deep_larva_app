@@ -1,13 +1,19 @@
 package com.rodrigo.deeplarva.helpers.pictureInputHelper
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.utils.BitmapUtils
+import java.io.IOException
 
 
 class PictureByStorageHandler(override val activity: AppCompatActivity): IPictureReceiverHandler {
@@ -24,39 +30,30 @@ class PictureByStorageHandler(override val activity: AppCompatActivity): IPictur
         intent.setAction(Intent.ACTION_GET_CONTENT)
         activity.startActivityForResult(intent, REQUESTCODE)
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap> {
         if (requestCode == REQUESTCODE && resultCode == Activity.RESULT_OK){
-            val uri = data?.data ?: throw Exception("ERROR_GETTING_IMAGE")
-            return getBitmapFromUri(uri)
+            val bitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, data?.data)
+
+            val BitmapList: MutableList<Bitmap> = mutableListOf()
+
+            // Corregir la orientación del bitmap
+            val rotatedBitmap = BitmapUtils.correctBitmapOrientation(bitmap, BitmapUtils.getRealPathFromURI(activity, data?.data ?: throw Exception("ERROR_GETTING_IMAGE")))
+
+            // Auto-recortado de bitmap segun region de interes detectado
+            val croppedBitmap = BitmapUtils.autoCropImage(activity, rotatedBitmap)
+
+            croppedBitmap.apply {
+                if (croppedBitmap != null) {
+                    BitmapList.add(croppedBitmap)
+                }
+            }
+
+            return BitmapList
+//            return listOf(rotatedBitmap)
         }
         throw Exception("ERROR_GETTING_IMAGE")
     }
-
-    private fun getBitmapFromUri(uri: Uri): List<Bitmap> {
-        val bitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, uri)
-
-        val filePath = getRealPathFromURI(uri)
-
-        // Corregir la orientación del bitmap
-        val correctedBitmap = BitmapUtils.correctBitmapOrientation(bitmap, filePath)
-
-        return listOf(correctedBitmap)
-    }
-
-    private fun getRealPathFromURI(uri: Uri): String {
-        var filePath = ""
-        val cursor = activity.contentResolver.query(uri, null, null, null, null)
-        if (cursor != null) {
-            cursor.moveToFirst()
-            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            if (idx != -1) {
-                filePath = cursor.getString(idx)
-            }
-            cursor.close()
-        }
-        return filePath
-    }
-
     override fun getRequestCode(): Int{
         return REQUESTCODE
     }
