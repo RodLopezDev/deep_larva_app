@@ -16,12 +16,6 @@ class ZoomImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : androidx.appcompat.widget.AppCompatImageView(context, attrs, defStyle) {
 
-    private val borderPaint: Paint = Paint().apply {
-        setARGB(255, 255, 128, 0)
-        style = Paint.Style.STROKE
-        strokeWidth = 2f
-    }
-
     private val backgroundPaint: Paint = Paint().apply {
         setARGB(255, 0, 0, 0)
         style = Paint.Style.FILL
@@ -100,7 +94,6 @@ class ZoomImageView @JvmOverloads constructor(
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        canvas.drawRect(0f, 0f, width - 1f, height - 1f, borderPaint)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -123,7 +116,7 @@ class ZoomImageView @JvmOverloads constructor(
             val width = it.intrinsicWidth
             val height = it.intrinsicHeight
 
-            val borderWidth = borderPaint.strokeWidth.toInt()
+            val borderWidth = 0
             mScaleFactor = minOf(
                 (layoutParams.width - borderWidth).toFloat() / width,
                 (layoutParams.height - borderWidth).toFloat() / height
@@ -144,7 +137,7 @@ class ZoomImageView @JvmOverloads constructor(
         mLastTouchX = mPosX
         mLastTouchY = mPosY
 
-        val borderWidth = borderPaint.strokeWidth.toInt()
+        val borderWidth = 0
 
         mScaleFactor = if (drawableWidth <= drawableHeight) {
             (viewWidth - borderWidth).toFloat() / drawableWidth

@@ -3,6 +3,7 @@ package com.rodrigo.deeplarva.routes.activity.view
 import android.content.Intent
 import android.graphics.Bitmap
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +18,7 @@ import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
 import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
 import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
 import com.rodrigo.deeplarva.ui.widget.listHandler.ListHandlerView
+import com.rodrigo.deeplarva.utils.UserUtils
 
 
 class PictureActivityView(
@@ -89,8 +91,14 @@ class PictureActivityView(
         val dialog = AlertDialog.Builder(activity)
             .setTitle("DeviceID")
             .setMessage(deviceId)
-            .setPositiveButton("Close") { dialog, _ ->
+            .setPositiveButton("Cerrar") { dialog, _ ->
                 dialog.dismiss()
+            }
+            .setNeutralButton("Copiar") { dialog, _ ->
+                UserUtils.copyTextToClipboard(activity, deviceId)
+                activity.runOnUiThread {
+                    Toast.makeText(activity, "Copiado", Toast.LENGTH_SHORT).show()
+                }
             }
             .create()
 
