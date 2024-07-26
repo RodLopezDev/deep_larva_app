@@ -1,17 +1,16 @@
 package com.rodrigo.deeplarva.routes.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.databinding.ActivityPictureDetailBinding
-import com.rodrigo.deeplarva.domain.entity.BoxDetection
-import com.rodrigo.deeplarva.domain.entity.Picture
 import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.rodrigo.deeplarva.infraestructure.services.BoxDetectionServices
 import com.rodrigo.deeplarva.infraestructure.services.PicturesServices
-import com.rodrigo.deeplarva.utils.BitmapUtils
+import com.rodrigo.deeplarva.routes.activity.view.PictureDetailActivityView
 import kotlin.properties.Delegates
 
 class PictureDetailActivity: AppCompatActivity() {
@@ -20,11 +19,12 @@ class PictureDetailActivity: AppCompatActivity() {
     private lateinit var db: AppDatabase
     private lateinit var pictureService: PicturesServices
     private lateinit var binding: ActivityPictureDetailBinding
+    private lateinit var view: PictureDetailActivityView
     private lateinit var boxDetectionServices: BoxDetectionServices
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPictureDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        view = PictureDetailActivityView(this, binding)
 
         pictureId = intent.getLongExtra(Constants.INTENT_PICTURE_DETAIL, 0)
 
@@ -40,20 +40,17 @@ class PictureDetailActivity: AppCompatActivity() {
             }
             boxDetectionServices.findByPictureId(pictureId) {
                 boxes -> run {
-                initDetail(picture, boxes)
+                view.render(picture, boxes)
             }}
         }
     }
-    private fun initDetail(picture: Picture,  boxes: List<BoxDetection>) {
-        val bitmapFile = BitmapUtils.getBitmapFromPath(picture.filePath)
-        runOnUiThread {
-            binding.imgBasePicture.setImageBitmap(bitmapFile)
-        }
-        if(picture.hasMetadata) {
-            val bitmapProcessed = BitmapUtils.getBitmapFromPath(picture.processedFilePath)
-            runOnUiThread {
-                binding.imgProcessedPicture.setImageBitmap(bitmapProcessed)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
             }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
