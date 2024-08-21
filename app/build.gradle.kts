@@ -1,5 +1,5 @@
 import java.util.Properties
-import org.gradle.kotlin.dsl.*
+import kotlin.collections.set
 
 plugins {
     id("com.android.application")
@@ -90,6 +90,13 @@ dependencies {
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation("androidx.camera:camera-view:${camerax_version}")
+
+    implementation(libs.sol)
+
+    implementation(libs.andromeda.core)
+    implementation(libs.andromeda.camera)
+    implementation(libs.andromeda.alerts)
+    implementation(libs.andromeda.canvas)
 
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.moshi:moshi:1.12.0")

@@ -1,0 +1,18 @@
+[versions]
+andromedaVersion = "7.0.0"
+sol = "9.4.0"
+
+[libraries]
+andromeda-alerts = { module = "com.github.kylecorry31.andromeda:alerts", version.ref = "andromedaVersion" }
+andromeda-camera = { module = "com.github.kylecorry31.andromeda:camera", version.ref = "andromedaVersion" }
+andromeda-core = { module = "com.github.kylecorry31.andromeda:core", version.ref = "andromedaVersion" }
+andromeda-exceptions = { module = "com.github.kylecorry31.andromeda:exceptions", version.ref = "andromedaVersion" }
+andromeda-files = { module = "com.github.kylecorry31.andromeda:files", version.ref = "andromedaVersion" }
+andromeda-fragments = { module = "com.github.kylecorry31.andromeda:fragments", version.ref = "andromedaVersion" }
+andromeda-haptics = { module = "com.github.kylecorry31.andromeda:buzz", version.ref = "andromedaVersion" }
+andromeda-canvas = { module = "com.github.kylecorry31.andromeda:canvas", version.ref = "andromedaVersion" }
+andromeda-pickers = { module = "com.github.kylecorry31.andromeda:pickers", version.ref = "andromedaVersion" }
+andromeda-permissions = { module = "com.github.kylecorry31.andromeda:permissions", version.ref = "andromedaVersion" }
+andromeda-preferences = { module = "com.github.kylecorry31.andromeda:preferences", version.ref = "andromedaVersion" }
+andromeda-views = { module = "com.github.kylecorry31.andromeda:views", version.ref = "andromedaVersion" }
+sol = { module = "com.github.kylecorry31:sol", version.ref = "sol" }
