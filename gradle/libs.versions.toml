@@ -1,8 +1,13 @@
 [versions]
+coreKtx = "1.12.0"
+desugar_jdk_libs = "2.0.4"
 andromedaVersion = "7.0.0"
 sol = "9.4.0"
 
 [libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+
 andromeda-alerts = { module = "com.github.kylecorry31.andromeda:alerts", version.ref = "andromedaVersion" }
 andromeda-camera = { module = "com.github.kylecorry31.andromeda:camera", version.ref = "andromedaVersion" }
 andromeda-core = { module = "com.github.kylecorry31.andromeda:core", version.ref = "andromedaVersion" }
