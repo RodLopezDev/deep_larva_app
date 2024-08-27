@@ -114,6 +114,9 @@ dependencies {
     implementation(libs.andromeda.camera)
     implementation(libs.andromeda.alerts)
     implementation(libs.andromeda.canvas)
+    implementation(libs.andromeda.haptics)
+    implementation(libs.andromeda.files)
+    implementation(libs.andromeda.pickers)
 
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.moshi:moshi:1.12.0")
