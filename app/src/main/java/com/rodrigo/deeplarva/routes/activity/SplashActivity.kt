@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.rodrigo.deeplarva.R
+import com.rodrigo.deeplarva.application.usecases.UseCaseDefaultConfigDevice
 import com.rodrigo.deeplarva.application.usecases.UseCaseRegisterDeviceId
 import com.rodrigo.deeplarva.application.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ class SplashActivity: AppCompatActivity() {
         setContentView(R.layout.activity_spash_screen)
 
         UseCaseRegisterDeviceId(this).execute()
+        UseCaseDefaultConfigDevice(this).execute()
         GlobalScope.launch {
             delay(splashScreenTime)
             withContext(Dispatchers.Main) {

@@ -4,15 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.rodrigo.deeplarva.application.utils.Constants
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import com.rodrigo.deeplarva.routes.activity.CameraActivity
+import com.rodrigo.deeplarva.routes.activity.CameraProV2Activity
 import com.rodrigo.deeplarva.utils.BitmapUtils
-import java.io.IOException
 
 class PictureByCameraProHandler(override val activity: Activity): IPictureReceiverHandler {
     companion object {
@@ -21,6 +20,15 @@ class PictureByCameraProHandler(override val activity: Activity): IPictureReceiv
     }
 
     override fun launch() {
+        val helper = PreferencesHelper(activity)
+        val isV2 = helper.getBoolean(Constants.CONFIG_SHARED_PREFERENCES_CAMERA_ACTIVITY_V2)
+
+        if(isV2) {
+            val intent = Intent(activity, CameraProV2Activity::class.java)
+            activity.startActivityForResult(intent, REQUESTCODE)
+            return
+        }
+
         val intent = Intent(activity, CameraActivity::class.java)
         activity.startActivityForResult(intent, REQUESTCODE)
     }
