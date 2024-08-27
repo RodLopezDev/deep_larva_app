@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -24,61 +25,110 @@
         app:layout_constraintStart_toStartOf="@id/camera"
         app:layout_constraintTop_toTopOf="@id/camera" />
 
-    <TextView
-        android:id="@+id/zoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/interval"
-        app:layout_constraintEnd_toEndOf="@id/interval"
-        app:layout_constraintStart_toStartOf="@id/interval" />
-
-    <TextView
-        android:id="@+id/iso"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/focus_label"
-        app:layout_constraintStart_toStartOf="@id/focus" />
-
-    <TextView
-        android:id="@+id/interval"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/focus_label"
-        app:layout_constraintEnd_toEndOf="@id/focus"
-        app:layout_constraintStart_toStartOf="@id/focus" />
-
-    <TextView
-        android:id="@+id/shutter_speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/focus_label"
-        app:layout_constraintEnd_toEndOf="@id/focus" />
-
-    <TextView
-        android:id="@+id/focus_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/focus"
-        app:layout_constraintStart_toStartOf="@id/focus" />
-
-    <androidx.appcompat.widget.AppCompatSeekBar
-        android:id="@+id/focus"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:max="100"
-        app:layout_constraintBottom_toBottomOf="@id/camera" />
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/camera">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ISO"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="8dp" />
+
+                <TextView
+                    android:id="@+id/iso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Auto"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/llInterval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Interval"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="8dp" />
+
+                <TextView
+                    android:id="@+id/interval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Off"
+                    android:textAlignment="center"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="0.7"
+            android:gravity="right">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shutter Speed"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="8dp" />
+
+                <TextView
+                    android:id="@+id/shutter_speed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Off"
+                    android:textAlignment="center"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/capture_area"
