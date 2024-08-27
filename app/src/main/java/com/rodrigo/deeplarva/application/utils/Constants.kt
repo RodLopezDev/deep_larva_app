@@ -50,6 +50,9 @@ class Constants {
         const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MIN = "sensor-exposure-time-camera-min"
         const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MAX = "sensor-exposure-time-camera-max"
 
+        const val CONFIG_SHARED_PREFERENCES_FLAG_INITIAL_CONFIG = "config_flag"
+        const val CONFIG_SHARED_PREFERENCES_CAMERA_ACTIVITY_V2 = "config_v2"
+
         const val FOLDER_PICTURES = "deep-larva"
 
         fun getPermissionsList (): List<String> {

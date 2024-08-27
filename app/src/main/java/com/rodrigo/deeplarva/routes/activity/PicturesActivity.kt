@@ -61,6 +61,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPicturesBinding.inflate(layoutInflater)
@@ -95,6 +96,10 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
             }
             R.id.action_sync -> {
                 sync()
+                true
+            }
+            R.id.action_config -> {
+                goToConfig()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -187,6 +192,11 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
         pictureService.remove(picture) {
             load()
         }
+    }
+
+    private fun goToConfig() {
+        val intent = Intent(this, ConfigurationsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun sync() {
