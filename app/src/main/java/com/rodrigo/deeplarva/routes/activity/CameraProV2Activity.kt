@@ -1,6 +1,7 @@
 package com.rodrigo.deeplarva.routes.activity
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -21,7 +22,9 @@ import com.kylecorry.andromeda.pickers.Pickers
 import com.kylecorry.luna.coroutines.CoroutineQueueRunner
 import com.kylecorry.luna.coroutines.onIO
 import com.kylecorry.luna.coroutines.onMain
+import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.databinding.ActivityCameraPro2Binding
+import com.rodrigo.deeplarva.helpers.PreferencesHelper
 import com.rodrigo.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
 import com.rodrigo.deeplarva.modules.camerapro2.ui.CustomUiUtils
 import kotlinx.coroutines.GlobalScope
@@ -30,6 +33,8 @@ import java.io.File
 import java.time.Duration
 
 class CameraProV2Activity: AppCompatActivity() {
+    private var deviceID: String = ""
+    private val pictures = mutableListOf<String>()
     private lateinit var binding: ActivityCameraPro2Binding
     private lateinit var files: LocalFileSystem
     private lateinit var haptics: HapticMotor
@@ -68,6 +73,8 @@ class CameraProV2Activity: AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        deviceID = PreferencesHelper(this).getString(Constants.SHARED_PREFERENCES_DEVICE_ID) ?: ""
+
         binding = ActivityCameraPro2Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -188,15 +195,19 @@ class CameraProV2Activity: AppCompatActivity() {
     private fun takePhoto() {
         GlobalScope.launch {
             queue.enqueue {
-                val fileName = "fileNameGenerator.generate()"
-                val file = files.getFile(fileName, true)
+                val fileName = "${deviceID}-${System.currentTimeMillis()}"
+                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "/deep-larva/")
+                if (!imageFolder.exists()) {
+                    imageFolder.mkdirs()
+                }
+                val file = File(imageFolder, "$fileName${Constants.IMAGE_EXTENSION}")
 
                 isCapturing = true
 
                 onIO {
                     binding.camera.capture(file)
-                    copyToMediaStore(file)
-                    file.delete()
+                    pictures.add(file.absolutePath)
+                    onCloseView()
                 }
 
                 haptics.feedback(HapticFeedbackType.Click)
@@ -239,5 +250,19 @@ class CameraProV2Activity: AppCompatActivity() {
         photoDetails.clear()
         photoDetails.put(MediaStore.Audio.Media.IS_PENDING, 0)
         resolver.update(photoContentUri, photoDetails, null, null)
+
+        pictures.add(file.absolutePath)
+        onCloseView()
+    }
+    private fun onCloseView() {
+        val returnIntent = Intent()
+        if(pictures.isEmpty()) {
+            setResult(RESULT_CANCELED, returnIntent)
+        } else {
+            val intentData = pictures.joinToString(",,,")
+            returnIntent.putExtra(Constants.INTENT_CAMERA_PRO_RESULT, intentData)
+            setResult(RESULT_OK, returnIntent)
+        }
+        finish()
     }
 }
