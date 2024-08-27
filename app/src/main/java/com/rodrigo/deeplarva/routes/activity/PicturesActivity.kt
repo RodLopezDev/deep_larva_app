@@ -61,6 +61,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPicturesBinding.inflate(layoutInflater)
