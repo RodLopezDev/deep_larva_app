@@ -98,6 +98,10 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
                 sync()
                 true
             }
+            R.id.action_config -> {
+                goToConfig()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -188,6 +192,11 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
         pictureService.remove(picture) {
             load()
         }
+    }
+
+    private fun goToConfig() {
+        val intent = Intent(this, ConfigurationsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun sync() {
