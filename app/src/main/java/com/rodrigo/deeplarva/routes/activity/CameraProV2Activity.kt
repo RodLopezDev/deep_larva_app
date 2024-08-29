@@ -28,11 +28,8 @@ import com.rodrigo.deeplarva.routes.activity.observables.CameraV2Model
 import com.rodrigo.deeplarva.routes.activity.stores.CameraParameterStore
 import com.rodrigo.deeplarva.ui.widget.dialogs.SeekDialog
 import com.rodrigo.deeplarva.ui.widget.dialogs.SelectableDialog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.Duration
 
@@ -101,6 +98,8 @@ class CameraProV2Activity: AppCompatActivity() {
             if (hasPendingPhoto) {
                 delayedPhotoTimer.once(Duration.ofMillis(500))
             }
+
+            defineInitialValues()
         }
         startCamera()
     }
@@ -217,7 +216,6 @@ class CameraProV2Activity: AppCompatActivity() {
             )
         )
         isCameraRunning = true
-        defineInitialValues()
     }
 
     private fun restartCamera() {
@@ -321,13 +319,8 @@ class CameraProV2Activity: AppCompatActivity() {
         val initialExposure = cameraStore.getCameraValues().exposure
         val initialDuration = Duration.ofMillis((cameraStore.getCameraValues().shootSpeed.toFloat() * 1000).toLong())
 
-        GlobalScope.launch {
-            delay(1000L)
-            withContext(Dispatchers.Main) {
-                viewModel.setIso(initialISO)
-                viewModel.setExposure(initialExposure)
-                viewModel.setShutterSpeed(initialDuration)
-            }
-        }
+        viewModel.setIso(initialISO)
+        viewModel.setExposure(initialExposure)
+        viewModel.setShutterSpeed(initialDuration)
     }
 }
