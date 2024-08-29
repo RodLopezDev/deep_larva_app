@@ -26,6 +26,7 @@ import com.rodrigo.deeplarva.routes.activity.observables.CameraV2Model
 import com.rodrigo.deeplarva.routes.activity.stores.CameraParameterStore
 import com.rodrigo.deeplarva.ui.widget.dialogs.SeekDialog
 import com.rodrigo.deeplarva.ui.widget.dialogs.SelectableDialog
+import com.rodrigo.deeplarva.utils.SpeedUtils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -145,20 +146,24 @@ class CameraProV2Activity: AppCompatActivity() {
         }
 
         binding.containerShutter.setOnClickListener {
+            val min = cameraStore.getCameraValues().shootSpeedMin / 1000000
+            val max = cameraStore.getCameraValues().shootSpeedMax / 1000000
             val initial = if(viewModel.shutterSpeed.value != null) {
-                viewModel.shutterSpeed.value!!.toMillis().toInt()
+                viewModel.shutterSpeed.value!!.toInt()
             } else {
-                cameraStore.getCameraValues().shootSpeedMin
+                min
             }
             val dialog = SeekDialog(
-                minValue = cameraStore.getCameraValues().shootSpeedMin,
-                maxValue = cameraStore.getCameraValues().shootSpeedMax,
+                minValue = min,
+                maxValue = max,
                 initialValue = initial,
-                title = "Modificar speed"
-            ) { selectedValue ->
-                val newShutterSpeed = Duration.ofMillis((selectedValue.toFloat() * 1000).toLong())
-                viewModel.setShutterSpeed(newShutterSpeed)
-                cameraStore.updateShootSpeed(selectedValue)
+                title = "Modificar speed",
+            ) { it ->
+                val selectedValue = SpeedUtils.adjustSpeed(it)
+                val inNanoseconds =  selectedValue * 1000000
+
+                viewModel.setShutterSpeed(selectedValue)
+                cameraStore.updateShootSpeed(inNanoseconds)
             }
             dialog.show(supportFragmentManager, "IntervalPickerDialog")
         }
@@ -180,7 +185,7 @@ class CameraProV2Activity: AppCompatActivity() {
                     cameraStore.updateExposure(0)
                     return@SeekDialog
                 }
-                val newInterval = Duration.ofMillis((selectedValue.toFloat() * 1000).toLong())
+                val newInterval = Duration.ofNanos((selectedValue.toFloat() * 1000).toLong())
                 viewModel.setInterval(newInterval)
                 cameraStore.updateExposure(selectedValue)
             }
@@ -276,14 +281,16 @@ class CameraProV2Activity: AppCompatActivity() {
             binding.camera.camera?.setSensitivity(iso)
         })
         viewModel.shutterSpeed.observe(this, Observer {
-            val shutterSpeed = it
-            binding.shutterSpeed.text =
-                shutterSpeed?.let { DecimalFormatter.format(shutterSpeed.toMillis() / 1000f, 2) }
-                    ?: "Auto"
-            binding.camera.camera?.setExposureTime(shutterSpeed)
+            val shutterSpeed = it ?: 100
+            binding.shutterSpeed.text = SpeedUtils.speedToText(shutterSpeed)
+
+            val duration = Duration.ofMillis(shutterSpeed.toLong())
+            binding.camera.camera?.setExposureTime(duration)
+
+
             val previous = viewModel.previousShutterSpeed.value
             viewModel.setPreviousShutterSpeed(shutterSpeed)
-            if (shutterSpeed != previous && previous != null && previous > Duration.ofMillis(250)) {
+            if (shutterSpeed != previous && previous != null && previous > 250) {
                 restartCamera()
             }
         })
@@ -320,7 +327,8 @@ class CameraProV2Activity: AppCompatActivity() {
 
         val initialISO = cameraStore.getCameraValues().sensorSensitivity
         val initialExposure = cameraStore.getCameraValues().exposure
-        val initialDuration = Duration.ofMillis((cameraStore.getCameraValues().shootSpeed.toFloat() * 1000).toLong())
+//        val initialDuration = Duration.ofNanos((cameraStore.getCameraValues().shootSpeed.toFloat()).toLong())
+        val initialDuration = cameraStore.getCameraValues().shootSpeed / 1000000
 
         viewModel.setIso(initialISO)
         viewModel.setExposure(initialExposure)

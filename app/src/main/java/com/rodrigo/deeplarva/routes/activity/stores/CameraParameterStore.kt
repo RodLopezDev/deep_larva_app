@@ -35,6 +35,7 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             val cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId)
 
             val exposureRange = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE)
+            val exposureTimeRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
             val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             val availableDimensions = streamConfigurationMap?.getOutputSizes(ImageFormat.JPEG)
             val dimsWith916 = getDimension916(availableDimensions!!)
@@ -43,17 +44,20 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             val maxWidth = if(largest916Size!!.width > largest916Size.height) { largest916Size.height } else { largest916Size.width }
             val maxHeight = if(largest916Size!!.width > largest916Size.height) { largest916Size.width } else { largest916Size.height }
 
+            val maxExposureTime = exposureTimeRange?.upper?.toInt() ?: Constants.MIN_SHOOT_SPEED
+            val minExposureTime = exposureTimeRange?.lower?.toInt() ?: Constants.MIN_SHOOT_SPEED
+
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_WIDTH, maxWidth)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT, maxHeight)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_EXPOSURE_VALUE, 0)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_EXPOSURE_MIN, exposureRange!!.lower)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_EXPOSURE_MAX, exposureRange.upper)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_SENSITIVITY_VALUE, Constants.MIN_ISO)
-            preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_VALUE, Constants.MIN_SHOOT_SPEED)
+            preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_VALUE, minExposureTime)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_SENSITIVITY_MIN, Constants.MIN_ISO)
             preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_SENSITIVITY_MAX, Constants.MAX_ISO)
-            preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MIN, Constants.MIN_SHOOT_SPEED)
-            preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MAX, Constants.MAX_SHOOT_SPEED)
+            preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MIN, minExposureTime)
+            preferencesHelper.saveInt(Constants.SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MAX, maxExposureTime)
         }
         initValues()
     }
