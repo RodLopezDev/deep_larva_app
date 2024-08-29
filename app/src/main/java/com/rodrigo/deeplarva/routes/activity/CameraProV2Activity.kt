@@ -98,6 +98,8 @@ class CameraProV2Activity: AppCompatActivity() {
             if (hasPendingPhoto) {
                 delayedPhotoTimer.once(Duration.ofMillis(500))
             }
+
+            defineInitialValues()
         }
         startCamera()
     }
@@ -118,7 +120,7 @@ class CameraProV2Activity: AppCompatActivity() {
             takePhoto()
         }
 
-        binding.iso.setOnClickListener {
+        binding.containerISO.setOnClickListener {
             val sensitivityNames =
                 listOf("Auto") + sensitivities.map { it.toString() }
             val defaultValue = sensitivities.indexOf(viewModel.iso.value) + 1
@@ -143,7 +145,7 @@ class CameraProV2Activity: AppCompatActivity() {
             dialog.show(supportFragmentManager, "ListSelectionDialog")
         }
 
-        binding.shutterSpeed.setOnClickListener {
+        binding.containerShutter.setOnClickListener {
             val initial = if(viewModel.shutterSpeed.value != null) {
                 viewModel.shutterSpeed.value!!.toMillis().toInt()
             } else {
@@ -152,7 +154,8 @@ class CameraProV2Activity: AppCompatActivity() {
             val dialog = SeekDialog(
                 minValue = cameraStore.getCameraValues().shootSpeedMin,
                 maxValue = cameraStore.getCameraValues().shootSpeedMax,
-                initialValue = initial
+                initialValue = initial,
+                title = "Modificar speed"
             ) { selectedValue ->
                 val newShutterSpeed = Duration.ofMillis((selectedValue.toFloat() * 1000).toLong())
                 viewModel.setShutterSpeed(newShutterSpeed)
@@ -161,19 +164,42 @@ class CameraProV2Activity: AppCompatActivity() {
             dialog.show(supportFragmentManager, "IntervalPickerDialog")
         }
 
-//        binding.interval.setOnClickListener {
-//            CustomUiUtils.pickDuration(
-//                applicationContext,
-//                viewModel.interval.value,
-//                "Interval",
-//                showSeconds = true
-//            ) {
-//                val newInterval = it
-//                if(newInterval != null) {
-//                    viewModel.setInterval(newInterval)
-//                }
-//            }
-//        }
+        binding.containerInterval.setOnClickListener {
+            val initial = if(viewModel.interval.value != null) {
+                viewModel.interval.value!!.toSeconds().toInt()
+            } else {
+                0
+            }
+            val dialog = SeekDialog(
+                minValue = 0,
+                maxValue = 10,
+                initialValue = initial,
+                title = "Modificar Interval"
+            ) { selectedValue ->
+                if (selectedValue == null) {
+                    viewModel.setInterval(null)
+                    cameraStore.updateExposure(0)
+                    return@SeekDialog
+                }
+                val newInterval = Duration.ofMillis((selectedValue.toFloat() * 1000).toLong())
+                viewModel.setInterval(newInterval)
+                cameraStore.updateExposure(selectedValue)
+            }
+            dialog.show(supportFragmentManager, "IntervalPickerDialog")
+        }
+        binding.containerExposure.setOnClickListener {
+            val initial = viewModel.exposure.value ?: 0
+            val dialog = SeekDialog(
+                minValue = cameraStore.getCameraValues().exposureMin,
+                maxValue = cameraStore.getCameraValues().exposureMax,
+                initialValue = initial,
+                title = "Modificar exposicióm"
+            ) { selectedValue ->
+                viewModel.setExposure(selectedValue)
+                cameraStore.updateExposure(selectedValue)
+            }
+            dialog.show(supportFragmentManager, "ExposurePickerDialog")
+        }
 
         binding.camera.setOnZoomChangeListener {
             zoomRatio = binding.camera.camera?.zoom?.ratio ?: 1f
@@ -190,7 +216,6 @@ class CameraProV2Activity: AppCompatActivity() {
             )
         )
         isCameraRunning = true
-        defineInitialValues()
     }
 
     private fun restartCamera() {
@@ -263,6 +288,13 @@ class CameraProV2Activity: AppCompatActivity() {
                 restartCamera()
             }
         })
+        viewModel.exposure.observe(this, Observer {
+            val exposure = it
+            if(exposure != null) {
+                binding.exposure.text = exposure.toString()
+                binding.camera.camera?.setExposure(exposure)
+            }
+        })
         viewModel.interval.observe(this, Observer {
             val interval = it
             binding.interval.text =
@@ -284,9 +316,11 @@ class CameraProV2Activity: AppCompatActivity() {
     }
     private fun defineInitialValues() {
         val initialISO = cameraStore.getCameraValues().sensorSensitivity
+        val initialExposure = cameraStore.getCameraValues().exposure
         val initialDuration = Duration.ofMillis((cameraStore.getCameraValues().shootSpeed.toFloat() * 1000).toLong())
 
         viewModel.setIso(initialISO)
+        viewModel.setExposure(initialExposure)
         viewModel.setShutterSpeed(initialDuration)
     }
 }

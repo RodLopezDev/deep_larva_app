@@ -14,6 +14,7 @@ class SeekDialog(
     private val minValue: Int,
     private val maxValue: Int,
     private val initialValue: Int,
+    private val title: String = "",
     private val onValueChanged: (Int) -> Unit
 ) : DialogFragment() {
 
@@ -47,7 +48,7 @@ class SeekDialog(
             })
 
             val builder = AlertDialog.Builder(it)
-            builder.setTitle("Select a Value")
+            builder.setTitle(title)
                 .setView(dialogView)
                 .setPositiveButton("OK") { dialog, _ ->
                     val finalValue = minValue + seekBar.progress
