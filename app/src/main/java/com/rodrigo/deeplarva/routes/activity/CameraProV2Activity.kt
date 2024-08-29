@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.camera.core.ImageCapture
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -52,6 +50,7 @@ class CameraProV2Activity: AppCompatActivity() {
 
     private val queue = CoroutineQueueRunner(1)
 
+    private var hasFirstSetting = false
     private var hasPendingPhoto = false
     private var turnOffDuringInterval = false
 
@@ -86,7 +85,7 @@ class CameraProV2Activity: AppCompatActivity() {
         onCreatedView()
         onUpdate()
     }
-    @OptIn(ExperimentalZeroShutterLag::class)
+
     override fun onResume() {
         super.onResume()
         binding.camera.setOnReadyListener {
@@ -315,6 +314,10 @@ class CameraProV2Activity: AppCompatActivity() {
         })
     }
     private fun defineInitialValues() {
+        if(hasFirstSetting) {
+            return
+        }
+
         val initialISO = cameraStore.getCameraValues().sensorSensitivity
         val initialExposure = cameraStore.getCameraValues().exposure
         val initialDuration = Duration.ofMillis((cameraStore.getCameraValues().shootSpeed.toFloat() * 1000).toLong())
@@ -322,5 +325,7 @@ class CameraProV2Activity: AppCompatActivity() {
         viewModel.setIso(initialISO)
         viewModel.setExposure(initialExposure)
         viewModel.setShutterSpeed(initialDuration)
+
+        hasFirstSetting = true
     }
 }
