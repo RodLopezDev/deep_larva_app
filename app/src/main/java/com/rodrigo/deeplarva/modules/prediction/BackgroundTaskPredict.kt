@@ -70,7 +70,7 @@ class BackgroundTaskPredict(private val my: Context) {
                 processedBitmap, counter, boxes, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
                 // TODO: Guardar en galeria
-                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "deep-larva")
+                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Constants.FOLDER_PICTURES)
                 if (!imageFolder.exists()) {
                     imageFolder.mkdirs()
                 }

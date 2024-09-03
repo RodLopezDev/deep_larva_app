@@ -26,13 +26,12 @@ android {
         if (localPropertiesFile.exists()) {
             properties.load(localPropertiesFile.inputStream())
         }
-        val serverUrl = properties.getProperty("server.url")
-        val apiKey = properties.getProperty("server.apiKey")
+        val configUrl = properties.getProperty("app.configuration.url")
+        val configKey = properties.getProperty("app.configuration.apiKey")
 
-        buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
-        buildConfigField("String", "SERVER_API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "APP_CONFIG_URL", "\"$configUrl\"")
+        buildConfigField("String", "APP_CONFIG_API_KEY", "\"$configKey\"")
 
-        
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments["room.schemaLocation"] =

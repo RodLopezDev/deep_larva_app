@@ -7,8 +7,8 @@ import com.rodrigo.deeplarva.utils.ColorUtils
 
 class Constants {
     companion object {
-        const val SERVICE_BASE_URL = BuildConfig.SERVER_URL
-        const val SERVICE_API_KEY = BuildConfig.SERVER_API_KEY
+        const val SERVICE_BASE_URL = BuildConfig.APP_CONFIG_URL
+        const val SERVICE_API_KEY = BuildConfig.APP_CONFIG_API_KEY
 
         val GREEN_SYNC = ColorUtils.green(40)
 
@@ -52,6 +52,11 @@ class Constants {
 
         const val CONFIG_SHARED_PREFERENCES_FLAG_INITIAL_CONFIG = "config_flag"
         const val CONFIG_SHARED_PREFERENCES_CAMERA_ACTIVITY_V2 = "config_v2"
+
+        const val CLOUD_VALUE_LAST_DATE_CHECKED = "cloud-last-date-checked"
+        const val CLOUD_VALUE_APP_VERSION = "cloud-app-version"
+        const val CLOUD_VALUE_SERVER_URL = "cloud-server-url"
+        const val CLOUD_VALUE_SERVER_API_KEY = "cloud-server-api-key"
 
         const val FOLDER_PICTURES = "deep-larva"
 

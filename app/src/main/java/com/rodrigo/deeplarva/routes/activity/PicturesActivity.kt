@@ -200,7 +200,15 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
     }
 
     private fun sync() {
-        val backendPictureServices = BackendPictureServices()
+        val helper = PreferencesHelper(this)
+        val serverUrl = helper.getString(Constants.CLOUD_VALUE_SERVER_URL, "") ?: ""
+        val serverApiKey = helper.getString(Constants.CLOUD_VALUE_SERVER_API_KEY, "") ?: ""
+        if(serverApiKey == "" || serverUrl == "") {
+            Toast.makeText(this, "Error al obtener configuración de servidor", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val backendPictureServices = BackendPictureServices(serverUrl!!, serverApiKey!!)
         pictureService.findProcessedNonSync { pictures -> run {
             if (pictures.isEmpty()) {
                 Toast.makeText(this@PicturesActivity, "No hay muestras por sincronizar", Toast.LENGTH_SHORT).show()

@@ -37,6 +37,7 @@
             android:id="@+id/cbCameraV2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/listTitle"
             android:text="Ocupar cámara v2" />
 
     </LinearLayout>
