@@ -65,7 +65,7 @@ class CameraActivity: AppCompatActivity() {
                 cameraProHW.updateISO(value)
             }
             override fun onUpdateShootSpeed(value: Int) {
-                cameraStore.updateShootSpeed(value)
+                cameraStore.updateShootSpeed(value.toLong())
                 cameraProHW.updateSpeed(value.toLong())
             }
         })
