@@ -154,13 +154,13 @@ class CameraProV2Activity: AppCompatActivity() {
                 min
             }
             val dialog = SeekDialog(
-                minValue = min,
-                maxValue = max,
-                initialValue = initial,
+                minValue = min.toInt(),
+                maxValue = max.toInt(),
+                initialValue = initial.toInt(),
                 title = "Modificar speed",
             ) { it ->
                 val selectedValue = SpeedUtils.adjustSpeed(it)
-                val inNanoseconds =  selectedValue * 1000000
+                val inNanoseconds =  selectedValue * 1000000L
 
                 viewModel.setShutterSpeed(selectedValue)
                 cameraStore.updateShootSpeed(inNanoseconds)
@@ -332,7 +332,7 @@ class CameraProV2Activity: AppCompatActivity() {
 
         viewModel.setIso(initialISO)
         viewModel.setExposure(initialExposure)
-        viewModel.setShutterSpeed(initialDuration)
+        viewModel.setShutterSpeed(initialDuration.toInt())
 
         hasFirstSetting = true
     }

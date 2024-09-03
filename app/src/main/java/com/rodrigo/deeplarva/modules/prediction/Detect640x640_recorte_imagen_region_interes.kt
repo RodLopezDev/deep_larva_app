@@ -47,7 +47,7 @@ class Detect640x640_recorte_imagen_region_interes(private val activity: Context)
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun obtenerImagenAutoRecortado(bitmap: Bitmap): Bitmap? {
-        val modelPath = "best_weight_recorte_region_interes_official_epch12_float32_v1.tflite"
+        val modelPath = "best_weight_recorte_region_interes_official_epch12_float32_v3.tflite"
 
         val labelPath = "labels_2.txt"
 
