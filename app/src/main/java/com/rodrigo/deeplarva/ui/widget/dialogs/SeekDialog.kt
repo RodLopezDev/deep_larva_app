@@ -35,16 +35,9 @@ class SeekDialog(
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     val value = minValue + progress
                     valueTextView.text = value.toString()
-//                    onValueChanged(value)
                 }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    // Optional: Handle start of touch event
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    // Optional: Handle end of touch event
-                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
 
             val builder = AlertDialog.Builder(it)

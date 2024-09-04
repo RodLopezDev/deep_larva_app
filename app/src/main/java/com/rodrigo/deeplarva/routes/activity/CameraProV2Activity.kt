@@ -26,6 +26,7 @@ import com.rodrigo.deeplarva.routes.activity.observables.CameraV2Model
 import com.rodrigo.deeplarva.routes.activity.stores.CameraParameterStore
 import com.rodrigo.deeplarva.ui.widget.dialogs.SeekDialog
 import com.rodrigo.deeplarva.ui.widget.dialogs.SelectableDialog
+import com.rodrigo.deeplarva.ui.widget.dialogs.ShooterSpeedDialog
 import com.rodrigo.deeplarva.utils.SpeedUtils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -146,19 +147,9 @@ class CameraProV2Activity: AppCompatActivity() {
         }
 
         binding.containerShutter.setOnClickListener {
-            val min = cameraStore.getCameraValues().shootSpeedMin / 1000000
-            val max = cameraStore.getCameraValues().shootSpeedMax / 1000000
-            val initial = if(viewModel.shutterSpeed.value != null) {
-                viewModel.shutterSpeed.value!!.toInt()
-            } else {
-                min
-            }
-            val dialog = SeekDialog(
-                minValue = min.toInt(),
-                maxValue = max.toInt(),
-                initialValue = initial.toInt(),
-                title = "Modificar speed",
-            ) { it ->
+            val dialog = ShooterSpeedDialog(
+                title = "Shooter Speed"
+            ) {
                 val selectedValue = SpeedUtils.adjustSpeed(it)
                 val inNanoseconds =  selectedValue * 1000000L
 
