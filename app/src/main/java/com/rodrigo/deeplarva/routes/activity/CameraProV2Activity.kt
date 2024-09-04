@@ -147,11 +147,13 @@ class CameraProV2Activity: AppCompatActivity() {
         }
 
         binding.containerShutter.setOnClickListener {
+            //val min = cameraStore.getCameraValues().shootSpeedMin / 1000000
+            //val max = cameraStore.getCameraValues().shootSpeedMax / 1000000
             val dialog = ShooterSpeedDialog(
                 title = "Shooter Speed"
             ) {
                 val selectedValue = SpeedUtils.adjustSpeed(it)
-                val inNanoseconds =  selectedValue * 1000000L
+                val inNanoseconds =  selectedValue * Constants.MILI_TO_NANO_SECONDS
 
                 viewModel.setShutterSpeed(selectedValue)
                 cameraStore.updateShootSpeed(inNanoseconds)

@@ -19,6 +19,8 @@ class Constants {
         const val MAX_SHOOT_SPEED = 10000000L
         const val MIN_SHOOT_SPEED = 100000L
 
+        const val MILI_TO_NANO_SECONDS = 1000000L
+
         const val DB_NAME ="deep-larva-db"
 
         const val FILE_PROVIDER = "com.rodrigo.deeplarva.fileProvider"

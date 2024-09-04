@@ -23,13 +23,14 @@ class ShooterSpeedDialog(
             val btn160 = dialogView.findViewById<Button>(R.id.btn1_60)
             val btn180 = dialogView.findViewById<Button>(R.id.btn1_80)
             val btn1100 = dialogView.findViewById<Button>(R.id.btn1_100)
+            val btn11000 = dialogView.findViewById<Button>(R.id.btn1_1000)
 
             btnAuto.setOnClickListener {
                 onValueChanged(0)
                 dialog!!.dismiss()
             }
             btn150.setOnClickListener {
-                onValueChanged(50)
+                onValueChanged(1000 / 50)
                 dialog!!.dismiss()
             }
             btn160.setOnClickListener {
@@ -42,6 +43,10 @@ class ShooterSpeedDialog(
             }
             btn1100.setOnClickListener {
                 onValueChanged(100)
+                dialog!!.dismiss()
+            }
+            btn11000.setOnClickListener {
+                onValueChanged(1000)
                 dialog!!.dismiss()
             }
 
