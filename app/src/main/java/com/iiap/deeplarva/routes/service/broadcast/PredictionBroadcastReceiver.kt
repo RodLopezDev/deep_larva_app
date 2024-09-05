@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.AppConstants
 
 class PredictionBroadcastReceiver (private val activity: AppCompatActivity){
 
@@ -24,7 +24,7 @@ class PredictionBroadcastReceiver (private val activity: AppCompatActivity){
                 callback(pictureId, percentage)
             }
         }
-        val filter = IntentFilter(Constants.BROADCAST_ACTION)
+        val filter = IntentFilter(AppConstants.BROADCAST_ACTION)
         activity.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
     }
 

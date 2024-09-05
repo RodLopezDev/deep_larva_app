@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
+import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
@@ -154,7 +154,7 @@ class CameraProV2Activity: AppCompatActivity() {
                 title = "Shooter Speed"
             ) {
                 val selectedValue = SpeedUtils.adjustSpeed(it)
-                val inNanoseconds =  selectedValue * Constants.MILI_TO_NANO_SECONDS
+                val inNanoseconds =  selectedValue * 1000000L
 
                 viewModel.setShutterSpeed(selectedValue)
                 cameraStore.updateShootSpeed(inNanoseconds)
@@ -234,7 +234,7 @@ class CameraProV2Activity: AppCompatActivity() {
                 if (!imageFolder.exists()) {
                     imageFolder.mkdirs()
                 }
-                val file = File(imageFolder, "$fileName${Constants.IMAGE_EXTENSION}")
+                val file = File(imageFolder, "$fileName${AppConstants.IMAGE_EXTENSION}")
 
                 isCapturing = true
 
@@ -262,7 +262,7 @@ class CameraProV2Activity: AppCompatActivity() {
             setResult(RESULT_CANCELED, returnIntent)
         } else {
             val intentData = pictures.joinToString(",,,")
-            returnIntent.putExtra(Constants.INTENT_CAMERA_PRO_RESULT, intentData)
+            returnIntent.putExtra(AppConstants.INTENT_CAMERA_PRO_RESULT, intentData)
             setResult(RESULT_OK, returnIntent)
         }
         finish()

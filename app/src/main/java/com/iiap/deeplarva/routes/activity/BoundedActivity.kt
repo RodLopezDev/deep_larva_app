@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.MessagesConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.routes.service.PredictionService
 import com.iiap.deeplarva.routes.service.ServiceChangesListener
@@ -58,13 +58,13 @@ open class BoundedActivity(): AppCompatActivity(), ServiceChangesListener, IBoun
 
     protected fun launchService(picture: Picture){
         if(boundService.isBounded() && this.hasPictureId() != null) {
-            Toast.makeText(this@BoundedActivity, Constants.MESSAGE_SERVICE_IS_RUNNING, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@BoundedActivity, MessagesConstants.MESSAGE_SERVICE_IS_RUNNING, Toast.LENGTH_SHORT).show()
             return
         }
 
         var intent = Intent(applicationContext, PredictionService::class.java)
         intent.putExtra("pictureId", picture.id)
-        Toast.makeText(applicationContext, Constants.MESSAGE_SERVICE_STARTED, Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, MessagesConstants.MESSAGE_SERVICE_STARTED, Toast.LENGTH_SHORT).show()
         startService(intent)
     }
 

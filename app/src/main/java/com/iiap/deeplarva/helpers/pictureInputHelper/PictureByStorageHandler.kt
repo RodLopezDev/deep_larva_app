@@ -1,19 +1,14 @@
 package com.iiap.deeplarva.helpers.pictureInputHelper
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Matrix
-import android.media.ExifInterface
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.utils.BitmapUtils
-import java.io.IOException
 
 
 class PictureByStorageHandler(override val activity: AppCompatActivity): IPictureReceiverHandler {
@@ -22,7 +17,7 @@ class PictureByStorageHandler(override val activity: AppCompatActivity): IPictur
     }
 
     override fun launch(){
-        if (Constants.REQUIRE_CONTRACT_FOR_GALLERY) {
+        if (PermissionsConstans.REQUIRE_CONTRACT_FOR_GALLERY) {
             return
         }
         val intent = Intent()

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.iiap.deeplarva.R
-import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.PermissionsConstans
 
 class PermissionsHandlerActivity: AppCompatActivity() {
 
@@ -33,7 +33,7 @@ class PermissionsHandlerActivity: AppCompatActivity() {
     }
 
     private fun requestPermissions() {
-        val requiredPermissions = Constants.getPermissionsList().filter {
+        val requiredPermissions = PermissionsConstans.getPermissionsList().filter {
             val permission = ContextCompat.checkSelfPermission(this@PermissionsHandlerActivity, it)
             permission != PackageManager.PERMISSION_GRANTED
         }

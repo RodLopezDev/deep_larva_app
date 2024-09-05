@@ -1,5 +1,6 @@
 package com.iiap.deeplarva.routes.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.iiap.deeplarva.R
 import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
@@ -60,6 +62,7 @@ class PredictionService: Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
+    @SuppressLint("ForegroundServiceType")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val pictureId = intent!!.getLongExtra("pictureId", 0) ?: 0
@@ -77,14 +80,14 @@ class PredictionService: Service() {
         val notificationIntent = Intent(this, PicturesActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
 
-        val notification: Notification = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+        val notification: Notification = NotificationCompat.Builder(this, AppConstants.NOTIFICATION_CHANNEL_ID)
             .setContentTitle("DeepLarva")
             .setContentText("Processing pictures")
             .setSmallIcon(R.drawable.deep_larva_icon)
             .setContentIntent(pendingIntent)
             .build()
 
-        startForeground(Constants.NOTIFICATION_ID, notification)
+        startForeground(AppConstants.NOTIFICATION_ID, notification)
 
         eventPredict(pictureId)
 
@@ -149,7 +152,7 @@ class PredictionService: Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                Constants.NOTIFICATION_CHANNEL_ID,
+                AppConstants.NOTIFICATION_CHANNEL_ID,
                 "My Background Service Channel",
                 NotificationManager.IMPORTANCE_DEFAULT
             )

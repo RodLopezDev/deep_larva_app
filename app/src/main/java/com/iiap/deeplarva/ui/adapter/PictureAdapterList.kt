@@ -13,9 +13,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.iiap.deeplarva.R
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.domain.view.PictureListEntity
 import com.iiap.deeplarva.ui.widget.listHandler.ListEventListener
+import com.iiap.deeplarva.utils.ColorUtils
 import com.iiap.deeplarva.utils.TimeUtils
 
 class PictureAdapterList (
@@ -41,7 +41,8 @@ class PictureAdapterList (
         val tvDuration = itemView!!.findViewById<TextView>(R.id.tvDuration)
 
         if(picture.syncWithCloud) {
-            itemView.setBackgroundColor(Constants.GREEN_SYNC)
+            val greenSync = ColorUtils.green(40)
+            itemView.setBackgroundColor(greenSync)
         }
 
         tvDatetime.text = TimeUtils.longFormatTimestamp(picture.timestamp)

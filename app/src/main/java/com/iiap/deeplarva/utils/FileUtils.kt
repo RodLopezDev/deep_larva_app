@@ -8,7 +8,7 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.AppConstants
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -24,7 +24,7 @@ class FileUtils(private val activity: AppCompatActivity) {
         val buffer: ByteBuffer = image.planes[0].buffer
         val bytes = ByteArray(buffer.capacity())
         buffer.get(bytes)
-        val file = File(imageFolder, "$fileName${Constants.IMAGE_EXTENSION}")
+        val file = File(imageFolder, "$fileName${AppConstants.IMAGE_EXTENSION}")
         try {
             val output = FileOutputStream(file)
             output.write(bytes)
@@ -56,7 +56,7 @@ class FileUtils(private val activity: AppCompatActivity) {
             imageFolder.mkdirs()
         }
 
-        val file = File(imageFolder, "$filename${Constants.IMAGE_EXTENSION}")
+        val file = File(imageFolder, "$filename${AppConstants.IMAGE_EXTENSION}")
 
         try {
             val fileOutputStream = FileOutputStream(file)
@@ -70,7 +70,7 @@ class FileUtils(private val activity: AppCompatActivity) {
     }
 
     private fun getUriForFile(file: File): Uri {
-        return FileProvider.getUriForFile(activity, Constants.FILE_PROVIDER, file)
+        return FileProvider.getUriForFile(activity, AppConstants.FILE_PROVIDER, file)
     }
     fun shareFile(file: File, packageName: String? = null) {
         val uri = getUriForFile(file)

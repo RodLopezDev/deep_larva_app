@@ -10,6 +10,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.AppConstants
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -22,7 +23,7 @@ class BitmapUtils {
         fun getRandomBitmapName(): String {
             var uuid: UUID = UUID.randomUUID()
             var uuidString: String = uuid.toString()
-            return "${uuidString}${Constants.IMAGE_EXTENSION}"
+            return "${uuidString}${AppConstants.IMAGE_EXTENSION}"
         }
         fun getBitmapFromPath(filePath: String): Bitmap? {
             return BitmapFactory.decodeFile(filePath)

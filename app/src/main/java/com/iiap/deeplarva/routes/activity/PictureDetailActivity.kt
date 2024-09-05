@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.databinding.ActivityPictureDetailBinding
+import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
@@ -26,7 +26,7 @@ class PictureDetailActivity: AppCompatActivity() {
         binding = ActivityPictureDetailBinding.inflate(layoutInflater)
         view = PictureDetailActivityView(this, binding)
 
-        pictureId = intent.getLongExtra(Constants.INTENT_PICTURE_DETAIL, 0)
+        pictureId = intent.getLongExtra(AppConstants.INTENT_PICTURE_DETAIL, 0)
 
         db = DbBuilder.getInstance(this)
         pictureService = PicturesServices(db)

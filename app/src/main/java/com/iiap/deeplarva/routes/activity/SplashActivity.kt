@@ -8,8 +8,8 @@ import androidx.core.content.ContextCompat
 import com.iiap.deeplarva.R
 import com.iiap.deeplarva.application.usecases.UseCaseDefaultConfigDevice
 import com.iiap.deeplarva.application.usecases.UseCaseRegisterDeviceId
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.domain.constants.CloudKeysConstants
+import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.domain.response.AppConfigurationResponse
 import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
@@ -74,7 +74,7 @@ class SplashActivity: AppCompatActivity() {
     }
 
     private fun grantedPermissions (): Boolean {
-        val requiredPermissions = Constants.getPermissionsList().filter {
+        val requiredPermissions = PermissionsConstans.getPermissionsList().filter {
             ContextCompat.checkSelfPermission(this@SplashActivity, it)  != PackageManager.PERMISSION_GRANTED
         }
         return requiredPermissions.isEmpty()

@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
 import androidx.annotation.RequiresApi
-import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.utils.BitmapUtils
 import kotlinx.coroutines.Dispatchers
@@ -70,7 +70,7 @@ class BackgroundTaskPredict(private val my: Context) {
                 processedBitmap, counter, boxes, processedFile, time -> run {
             var processedFilePath = if(processedBitmap != null) {
                 // TODO: Guardar en galeria
-                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Constants.FOLDER_PICTURES)
+                val imageFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), AppConstants.FOLDER_PICTURES)
                 if (!imageFolder.exists()) {
                     imageFolder.mkdirs()
                 }
@@ -120,7 +120,7 @@ class BackgroundTaskPredict(private val my: Context) {
             withContext(Dispatchers.Main) {
                 val uuid: UUID = UUID.randomUUID()
                 val uuidString: String = uuid.toString()
-                val filename = "$uuidString-processed${Constants.IMAGE_EXTENSION}"
+                val filename = "$uuidString-processed${AppConstants.IMAGE_EXTENSION}"
                 callback(result.finalBitmap, result.counter, result.boxes, filename, result.totalTime)
             }
         }

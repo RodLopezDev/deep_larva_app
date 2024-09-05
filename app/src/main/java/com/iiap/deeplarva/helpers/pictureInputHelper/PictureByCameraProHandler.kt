@@ -7,7 +7,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.routes.activity.CameraActivity
@@ -36,7 +36,7 @@ class PictureByCameraProHandler(override val activity: Activity): IPictureReceiv
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getBitmap(requestCode: Int, resultCode: Int, data: Intent?): List<Bitmap> {
-        val result = data?.getStringExtra(Constants.INTENT_CAMERA_PRO_RESULT)
+        val result = data?.getStringExtra(AppConstants.INTENT_CAMERA_PRO_RESULT)
         val files = result?.split(",,,") ?: listOf()
 
         val bitmaps = files.mapNotNull {

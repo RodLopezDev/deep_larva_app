@@ -6,7 +6,6 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.view.CameraValues
 import com.iiap.deeplarva.helpers.PreferencesHelper
@@ -14,6 +13,13 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 class CameraParameterStore(private val activity: AppCompatActivity) {
+    companion object {
+        const val MAX_ISO = 3200
+        const val MIN_ISO = 100
+
+        const val MIN_SHOOT_SPEED = 100000L
+    }
+
     private lateinit var cameraValues: CameraValues
     private val preferencesHelper = PreferencesHelper(activity)
 
@@ -45,18 +51,18 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             val maxWidth = if(largest916Size!!.width > largest916Size.height) { largest916Size.height } else { largest916Size.width }
             val maxHeight = if(largest916Size!!.width > largest916Size.height) { largest916Size.width } else { largest916Size.height }
 
-            val maxExposureTime = exposureTimeRange?.upper ?: Constants.MIN_SHOOT_SPEED
-            val minExposureTime = exposureTimeRange?.lower ?: Constants.MIN_SHOOT_SPEED
+            val maxExposureTime = exposureTimeRange?.upper ?: MIN_SHOOT_SPEED
+            val minExposureTime = exposureTimeRange?.lower ?: MIN_SHOOT_SPEED
 
             preferencesHelper.saveInt(SharedPreferencesConstants.RESOLUTION_MAX_WIDTH, maxWidth)
             preferencesHelper.saveInt(SharedPreferencesConstants.RESOLUTION_MAX_HEIGHT, maxHeight)
             preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_VALUE, 0)
             preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MIN, exposureRange!!.lower)
             preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MAX, exposureRange.upper)
-            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, Constants.MIN_ISO)
+            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, MIN_ISO)
             preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, minExposureTime)
-            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MIN, Constants.MIN_ISO)
-            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MAX, Constants.MAX_ISO)
+            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MIN, MIN_ISO)
+            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MAX, MAX_ISO)
             preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_MIN, minExposureTime)
             preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_MAX, maxExposureTime)
         }

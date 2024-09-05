@@ -8,8 +8,9 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.iiap.deeplarva.R
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.databinding.ActivityPicturesBinding
+import com.iiap.deeplarva.domain.constants.AppConstants
+import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.domain.view.PictureListEntity
 import com.iiap.deeplarva.helpers.pictureInputHelper.PictureInputHelper
 import com.iiap.deeplarva.routes.activity.PictureDetailActivity
@@ -34,7 +35,7 @@ class PictureActivityView(
         }
         override fun onClick(item: PictureListEntity, position: Int) {
             val intent = Intent(activity, PictureDetailActivity::class.java)
-            intent.putExtra(Constants.INTENT_PICTURE_DETAIL, item.picture.id)
+            intent.putExtra(AppConstants.INTENT_PICTURE_DETAIL, item.picture.id)
             activity.startActivity(intent)
         }
     }
@@ -49,7 +50,7 @@ class PictureActivityView(
         }
 
         binding.btnLoadPic.setOnClickListener {
-            if(Constants.REQUIRE_CONTRACT_FOR_GALLERY){
+            if(PermissionsConstans.REQUIRE_CONTRACT_FOR_GALLERY){
                 activity.photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 return@setOnClickListener
             }
