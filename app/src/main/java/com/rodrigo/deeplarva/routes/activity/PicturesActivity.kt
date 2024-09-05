@@ -61,6 +61,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPicturesBinding.inflate(layoutInflater)
@@ -95,6 +96,10 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
             }
             R.id.action_sync -> {
                 sync()
+                true
+            }
+            R.id.action_config -> {
+                goToConfig()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -189,8 +194,21 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
         }
     }
 
+    private fun goToConfig() {
+        val intent = Intent(this, ConfigurationsActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun sync() {
-        val backendPictureServices = BackendPictureServices()
+        val helper = PreferencesHelper(this)
+        val serverUrl = helper.getString(Constants.CLOUD_VALUE_SERVER_URL, "") ?: ""
+        val serverApiKey = helper.getString(Constants.CLOUD_VALUE_SERVER_API_KEY, "") ?: ""
+        if(serverApiKey == "" || serverUrl == "") {
+            Toast.makeText(this, "Error al obtener configuración de servidor", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val backendPictureServices = BackendPictureServices(serverUrl!!, serverApiKey!!)
         pictureService.findProcessedNonSync { pictures -> run {
             if (pictures.isEmpty()) {
                 Toast.makeText(this@PicturesActivity, "No hay muestras por sincronizar", Toast.LENGTH_SHORT).show()

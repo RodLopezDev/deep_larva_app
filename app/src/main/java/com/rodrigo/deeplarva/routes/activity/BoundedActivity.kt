@@ -1,23 +1,25 @@
 package com.rodrigo.deeplarva.routes.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.routes.service.binder.IBoundService
-
-import com.rodrigo.deeplarva.routes.service.binder.PredictionBoundService
-import com.rodrigo.deeplarva.routes.service.broadcast.PredictionBroadcastReceiver
 import com.rodrigo.deeplarva.routes.service.PredictionService
 import com.rodrigo.deeplarva.routes.service.ServiceChangesListener
+import com.rodrigo.deeplarva.routes.service.binder.IBoundService
+import com.rodrigo.deeplarva.routes.service.binder.PredictionBoundService
+import com.rodrigo.deeplarva.routes.service.broadcast.PredictionBroadcastReceiver
 
 open class BoundedActivity(): AppCompatActivity(), ServiceChangesListener, IBoundService {
 
     private var receiver = PredictionBroadcastReceiver(this)
     private var boundService = PredictionBoundService(this, this)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         receiver.register { pictureId, percentage -> run {

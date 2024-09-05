@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigo.deeplarva.application.utils.Constants
 
@@ -11,6 +13,7 @@ class PredictionBroadcastReceiver (private val activity: AppCompatActivity){
 
     private lateinit var receiver: BroadcastReceiver
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun register(callback: (pictureId: Long, percentage: Int) -> Unit) {
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -22,7 +25,7 @@ class PredictionBroadcastReceiver (private val activity: AppCompatActivity){
             }
         }
         val filter = IntentFilter(Constants.BROADCAST_ACTION)
-        activity.registerReceiver(receiver, filter)
+        activity.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
     }
 
     fun unregister() {

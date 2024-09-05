@@ -7,6 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_info">Info</string>
     <string name="action_sync">Sync</string>
+    <string name="action_config">Config</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>

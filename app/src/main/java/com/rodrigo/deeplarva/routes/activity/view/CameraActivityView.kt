@@ -90,7 +90,7 @@ class CameraActivityView(
             if(value <= cameraValues.shootSpeedMin) {
                 value = cameraValues.shootSpeedMin
             }
-            listener.onUpdateShootSpeed(value)
+            listener.onUpdateShootSpeed(value.toInt())
             updateView(cameraValues)
         }
         binding.btnUpSpeed.setOnClickListener {
@@ -104,7 +104,7 @@ class CameraActivityView(
             if(value >= cameraValues.shootSpeedMax) {
                 value = cameraValues.shootSpeedMax
             }
-            listener.onUpdateShootSpeed(value)
+            listener.onUpdateShootSpeed(value.toInt())
             updateView(cameraValues)
         }
         updateView(cameraValues)

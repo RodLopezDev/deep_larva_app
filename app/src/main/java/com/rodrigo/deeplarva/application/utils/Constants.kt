@@ -7,8 +7,8 @@ import com.rodrigo.deeplarva.utils.ColorUtils
 
 class Constants {
     companion object {
-        const val SERVICE_BASE_URL = BuildConfig.SERVER_URL
-        const val SERVICE_API_KEY = BuildConfig.SERVER_API_KEY
+        const val SERVICE_BASE_URL = BuildConfig.APP_CONFIG_URL
+        const val SERVICE_API_KEY = BuildConfig.APP_CONFIG_API_KEY
 
         val GREEN_SYNC = ColorUtils.green(40)
 
@@ -16,8 +16,10 @@ class Constants {
 
         const val MAX_ISO = 3200
         const val MIN_ISO = 100
-        const val MAX_SHOOT_SPEED = 10000000
-        const val MIN_SHOOT_SPEED = 100000
+        const val MAX_SHOOT_SPEED = 10000000L
+        const val MIN_SHOOT_SPEED = 100000L
+
+        const val MILI_TO_NANO_SECONDS = 1000000L
 
         const val DB_NAME ="deep-larva-db"
 
@@ -49,6 +51,14 @@ class Constants {
         const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_VALUE = "sensor-exposure-time-camera-value"
         const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MIN = "sensor-exposure-time-camera-min"
         const val SHARED_PREFERENCES_SENSOR_EXPOSURE_TIME_MAX = "sensor-exposure-time-camera-max"
+
+        const val CONFIG_SHARED_PREFERENCES_FLAG_INITIAL_CONFIG = "config_flag"
+        const val CONFIG_SHARED_PREFERENCES_CAMERA_ACTIVITY_V2 = "config_v2"
+
+        const val CLOUD_VALUE_LAST_DATE_CHECKED = "cloud-last-date-checked"
+        const val CLOUD_VALUE_APP_VERSION = "cloud-app-version"
+        const val CLOUD_VALUE_SERVER_URL = "cloud-server-url"
+        const val CLOUD_VALUE_SERVER_API_KEY = "cloud-server-api-key"
 
         const val FOLDER_PICTURES = "deep-larva"
 

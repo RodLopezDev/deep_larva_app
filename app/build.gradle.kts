@@ -1,5 +1,5 @@
 import java.util.Properties
-import org.gradle.kotlin.dsl.*
+import kotlin.collections.set
 
 plugins {
     id("com.android.application")
@@ -16,23 +16,22 @@ android {
     defaultConfig {
         applicationId = "com.rodrigo.deeplarva"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val properties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
             properties.load(localPropertiesFile.inputStream())
         }
-        val serverUrl = properties.getProperty("server.url")
-        val apiKey = properties.getProperty("server.apiKey")
+        val configUrl = properties.getProperty("app.configuration.url")
+        val configKey = properties.getProperty("app.configuration.apiKey")
 
-        buildConfigField("String", "SERVER_URL", "\"$serverUrl\"")
-        buildConfigField("String", "SERVER_API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "APP_CONFIG_URL", "\"$configUrl\"")
+        buildConfigField("String", "APP_CONFIG_API_KEY", "\"$configKey\"")
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments["room.schemaLocation"] =
@@ -40,7 +39,11 @@ android {
             }
         }
     }
-
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -51,20 +54,31 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    packaging {
+        resources.merges += "META-INF/LICENSE.md"
+        resources.merges += "META-INF/LICENSE-notice.md"
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
     buildFeatures {
         viewBinding = true
         mlModelBinding = true
     }
+    lint {
+        abortOnError = false
+    }
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation(libs.androidx.core.ktx)
     implementation("androidx.appcompat:appcompat:1.6.1")
     
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -90,6 +104,18 @@ dependencies {
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation("androidx.camera:camera-view:${camerax_version}")
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    implementation(libs.sol)
+
+    implementation(libs.andromeda.core)
+    implementation(libs.andromeda.camera)
+    implementation(libs.andromeda.alerts)
+    implementation(libs.andromeda.canvas)
+    implementation(libs.andromeda.haptics)
+    implementation(libs.andromeda.files)
+    implementation(libs.andromeda.pickers)
 
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.moshi:moshi:1.12.0")
