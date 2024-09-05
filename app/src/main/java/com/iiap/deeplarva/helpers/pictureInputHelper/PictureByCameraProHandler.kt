@@ -8,6 +8,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.routes.activity.CameraActivity
 import com.iiap.deeplarva.routes.activity.CameraProV2Activity
@@ -21,7 +22,7 @@ class PictureByCameraProHandler(override val activity: Activity): IPictureReceiv
 
     override fun launch() {
         val helper = PreferencesHelper(activity)
-        val isV2 = helper.getBoolean(Constants.CONFIG_SHARED_PREFERENCES_CAMERA_ACTIVITY_V2)
+        val isV2 = helper.getBoolean(SharedPreferencesConstants.CONFIG_CAMERA_ACTIVITY_V2)
 
         if(isV2) {
             val intent = Intent(activity, CameraProV2Activity::class.java)

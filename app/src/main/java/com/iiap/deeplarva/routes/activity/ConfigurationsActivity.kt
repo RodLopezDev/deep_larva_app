@@ -3,8 +3,8 @@ package com.iiap.deeplarva.routes.activity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.databinding.ActivityConfigurationBinding
+import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.helpers.PreferencesHelper
 
 class ConfigurationsActivity: AppCompatActivity() {
@@ -24,12 +24,12 @@ class ConfigurationsActivity: AppCompatActivity() {
 
         val helper = PreferencesHelper(this)
 
-        val isActiveCameraV2 = helper.getBoolean(Constants.CONFIG_SHARED_PREFERENCES_CAMERA_ACTIVITY_V2, false)
+        val isActiveCameraV2 = helper.getBoolean(SharedPreferencesConstants.CONFIG_CAMERA_ACTIVITY_V2, false)
 
         binding.cbCameraV2.isChecked = isActiveCameraV2
 
         binding.cbCameraV2.setOnCheckedChangeListener { buttonView, isChecked ->
-            helper.saveBoolean(Constants.CONFIG_SHARED_PREFERENCES_CAMERA_ACTIVITY_V2, isChecked)
+            helper.saveBoolean(SharedPreferencesConstants.CONFIG_CAMERA_ACTIVITY_V2, isChecked)
         }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

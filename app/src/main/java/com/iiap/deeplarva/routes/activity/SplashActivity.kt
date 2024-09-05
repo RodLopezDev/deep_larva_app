@@ -9,6 +9,7 @@ import com.iiap.deeplarva.R
 import com.iiap.deeplarva.application.usecases.UseCaseDefaultConfigDevice
 import com.iiap.deeplarva.application.usecases.UseCaseRegisterDeviceId
 import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.response.AppConfigurationResponse
 import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
@@ -43,17 +44,17 @@ class SplashActivity: AppCompatActivity() {
     }
     private fun getCloudConfiguration(): Boolean {
         val helper = PreferencesHelper(this)
-        val flag = helper.getString(Constants.CLOUD_VALUE_LAST_DATE_CHECKED, "") ?: ""
+        val flag = helper.getString(CloudKeysConstants.LAST_DATE_CHECKED, "") ?: ""
         if (flag != "" && DateUtils.isSameAsToday(flag)) {
             return false
         }
 
         AppConfigurationServices().getConfiguration(object: RequestListener<AppConfigurationResponse> {
             override fun onComplete(result: AppConfigurationResponse) {
-                helper.saveString(Constants.CLOUD_VALUE_LAST_DATE_CHECKED, DateUtils.getToday())
-                helper.saveString(Constants.CLOUD_VALUE_APP_VERSION, result.version)
-                helper.saveString(Constants.CLOUD_VALUE_SERVER_URL, result.environment.API_SERVER_URL)
-                helper.saveString(Constants.CLOUD_VALUE_SERVER_API_KEY, result.environment.API_SERVER_KEY)
+                helper.saveString(CloudKeysConstants.LAST_DATE_CHECKED, DateUtils.getToday())
+                helper.saveString(CloudKeysConstants.APP_VERSION, result.version)
+                helper.saveString(CloudKeysConstants.SERVER_URL, result.environment.API_SERVER_URL)
+                helper.saveString(CloudKeysConstants.SERVER_API_KEY, result.environment.API_SERVER_KEY)
                 launchActivity()
             }
             override fun onFailure() {

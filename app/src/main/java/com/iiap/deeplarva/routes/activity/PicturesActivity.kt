@@ -14,8 +14,8 @@ import com.iiap.deeplarva.R
 import com.iiap.deeplarva.application.usecases.UseCaseLoadPictures
 import com.iiap.deeplarva.application.usecases.UseCaseLoadPicturesProcessesRunning
 import com.iiap.deeplarva.application.usecases.UseCaseSyncPicture
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.databinding.ActivityPicturesBinding
+import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.domain.view.BitmapProcessingResult
@@ -202,8 +202,8 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
 
     private fun sync() {
         val helper = PreferencesHelper(this)
-        val serverUrl = helper.getString(Constants.CLOUD_VALUE_SERVER_URL, "") ?: ""
-        val serverApiKey = helper.getString(Constants.CLOUD_VALUE_SERVER_API_KEY, "") ?: ""
+        val serverUrl = helper.getString(CloudKeysConstants.SERVER_URL, "") ?: ""
+        val serverApiKey = helper.getString(CloudKeysConstants.SERVER_API_KEY, "") ?: ""
         if(serverApiKey == "" || serverUrl == "") {
             Toast.makeText(this, "Error al obtener configuración de servidor", Toast.LENGTH_SHORT).show()
             return
