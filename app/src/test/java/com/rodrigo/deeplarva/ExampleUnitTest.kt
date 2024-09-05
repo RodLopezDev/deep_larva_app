@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva
+package com.iiap.deeplarva
 
 import org.junit.Test
 

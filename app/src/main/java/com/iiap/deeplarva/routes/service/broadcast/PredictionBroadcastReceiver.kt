@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.service.broadcast
+package com.iiap.deeplarva.routes.service.broadcast
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.application.utils.Constants
 
 class PredictionBroadcastReceiver (private val activity: AppCompatActivity){
 

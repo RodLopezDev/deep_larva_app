@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.camerapro2.view
+package com.iiap.deeplarva.modules.camerapro2.view
 
 import android.content.Context
 import android.os.Build
@@ -13,7 +13,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.kylecorry.andromeda.core.system.Resources
 import com.kylecorry.andromeda.core.ui.Colors.withAlpha
-import com.rodrigo.deeplarva.R
+import com.iiap.deeplarva.R
 import java.time.Duration
 
 

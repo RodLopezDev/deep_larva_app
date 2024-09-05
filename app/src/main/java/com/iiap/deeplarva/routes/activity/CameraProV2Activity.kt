@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity
 
 import android.content.Intent
 import android.os.Build
@@ -18,16 +18,16 @@ import com.kylecorry.andromeda.haptics.HapticMotor
 import com.kylecorry.luna.coroutines.CoroutineQueueRunner
 import com.kylecorry.luna.coroutines.onIO
 import com.kylecorry.luna.coroutines.onMain
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.databinding.ActivityCameraPro2Binding
-import com.rodrigo.deeplarva.helpers.PreferencesHelper
-import com.rodrigo.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
-import com.rodrigo.deeplarva.routes.activity.observables.CameraV2Model
-import com.rodrigo.deeplarva.routes.activity.stores.CameraParameterStore
-import com.rodrigo.deeplarva.ui.widget.dialogs.SeekDialog
-import com.rodrigo.deeplarva.ui.widget.dialogs.SelectableDialog
-import com.rodrigo.deeplarva.ui.widget.dialogs.ShooterSpeedDialog
-import com.rodrigo.deeplarva.utils.SpeedUtils
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
+import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
+import com.iiap.deeplarva.routes.activity.observables.CameraV2Model
+import com.iiap.deeplarva.routes.activity.stores.CameraParameterStore
+import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
+import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
+import com.iiap.deeplarva.ui.widget.dialogs.ShooterSpeedDialog
+import com.iiap.deeplarva.utils.SpeedUtils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File

@@ -1,9 +1,9 @@
-package com.rodrigo.deeplarva.application.utils
+package com.iiap.deeplarva.application.utils
 
 import android.Manifest
 import android.os.Build
-import com.rodrigo.deeplarva.BuildConfig
-import com.rodrigo.deeplarva.utils.ColorUtils
+import com.iiap.deeplarva.BuildConfig
+import com.iiap.deeplarva.utils.ColorUtils
 
 class Constants {
     companion object {
@@ -23,7 +23,7 @@ class Constants {
 
         const val DB_NAME ="deep-larva-db"
 
-        const val FILE_PROVIDER = "com.rodrigo.deeplarva.fileProvider"
+        const val FILE_PROVIDER = "com.iiap.deeplarva.fileProvider"
 
         const val IMAGE_EXTENSION =".jpg"
 

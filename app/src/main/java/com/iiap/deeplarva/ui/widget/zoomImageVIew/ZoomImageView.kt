@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.widget.zoomImageVIew
+package com.iiap.deeplarva.ui.widget.zoomImageVIew
 
 import android.content.Context
 import android.graphics.Bitmap

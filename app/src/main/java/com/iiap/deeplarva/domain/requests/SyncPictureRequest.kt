@@ -1,7 +1,7 @@
-package com.rodrigo.deeplarva.domain.requests
+package com.iiap.deeplarva.domain.requests
 
-import com.rodrigo.deeplarva.domain.entity.BoxDetection
-import com.rodrigo.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.domain.entity.BoxDetection
+import com.iiap.deeplarva.domain.entity.Picture
 
 data class SyncPictureRequest (
     val picture: Picture,

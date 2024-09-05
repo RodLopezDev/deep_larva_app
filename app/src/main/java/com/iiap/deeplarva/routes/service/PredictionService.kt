@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.service
+package com.iiap.deeplarva.routes.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -13,16 +13,16 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
-import com.rodrigo.deeplarva.infraestructure.internal.driver.DbBuilder
-import com.rodrigo.deeplarva.modules.prediction.BackgroundTaskPredict
-import com.rodrigo.deeplarva.infraestructure.services.BoxDetectionServices
-import com.rodrigo.deeplarva.infraestructure.services.PicturesServices
-import com.rodrigo.deeplarva.routes.activity.PicturesActivity
-import com.rodrigo.deeplarva.routes.service.broadcast.PredictionBroadcastSender
+import com.iiap.deeplarva.R
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
+import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
+import com.iiap.deeplarva.modules.prediction.BackgroundTaskPredict
+import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
+import com.iiap.deeplarva.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.routes.activity.PicturesActivity
+import com.iiap.deeplarva.routes.service.broadcast.PredictionBroadcastSender
 
 class PredictionService: Service() {
     private val TAG = "DEEP_LARVA::PredictionService"

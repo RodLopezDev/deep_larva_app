@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity
 
 import android.content.Intent
 import android.os.Build
@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.routes.service.PredictionService
-import com.rodrigo.deeplarva.routes.service.ServiceChangesListener
-import com.rodrigo.deeplarva.routes.service.binder.IBoundService
-import com.rodrigo.deeplarva.routes.service.binder.PredictionBoundService
-import com.rodrigo.deeplarva.routes.service.broadcast.PredictionBroadcastReceiver
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.routes.service.PredictionService
+import com.iiap.deeplarva.routes.service.ServiceChangesListener
+import com.iiap.deeplarva.routes.service.binder.IBoundService
+import com.iiap.deeplarva.routes.service.binder.PredictionBoundService
+import com.iiap.deeplarva.routes.service.broadcast.PredictionBroadcastReceiver
 
 open class BoundedActivity(): AppCompatActivity(), ServiceChangesListener, IBoundService {
 

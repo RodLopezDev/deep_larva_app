@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.helpers.pictureInputHelper
+package com.iiap.deeplarva.helpers.pictureInputHelper
 
 import android.app.Activity
 import android.content.Context
@@ -11,8 +11,8 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.utils.BitmapUtils
 import java.io.IOException
 
 

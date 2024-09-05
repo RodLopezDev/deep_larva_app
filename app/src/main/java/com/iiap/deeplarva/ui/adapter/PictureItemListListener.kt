@@ -1,6 +1,6 @@
-package com.rodrigo.deeplarva.ui.adapter
+package com.iiap.deeplarva.ui.adapter
 
-import com.rodrigo.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.domain.entity.Picture
 
 interface PictureItemListListener {
     fun onPredict(picture: Picture)

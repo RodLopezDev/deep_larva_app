@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.widget.aspectRatioTextureView
+package com.iiap.deeplarva.ui.widget.aspectRatioTextureView
 
 import android.content.Context
 import android.util.AttributeSet

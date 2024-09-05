@@ -1,7 +1,7 @@
-package com.rodrigo.deeplarva.application.usecases
+package com.iiap.deeplarva.application.usecases
 
-import com.rodrigo.deeplarva.domain.view.PictureListEntity
-import com.rodrigo.deeplarva.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.domain.view.PictureListEntity
+import com.iiap.deeplarva.infraestructure.services.PicturesServices
 
 class UseCaseLoadPicturesProcessesRunning(
     private val picturesServices: PicturesServices

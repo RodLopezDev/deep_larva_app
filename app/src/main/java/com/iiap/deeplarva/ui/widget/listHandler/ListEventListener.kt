@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.widget.listHandler
+package com.iiap.deeplarva.ui.widget.listHandler
 
 interface ListEventListener<T> {
     fun onClick(item: T, position: Int)

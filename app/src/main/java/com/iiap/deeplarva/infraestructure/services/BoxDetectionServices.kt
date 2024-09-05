@@ -1,7 +1,7 @@
-package com.rodrigo.deeplarva.infraestructure.services
+package com.iiap.deeplarva.infraestructure.services
 
-import com.rodrigo.deeplarva.domain.entity.BoxDetection
-import com.rodrigo.deeplarva.infraestructure.internal.driver.AppDatabase
+import com.iiap.deeplarva.domain.entity.BoxDetection
+import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

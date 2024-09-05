@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.utils
+package com.iiap.deeplarva.utils
 
 import android.content.Context
 import android.content.res.Configuration

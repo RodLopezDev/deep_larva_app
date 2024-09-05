@@ -1,11 +1,11 @@
-package com.rodrigo.deeplarva.routes.activity.view
+package com.iiap.deeplarva.routes.activity.view
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.rodrigo.deeplarva.databinding.ActivityCameraBinding
-import com.rodrigo.deeplarva.domain.view.CameraValues
-import com.rodrigo.deeplarva.ui.widget.aspectRatioTextureView.AspectRatioTextureView
-import com.rodrigo.deeplarva.utils.Dimensions
+import com.iiap.deeplarva.databinding.ActivityCameraBinding
+import com.iiap.deeplarva.domain.view.CameraValues
+import com.iiap.deeplarva.ui.widget.aspectRatioTextureView.AspectRatioTextureView
+import com.iiap.deeplarva.utils.Dimensions
 import kotlin.math.abs
 
 class CameraActivityView(

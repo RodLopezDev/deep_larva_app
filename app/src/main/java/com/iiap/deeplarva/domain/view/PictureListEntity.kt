@@ -1,6 +1,6 @@
-package com.rodrigo.deeplarva.domain.view
+package com.iiap.deeplarva.domain.view
 
-import com.rodrigo.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.domain.entity.Picture
 
 data class PictureListEntity (
     var picture: Picture,

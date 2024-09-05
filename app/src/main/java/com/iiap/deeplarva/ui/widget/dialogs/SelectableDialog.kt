@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.widget.dialogs
+package com.iiap.deeplarva.ui.widget.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog

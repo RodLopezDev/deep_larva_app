@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.adapter
+package com.iiap.deeplarva.ui.adapter
 
 import android.content.Context
 import android.view.Gravity
@@ -12,11 +12,11 @@ import android.widget.LinearLayout.LayoutParams
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.domain.view.PictureListEntity
-import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
-import com.rodrigo.deeplarva.utils.TimeUtils
+import com.iiap.deeplarva.R
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.view.PictureListEntity
+import com.iiap.deeplarva.ui.widget.listHandler.ListEventListener
+import com.iiap.deeplarva.utils.TimeUtils
 
 class PictureAdapterList (
     context: Context,

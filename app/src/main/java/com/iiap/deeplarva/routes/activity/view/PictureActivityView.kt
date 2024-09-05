@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.activity.view
+package com.iiap.deeplarva.routes.activity.view
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -7,18 +7,18 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.databinding.ActivityPicturesBinding
-import com.rodrigo.deeplarva.domain.view.PictureListEntity
-import com.rodrigo.deeplarva.helpers.pictureInputHelper.PictureInputHelper
-import com.rodrigo.deeplarva.routes.activity.PictureDetailActivity
-import com.rodrigo.deeplarva.routes.activity.PicturesActivity
-import com.rodrigo.deeplarva.ui.adapter.PictureAdapterList
-import com.rodrigo.deeplarva.ui.adapter.PictureItemListListener
-import com.rodrigo.deeplarva.ui.widget.listHandler.ListEventListener
-import com.rodrigo.deeplarva.ui.widget.listHandler.ListHandlerView
-import com.rodrigo.deeplarva.utils.UserUtils
+import com.iiap.deeplarva.R
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.databinding.ActivityPicturesBinding
+import com.iiap.deeplarva.domain.view.PictureListEntity
+import com.iiap.deeplarva.helpers.pictureInputHelper.PictureInputHelper
+import com.iiap.deeplarva.routes.activity.PictureDetailActivity
+import com.iiap.deeplarva.routes.activity.PicturesActivity
+import com.iiap.deeplarva.ui.adapter.PictureAdapterList
+import com.iiap.deeplarva.ui.adapter.PictureItemListListener
+import com.iiap.deeplarva.ui.widget.listHandler.ListEventListener
+import com.iiap.deeplarva.ui.widget.listHandler.ListHandlerView
+import com.iiap.deeplarva.utils.UserUtils
 
 
 class PictureActivityView(

@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.helpers.pictureInputHelper
+package com.iiap.deeplarva.helpers.pictureInputHelper
 
 import android.app.Activity
 import android.content.Intent
@@ -7,11 +7,11 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.helpers.PreferencesHelper
-import com.rodrigo.deeplarva.routes.activity.CameraActivity
-import com.rodrigo.deeplarva.routes.activity.CameraProV2Activity
-import com.rodrigo.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.routes.activity.CameraActivity
+import com.iiap.deeplarva.routes.activity.CameraProV2Activity
+import com.iiap.deeplarva.utils.BitmapUtils
 
 class PictureByCameraProHandler(override val activity: Activity): IPictureReceiverHandler {
     companion object {

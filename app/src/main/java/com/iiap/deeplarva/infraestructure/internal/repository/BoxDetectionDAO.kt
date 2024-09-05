@@ -1,9 +1,9 @@
-package com.rodrigo.deeplarva.infraestructure.internal.repository
+package com.iiap.deeplarva.infraestructure.internal.repository
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.rodrigo.deeplarva.domain.entity.BoxDetection
+import com.iiap.deeplarva.domain.entity.BoxDetection
 
 @Dao
 interface BoxDetectionDAO {

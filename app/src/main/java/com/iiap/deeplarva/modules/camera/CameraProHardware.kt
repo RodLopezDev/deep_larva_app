@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.camera
+package com.iiap.deeplarva.modules.camera
 
 import android.Manifest
 import android.content.Context
@@ -17,8 +17,8 @@ import android.view.Surface
 import android.view.TextureView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.rodrigo.deeplarva.domain.view.CameraValues
-import com.rodrigo.deeplarva.ui.widget.aspectRatioTextureView.AspectRatioTextureView
+import com.iiap.deeplarva.domain.view.CameraValues
+import com.iiap.deeplarva.ui.widget.aspectRatioTextureView.AspectRatioTextureView
 
 class CameraProHardware(
     private val activity: AppCompatActivity,

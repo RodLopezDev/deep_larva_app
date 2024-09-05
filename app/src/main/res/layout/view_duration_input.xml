@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:endIconMode="clear_text">
 
-        <com.rodrigo.deeplarva.modules.camerapro2.view.EndOnlyEditText
+        <com.iiap.deeplarva.modules.camerapro2.view.EndOnlyEditText
             android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

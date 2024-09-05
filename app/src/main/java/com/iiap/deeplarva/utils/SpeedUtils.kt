@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.utils
+package com.iiap.deeplarva.utils
 
 import kotlin.math.log10
 import kotlin.math.pow

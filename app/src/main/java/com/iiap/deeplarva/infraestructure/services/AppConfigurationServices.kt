@@ -1,9 +1,9 @@
-package com.rodrigo.deeplarva.infraestructure.services
+package com.iiap.deeplarva.infraestructure.services
 
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.domain.response.AppConfigurationResponse
-import com.rodrigo.deeplarva.modules.requests.RequestListener
-import com.rodrigo.deeplarva.modules.requests.RequestManager
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.response.AppConfigurationResponse
+import com.iiap.deeplarva.modules.requests.RequestListener
+import com.iiap.deeplarva.modules.requests.RequestManager
 
 class AppConfigurationServices {
     fun getConfiguration(listener: RequestListener<AppConfigurationResponse>) {

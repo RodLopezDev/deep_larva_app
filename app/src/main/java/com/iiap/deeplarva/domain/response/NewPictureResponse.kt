@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.domain.response
+package com.iiap.deeplarva.domain.response
 
 data class NewPictureResponse (
     val id: String,

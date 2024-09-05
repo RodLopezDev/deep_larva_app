@@ -1,13 +1,13 @@
-package com.rodrigo.deeplarva.modules.prediction
+package com.iiap.deeplarva.modules.prediction
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
 import androidx.annotation.RequiresApi
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.domain.entity.Picture
-import com.rodrigo.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.utils.BitmapUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

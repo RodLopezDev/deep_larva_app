@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.utils
+package com.iiap.deeplarva.utils
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -8,7 +8,7 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.rodrigo.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.application.utils.Constants
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

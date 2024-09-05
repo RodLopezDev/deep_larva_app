@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.activity.stores
+package com.iiap.deeplarva.routes.activity.stores
 
 import android.content.Context
 import android.graphics.ImageFormat
@@ -6,9 +6,9 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.domain.view.CameraValues
-import com.rodrigo.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.view.CameraValues
+import com.iiap.deeplarva.helpers.PreferencesHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
 

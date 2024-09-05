@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.rodrigo.deeplarva.ui.widget.aspectRatioTextureView.AspectRatioTextureView
+        <com.iiap.deeplarva.ui.widget.aspectRatioTextureView.AspectRatioTextureView
             android:id="@+id/textureView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

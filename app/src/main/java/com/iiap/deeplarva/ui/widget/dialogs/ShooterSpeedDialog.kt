@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.ui.widget.dialogs
+package com.iiap.deeplarva.ui.widget.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import com.rodrigo.deeplarva.R
+import com.iiap.deeplarva.R
 
 class ShooterSpeedDialog(
     private val title: String = "",

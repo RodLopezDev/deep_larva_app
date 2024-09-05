@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.R
+import com.iiap.deeplarva.application.utils.Constants
 
 class PermissionsHandlerActivity: AppCompatActivity() {
 

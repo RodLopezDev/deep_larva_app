@@ -1,6 +1,6 @@
-package com.rodrigo.deeplarva.application.utils
+package com.iiap.deeplarva.application.utils
 
-import com.rodrigo.deeplarva.utils.TimeUtils
+import com.iiap.deeplarva.utils.TimeUtils
 
 class MessageFactory {
     companion object {

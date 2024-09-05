@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity
 
 import android.content.Context
 import android.content.Intent
@@ -10,17 +10,17 @@ import android.view.Surface
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.helpers.PreferencesHelper
-import com.rodrigo.deeplarva.modules.camera.CameraPermissionsManager
-import com.rodrigo.deeplarva.modules.camera.CameraProHardware
-import com.rodrigo.deeplarva.modules.camera.CameraProHardwareListener
-import com.rodrigo.deeplarva.modules.camera.ICameraPermissionsResult
-import com.rodrigo.deeplarva.routes.activity.stores.CameraParameterStore
-import com.rodrigo.deeplarva.routes.activity.view.CameraActivityView
-import com.rodrigo.deeplarva.routes.activity.view.ICameraViewListener
-import com.rodrigo.deeplarva.utils.BitmapUtils
-import com.rodrigo.deeplarva.utils.FileUtils
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.modules.camera.CameraPermissionsManager
+import com.iiap.deeplarva.modules.camera.CameraProHardware
+import com.iiap.deeplarva.modules.camera.CameraProHardwareListener
+import com.iiap.deeplarva.modules.camera.ICameraPermissionsResult
+import com.iiap.deeplarva.routes.activity.stores.CameraParameterStore
+import com.iiap.deeplarva.routes.activity.view.CameraActivityView
+import com.iiap.deeplarva.routes.activity.view.ICameraViewListener
+import com.iiap.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.utils.FileUtils
 import java.io.IOException
 
 class CameraActivity: AppCompatActivity() {

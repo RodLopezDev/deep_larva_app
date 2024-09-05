@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.requests
+package com.iiap.deeplarva.modules.requests
 
 interface RequestListener<T> {
     fun onComplete(result: T)

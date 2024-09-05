@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.camera
+package com.iiap.deeplarva.modules.camera
 
 interface ICameraPermissionsResult {
     fun onGranted()

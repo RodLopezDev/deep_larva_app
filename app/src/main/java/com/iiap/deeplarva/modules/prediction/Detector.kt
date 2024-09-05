@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.prediction
+package com.iiap.deeplarva.modules.prediction
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -1,11 +1,11 @@
-package com.rodrigo.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.rodrigo.deeplarva.application.utils.Constants
-import com.rodrigo.deeplarva.databinding.ActivityConfigurationBinding
-import com.rodrigo.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.databinding.ActivityConfigurationBinding
+import com.iiap.deeplarva.helpers.PreferencesHelper
 
 class ConfigurationsActivity: AppCompatActivity() {
     private lateinit var binding: ActivityConfigurationBinding

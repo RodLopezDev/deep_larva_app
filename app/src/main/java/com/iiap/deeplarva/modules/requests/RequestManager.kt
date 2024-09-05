@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.requests
+package com.iiap.deeplarva.modules.requests
 
 import android.util.Log
 import com.squareup.moshi.Moshi

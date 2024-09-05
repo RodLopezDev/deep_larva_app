@@ -1,4 +1,4 @@
-package com.rodrigo.deeplarva.modules.camerapro2.ui
+package com.iiap.deeplarva.modules.camerapro2.ui
 
 import android.content.Context
 import android.os.Build
@@ -8,8 +8,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import com.kylecorry.andromeda.alerts.Alerts
 import com.kylecorry.andromeda.core.system.Resources
-import com.rodrigo.deeplarva.R
-import com.rodrigo.deeplarva.modules.camerapro2.view.DurationInputView
+import com.iiap.deeplarva.R
+import com.iiap.deeplarva.modules.camerapro2.view.DurationInputView
 import java.time.Duration
 
 object CustomUiUtils {

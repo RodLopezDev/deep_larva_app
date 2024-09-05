@@ -1,6 +1,6 @@
-package com.rodrigo.deeplarva.routes.activity.view
+package com.iiap.deeplarva.routes.activity.view
 
-import com.rodrigo.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.domain.entity.Picture
 
 interface IPictureViewListener {
     fun onRemovePicture(picture: Picture)
