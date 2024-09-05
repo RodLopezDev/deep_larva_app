@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
 import com.iiap.deeplarva.routes.activity.observables.CameraV2Model
 import com.iiap.deeplarva.routes.activity.stores.CameraParameterStore

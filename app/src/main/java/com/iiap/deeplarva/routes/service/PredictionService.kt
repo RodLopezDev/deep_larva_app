@@ -11,18 +11,16 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.iiap.deeplarva.R
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
-import com.iiap.deeplarva.modules.prediction.BackgroundTaskPredict
 import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
 import com.iiap.deeplarva.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.modules.prediction.BackgroundTaskPredict
 import com.iiap.deeplarva.routes.activity.PicturesActivity
 import com.iiap.deeplarva.routes.service.broadcast.PredictionBroadcastSender
 

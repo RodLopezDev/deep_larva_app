@@ -19,7 +19,6 @@ import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.domain.view.BitmapProcessingResult
-import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.helpers.pictureInputHelper.PictureByCameraProHandler
 import com.iiap.deeplarva.helpers.pictureInputHelper.PictureByStorageHandler
 import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
@@ -35,6 +34,7 @@ import com.iiap.deeplarva.routes.service.binder.IBoundService
 import com.iiap.deeplarva.ui.adapter.PictureItemListListener
 import com.iiap.deeplarva.ui.widget.progressDialog.ProgressDialog
 import com.iiap.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.utils.PreferencesHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

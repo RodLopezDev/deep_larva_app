@@ -9,10 +9,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.routes.activity.CameraActivity
 import com.iiap.deeplarva.routes.activity.CameraProV2Activity
 import com.iiap.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.utils.PreferencesHelper
 
 class PictureByCameraProHandler(override val activity: Activity): IPictureReceiverHandler {
     companion object {

@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.domain.constants.AppConstants
 import java.io.File
 import java.io.FileOutputStream

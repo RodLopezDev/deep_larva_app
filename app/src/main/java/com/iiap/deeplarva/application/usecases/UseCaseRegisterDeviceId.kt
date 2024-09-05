@@ -2,7 +2,7 @@ package com.iiap.deeplarva.application.usecases
 
 import android.content.Context
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.utils.PreferencesHelper
 import java.util.UUID
 
 class UseCaseRegisterDeviceId(private val context: Context) {

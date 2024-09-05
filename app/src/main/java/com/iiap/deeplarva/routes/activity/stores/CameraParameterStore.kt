@@ -8,7 +8,7 @@ import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.view.CameraValues
-import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.utils.PreferencesHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
 

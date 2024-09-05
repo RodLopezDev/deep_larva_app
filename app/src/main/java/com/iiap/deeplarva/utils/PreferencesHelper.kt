@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.helpers
+package com.iiap.deeplarva.utils
 
 import android.content.Context
 import android.content.SharedPreferences

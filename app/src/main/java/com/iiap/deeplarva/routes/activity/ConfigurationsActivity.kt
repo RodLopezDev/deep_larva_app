@@ -5,7 +5,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.databinding.ActivityConfigurationBinding
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.utils.PreferencesHelper
 
 class ConfigurationsActivity: AppCompatActivity() {
     private lateinit var binding: ActivityConfigurationBinding

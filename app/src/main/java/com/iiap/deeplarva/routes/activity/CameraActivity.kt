@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.modules.camera.CameraPermissionsManager
 import com.iiap.deeplarva.modules.camera.CameraProHardware
 import com.iiap.deeplarva.modules.camera.CameraProHardwareListener

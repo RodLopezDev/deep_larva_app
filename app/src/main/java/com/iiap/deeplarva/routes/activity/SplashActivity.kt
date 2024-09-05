@@ -11,7 +11,7 @@ import com.iiap.deeplarva.application.usecases.UseCaseRegisterDeviceId
 import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.domain.response.AppConfigurationResponse
-import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
 import com.iiap.deeplarva.modules.requests.RequestListener
 import com.iiap.deeplarva.utils.DateUtils
