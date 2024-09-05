@@ -16,6 +16,7 @@ import com.iiap.deeplarva.application.usecases.UseCaseLoadPicturesProcessesRunni
 import com.iiap.deeplarva.application.usecases.UseCaseSyncPicture
 import com.iiap.deeplarva.application.utils.Constants
 import com.iiap.deeplarva.databinding.ActivityPicturesBinding
+import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.domain.view.BitmapProcessingResult
 import com.iiap.deeplarva.helpers.PreferencesHelper
@@ -69,7 +70,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
         db = DbBuilder.getInstance(this)
         pictureService = PicturesServices(db)
         boxDetectionServices = BoxDetectionServices(db)
-        deviceId = PreferencesHelper(this).getString(Constants.SHARED_PREFERENCES_DEVICE_ID)!!
+        deviceId = PreferencesHelper(this).getString(SharedPreferencesConstants.DEVICE_ID)!!
 
         view = PictureActivityView(deviceId, this, binding, this)
         viewModel = ViewModelProvider(this)[PictureActivityViewModel::class.java]

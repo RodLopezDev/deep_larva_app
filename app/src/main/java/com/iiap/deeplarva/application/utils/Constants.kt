@@ -38,8 +38,6 @@ class Constants {
         const val MESSAGE_SERVICE_STARTED = "Ejecutando conteo"
         const val MESSAGE_SERVICE_IS_RUNNING = "El conteo se está ejecutando"
 
-        const val SHARED_PREFERENCES_DEVICE_ID = "DEVICE-IDENTIFIER"
-
         const val SHARED_PREFERENCES_RESOLUTION_MAX_WIDTH = "camera-resolution-max-width"
         const val SHARED_PREFERENCES_RESOLUTION_MAX_HEIGHT = "camera-resolution-max-height"
         const val SHARED_PREFERENCES_EXPOSURE_VALUE = "exposure-camera-value"

@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.helpers.PreferencesHelper
 import com.iiap.deeplarva.modules.camera.CameraPermissionsManager
 import com.iiap.deeplarva.modules.camera.CameraProHardware
@@ -36,7 +37,7 @@ class CameraActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraStore = CameraParameterStore(this)
-        deviceID = PreferencesHelper(this).getString(Constants.SHARED_PREFERENCES_DEVICE_ID) ?: ""
+        deviceID = PreferencesHelper(this).getString(SharedPreferencesConstants.DEVICE_ID) ?: ""
     }
 
     override fun onResume() {

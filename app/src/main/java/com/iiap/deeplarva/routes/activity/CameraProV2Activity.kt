@@ -9,6 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.iiap.deeplarva.application.utils.Constants
+import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
+import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
+import com.iiap.deeplarva.helpers.PreferencesHelper
+import com.iiap.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
+import com.iiap.deeplarva.routes.activity.observables.CameraV2Model
+import com.iiap.deeplarva.routes.activity.stores.CameraParameterStore
+import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
+import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
+import com.iiap.deeplarva.ui.widget.dialogs.ShooterSpeedDialog
+import com.iiap.deeplarva.utils.SpeedUtils
 import com.kylecorry.andromeda.camera.ImageCaptureSettings
 import com.kylecorry.andromeda.core.math.DecimalFormatter
 import com.kylecorry.andromeda.core.time.CoroutineTimer
@@ -18,16 +29,6 @@ import com.kylecorry.andromeda.haptics.HapticMotor
 import com.kylecorry.luna.coroutines.CoroutineQueueRunner
 import com.kylecorry.luna.coroutines.onIO
 import com.kylecorry.luna.coroutines.onMain
-import com.iiap.deeplarva.application.utils.Constants
-import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
-import com.iiap.deeplarva.helpers.PreferencesHelper
-import com.iiap.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
-import com.iiap.deeplarva.routes.activity.observables.CameraV2Model
-import com.iiap.deeplarva.routes.activity.stores.CameraParameterStore
-import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
-import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
-import com.iiap.deeplarva.ui.widget.dialogs.ShooterSpeedDialog
-import com.iiap.deeplarva.utils.SpeedUtils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -75,7 +76,7 @@ class CameraProV2Activity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraStore = CameraParameterStore(this)
-        deviceID = PreferencesHelper(this).getString(Constants.SHARED_PREFERENCES_DEVICE_ID) ?: ""
+        deviceID = PreferencesHelper(this).getString(SharedPreferencesConstants.DEVICE_ID) ?: ""
         viewModel = ViewModelProvider(this)[CameraV2Model::class.java]
 
         binding = ActivityCameraPro2Binding.inflate(layoutInflater)
