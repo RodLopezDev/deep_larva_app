@@ -12,7 +12,7 @@ import com.iiap.deeplarva.databinding.ActivityPicturesBinding
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.domain.view.PictureListEntity
-import com.iiap.deeplarva.helpers.pictureInputHelper.PictureInputHelper
+import com.iiap.deeplarva.modules.inputHelper.PictureInputHelper
 import com.iiap.deeplarva.routes.activity.picture_detail.PictureDetailActivity
 import com.iiap.deeplarva.ui.adapter.PictureAdapterList
 import com.iiap.deeplarva.ui.adapter.PictureItemListListener

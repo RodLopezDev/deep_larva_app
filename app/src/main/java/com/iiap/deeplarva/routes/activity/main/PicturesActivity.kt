@@ -19,8 +19,8 @@ import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.domain.view.BitmapProcessingResult
-import com.iiap.deeplarva.helpers.pictureInputHelper.PictureByCameraProHandler
-import com.iiap.deeplarva.helpers.pictureInputHelper.PictureByStorageHandler
+import com.iiap.deeplarva.modules.inputHelper.PictureByCameraProHandler
+import com.iiap.deeplarva.modules.inputHelper.PictureByStorageHandler
 import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.iiap.deeplarva.infraestructure.services.BackendPictureServices

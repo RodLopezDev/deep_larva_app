@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.helpers.pictureInputHelper
+package com.iiap.deeplarva.modules.inputHelper
 
 import android.app.Activity
 import android.content.Intent
