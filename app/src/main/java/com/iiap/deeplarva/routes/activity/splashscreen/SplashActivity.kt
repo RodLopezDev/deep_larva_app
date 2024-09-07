@@ -12,10 +12,11 @@ import com.iiap.deeplarva.application.usecases.app.UseCaseGetConfigurationFromCl
 import com.iiap.deeplarva.application.usecases.app.UseCaseRegisterDeviceId
 import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
-import com.iiap.deeplarva.routes.activity.PermissionsHandlerActivity
-import com.iiap.deeplarva.routes.activity.PicturesActivity
+import com.iiap.deeplarva.routes.activity.main.PicturesActivity
+import com.iiap.deeplarva.routes.activity.permissions.PermissionsHandlerActivity
 import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.utils.ThemeUtils
+import com.iiap.deeplarva.utils.VersionUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -36,7 +37,9 @@ class SplashActivity: AppCompatActivity() {
         UseCaseRegisterDeviceId(preferences).execute()
         UseCaseDefaultConfigDevice(preferences).execute()
 
-        val requiredCloud = UseCaseGetConfigurationFromCloud(preferences, appConfigServices).execute(::launchActivity)
+        val version = VersionUtils.getAppVersion(this)
+        val requiredCloud = UseCaseGetConfigurationFromCloud(version, preferences, appConfigServices)
+            .execute(::launchActivity)
         if(requiredCloud) {
             return
         }

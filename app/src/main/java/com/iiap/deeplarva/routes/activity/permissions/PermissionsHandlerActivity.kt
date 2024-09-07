@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity.permissions
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,16 +10,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.iiap.deeplarva.R
 import com.iiap.deeplarva.domain.constants.PermissionsConstans
+import com.iiap.deeplarva.routes.activity.main.PicturesActivity
 
 class PermissionsHandlerActivity: AppCompatActivity() {
 
-    private val REQUESTCODE = 1
+    private val REQUEST_CODE = 1
     private lateinit var tvText: TextView
     private lateinit var btnRun: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestPermissions()
         setContentView(R.layout.activity_permissions)
         btnRun = findViewById(R.id.btnPermissions)
         tvText = findViewById(R.id.tvPermissionsText)
@@ -30,6 +30,8 @@ class PermissionsHandlerActivity: AppCompatActivity() {
 
         tvText.visibility = View.INVISIBLE
         btnRun.visibility = View.INVISIBLE
+
+        requestPermissions()
     }
 
     private fun requestPermissions() {
@@ -39,7 +41,7 @@ class PermissionsHandlerActivity: AppCompatActivity() {
         }
 
         if(requiredPermissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(this, requiredPermissions.toTypedArray(), REQUESTCODE)
+            ActivityCompat.requestPermissions(this, requiredPermissions.toTypedArray(), REQUEST_CODE)
             return
         }
 

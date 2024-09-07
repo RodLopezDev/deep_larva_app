@@ -21,7 +21,7 @@ import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
 import com.iiap.deeplarva.infraestructure.services.PicturesServices
 import com.iiap.deeplarva.modules.prediction.BackgroundTaskPredict
-import com.iiap.deeplarva.routes.activity.PicturesActivity
+import com.iiap.deeplarva.routes.activity.main.PicturesActivity
 import com.iiap.deeplarva.routes.service.broadcast.PredictionBroadcastSender
 
 class PredictionService: Service() {

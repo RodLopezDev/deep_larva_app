@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.view
+package com.iiap.deeplarva.routes.activity.main
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,7 +14,7 @@ import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.domain.view.PictureListEntity
 import com.iiap.deeplarva.helpers.pictureInputHelper.PictureInputHelper
 import com.iiap.deeplarva.routes.activity.PictureDetailActivity
-import com.iiap.deeplarva.routes.activity.PicturesActivity
+import com.iiap.deeplarva.routes.activity.view.IPictureViewListener
 import com.iiap.deeplarva.ui.adapter.PictureAdapterList
 import com.iiap.deeplarva.ui.adapter.PictureItemListListener
 import com.iiap.deeplarva.ui.widget.listHandler.ListEventListener
