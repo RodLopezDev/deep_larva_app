@@ -11,8 +11,10 @@ import com.iiap.deeplarva.application.usecases.app.UseCaseDefaultConfigDevice
 import com.iiap.deeplarva.application.usecases.app.UseCaseGetConfigurationFromCloud
 import com.iiap.deeplarva.application.usecases.app.UseCaseRegisterDeviceId
 import com.iiap.deeplarva.domain.constants.PermissionsConstans
+import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
 import com.iiap.deeplarva.routes.activity.PermissionsHandlerActivity
 import com.iiap.deeplarva.routes.activity.PicturesActivity
+import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.utils.ThemeUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -22,15 +24,19 @@ import kotlinx.coroutines.withContext
 
 class SplashActivity: AppCompatActivity() {
     private val splashScreenTime: Long = 2000
+    private val appConfigServices = AppConfigurationServices()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spash_screen)
         loadAppLogo()
 
-        UseCaseRegisterDeviceId(this).execute()
-        UseCaseDefaultConfigDevice(this).execute()
+        val preferences = PreferencesHelper(this)
 
-        val requiredCloud = UseCaseGetConfigurationFromCloud(this).execute(::launchActivity)
+        UseCaseRegisterDeviceId(preferences).execute()
+        UseCaseDefaultConfigDevice(preferences).execute()
+
+        val requiredCloud = UseCaseGetConfigurationFromCloud(preferences, appConfigServices).execute(::launchActivity)
         if(requiredCloud) {
             return
         }
