@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.splashscreen
+package com.iiap.deeplarva.routes.activity.splash_screen
 
 import android.content.Intent
 import android.content.pm.PackageManager

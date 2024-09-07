@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity.picture_detail
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -10,7 +10,6 @@ import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
 import com.iiap.deeplarva.infraestructure.services.PicturesServices
-import com.iiap.deeplarva.routes.activity.view.PictureDetailActivityView
 import kotlin.properties.Delegates
 
 class PictureDetailActivity: AppCompatActivity() {

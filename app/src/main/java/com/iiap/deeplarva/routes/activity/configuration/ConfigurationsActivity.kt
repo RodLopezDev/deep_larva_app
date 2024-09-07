@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity.configuration
 
 import android.os.Bundle
 import android.view.MenuItem

@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.view
+package com.iiap.deeplarva.routes.activity.main
 
 import com.iiap.deeplarva.domain.entity.Picture
 

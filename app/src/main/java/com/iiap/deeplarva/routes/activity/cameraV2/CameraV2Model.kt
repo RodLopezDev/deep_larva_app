@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.observables
+package com.iiap.deeplarva.routes.activity.cameraV2
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.stores
+package com.iiap.deeplarva.modules
 
 import android.content.Context
 import android.graphics.ImageFormat

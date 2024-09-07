@@ -27,9 +27,7 @@ import com.iiap.deeplarva.infraestructure.services.BackendPictureServices
 import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
 import com.iiap.deeplarva.infraestructure.services.PicturesServices
 import com.iiap.deeplarva.modules.requests.RequestListener
-import com.iiap.deeplarva.routes.activity.BoundedActivity
-import com.iiap.deeplarva.routes.activity.ConfigurationsActivity
-import com.iiap.deeplarva.routes.activity.view.IPictureViewListener
+import com.iiap.deeplarva.routes.activity.configuration.ConfigurationsActivity
 import com.iiap.deeplarva.routes.service.binder.IBoundService
 import com.iiap.deeplarva.ui.adapter.PictureItemListListener
 import com.iiap.deeplarva.ui.widget.progressDialog.ProgressDialog

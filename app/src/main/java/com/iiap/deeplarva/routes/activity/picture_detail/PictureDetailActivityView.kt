@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.view
+package com.iiap.deeplarva.routes.activity.picture_detail
 
 import android.graphics.Bitmap
 import android.widget.Toast
@@ -6,7 +6,6 @@ import com.iiap.deeplarva.databinding.ActivityPictureDetailBinding
 import com.iiap.deeplarva.domain.entity.BoxDetection
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.domain.view.ExportableDataPicture
-import com.iiap.deeplarva.routes.activity.PictureDetailActivity
 import com.iiap.deeplarva.ui.widget.progressDialog.ProgressDialog
 import com.iiap.deeplarva.utils.Base64utils
 import com.iiap.deeplarva.utils.BitmapUtils

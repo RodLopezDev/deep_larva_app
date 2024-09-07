@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity.main
 
 import android.content.Intent
 import android.os.Build

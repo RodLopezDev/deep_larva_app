@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity
+package com.iiap.deeplarva.routes.activity.cameraV1
 
 import android.content.Context
 import android.content.Intent
@@ -12,16 +12,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.modules.CameraParameterStore
 import com.iiap.deeplarva.modules.camera.CameraPermissionsManager
 import com.iiap.deeplarva.modules.camera.CameraProHardware
 import com.iiap.deeplarva.modules.camera.CameraProHardwareListener
 import com.iiap.deeplarva.modules.camera.ICameraPermissionsResult
-import com.iiap.deeplarva.routes.activity.stores.CameraParameterStore
-import com.iiap.deeplarva.routes.activity.view.CameraActivityView
-import com.iiap.deeplarva.routes.activity.view.ICameraViewListener
 import com.iiap.deeplarva.utils.BitmapUtils
 import com.iiap.deeplarva.utils.FileUtils
+import com.iiap.deeplarva.utils.PreferencesHelper
 import java.io.IOException
 
 class CameraActivity: AppCompatActivity() {
