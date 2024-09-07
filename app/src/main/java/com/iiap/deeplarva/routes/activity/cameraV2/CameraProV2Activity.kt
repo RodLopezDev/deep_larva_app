@@ -13,7 +13,7 @@ import com.iiap.deeplarva.application.adapters.CameraParameterAdapter
 import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
+import com.iiap.deeplarva.modules.camerapro.infraestructure.SensitivityProvider
 import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
 import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
 import com.iiap.deeplarva.ui.widget.dialogs.ShooterSpeedDialog

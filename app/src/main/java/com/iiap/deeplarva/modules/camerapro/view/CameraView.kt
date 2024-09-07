@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.camerapro2.view
+package com.iiap.deeplarva.modules.camerapro.view
 
 import android.annotation.SuppressLint
 import android.content.Context

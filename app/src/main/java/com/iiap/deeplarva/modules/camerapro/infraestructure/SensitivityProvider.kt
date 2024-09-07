@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.camerapro2.infraestructure
+package com.iiap.deeplarva.modules.camerapro.infraestructure
 
 import com.kylecorry.andromeda.camera.ICamera
 

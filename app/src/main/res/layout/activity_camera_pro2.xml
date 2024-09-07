@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.iiap.deeplarva.modules.camerapro2.view.CameraView
+    <com.iiap.deeplarva.modules.camerapro.view.CameraView
         android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -174,7 +174,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.iiap.deeplarva.modules.camerapro2.view.ShutterButton
+        <com.iiap.deeplarva.modules.camerapro.view.ShutterButton
             android:id="@+id/capture_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
