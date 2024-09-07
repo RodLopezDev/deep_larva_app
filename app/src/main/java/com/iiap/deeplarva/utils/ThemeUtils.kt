@@ -3,7 +3,7 @@ package com.iiap.deeplarva.utils
 import android.content.Context
 import android.content.res.Configuration
 
-class Theme {
+class ThemeUtils {
     companion object {
         fun isDarkTheme(context: Context): Boolean {
             return context.resources.configuration.uiMode and

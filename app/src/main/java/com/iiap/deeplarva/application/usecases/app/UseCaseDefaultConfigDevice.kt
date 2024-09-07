@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.application.usecases
+package com.iiap.deeplarva.application.usecases.app
 
 import android.content.Context
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
