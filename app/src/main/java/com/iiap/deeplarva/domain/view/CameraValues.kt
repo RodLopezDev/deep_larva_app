@@ -10,6 +10,4 @@ data class CameraValues (
     val exposureMin: Int,
     val exposureMax: Int,
     var shootSpeed: Long,
-    val shootSpeedMin: Long,
-    val shootSpeedMax: Long,
 )

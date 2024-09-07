@@ -9,14 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.iiap.deeplarva.application.adapters.CameraParameterAdapter
 import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.modules.camerapro2.infraestructure.SensitivityProvider
-import com.iiap.deeplarva.modules.CameraParameterStore
 import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
 import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
 import com.iiap.deeplarva.ui.widget.dialogs.ShooterSpeedDialog
+import com.iiap.deeplarva.utils.CameraUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.utils.SpeedUtils
 import com.kylecorry.andromeda.camera.ImageCaptureSettings
@@ -41,7 +42,7 @@ class CameraProV2Activity: AppCompatActivity() {
     private lateinit var haptics: HapticMotor
 
     private lateinit var viewModel: CameraV2Model
-    private lateinit var cameraStore: CameraParameterStore
+    private lateinit var cameraStore: CameraParameterAdapter
 
     // Require state
     private var sensitivities = emptyList<Int>()
@@ -74,7 +75,10 @@ class CameraProV2Activity: AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cameraStore = CameraParameterStore(this)
+        val preferencesHelper = PreferencesHelper(this)
+        val characteristics = CameraUtils.getMainCameraCharacteristics(this)
+
+        cameraStore = CameraParameterAdapter(preferencesHelper, characteristics)
         deviceID = PreferencesHelper(this).getString(SharedPreferencesConstants.DEVICE_ID) ?: ""
         viewModel = ViewModelProvider(this)[CameraV2Model::class.java]
 
@@ -146,9 +150,7 @@ class CameraProV2Activity: AppCompatActivity() {
             dialog.show(supportFragmentManager, "ListSelectionDialog")
         }
 
-        binding.containerShutter.setOnClickListener {
-            //val min = cameraStore.getCameraValues().shootSpeedMin / 1000000
-            //val max = cameraStore.getCameraValues().shootSpeedMax / 1000000
+        binding.containerShutterSpeed.setOnClickListener {
             val dialog = ShooterSpeedDialog(
                 title = "Shooter Speed"
             ) {

@@ -1,18 +1,18 @@
-package com.iiap.deeplarva.modules
+package com.iiap.deeplarva.application.adapters
 
-import android.content.Context
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.util.Size
-import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.view.CameraValues
 import com.iiap.deeplarva.utils.PreferencesHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class CameraParameterStore(private val activity: AppCompatActivity) {
+class CameraParameterAdapter(
+    private val preferencesHelper: PreferencesHelper,
+    private val cameraCharacteristics: CameraCharacteristics
+) {
     companion object {
         const val MAX_ISO = 3200
         const val MIN_ISO = 100
@@ -21,7 +21,6 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
     }
 
     private lateinit var cameraValues: CameraValues
-    private val preferencesHelper = PreferencesHelper(activity)
 
     init {
         if(
@@ -33,14 +32,8 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_VALUE) or
             !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_MIN) or
             !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_MAX) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_VALUE) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_MIN) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_MAX)
+            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_VALUE)
         ) {
-            val cameraManager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-            val cameraId = cameraManager.cameraIdList[0]
-            val cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId)
-
             val exposureRange = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE)
             val exposureTimeRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
             val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
@@ -51,7 +44,6 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             val maxWidth = if(largest916Size!!.width > largest916Size.height) { largest916Size.height } else { largest916Size.width }
             val maxHeight = if(largest916Size!!.width > largest916Size.height) { largest916Size.width } else { largest916Size.height }
 
-            val maxExposureTime = exposureTimeRange?.upper ?: MIN_SHOOT_SPEED
             val minExposureTime = exposureTimeRange?.lower ?: MIN_SHOOT_SPEED
 
             preferencesHelper.saveInt(SharedPreferencesConstants.RESOLUTION_MAX_WIDTH, maxWidth)
@@ -60,11 +52,9 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MIN, exposureRange!!.lower)
             preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MAX, exposureRange.upper)
             preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, MIN_ISO)
-            preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, minExposureTime)
             preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MIN, MIN_ISO)
             preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MAX, MAX_ISO)
-            preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_MIN, minExposureTime)
-            preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_MAX, maxExposureTime)
+            preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, minExposureTime)
         }
         initValues()
     }
@@ -94,8 +84,6 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
         val sensorSensitivityMin = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_MIN, 0)
         val sensorSensitivityMax = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_MAX, 0)
         val shootSpeed = preferencesHelper.getLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, 0)
-        val shootSpeedMin = preferencesHelper.getLong(SharedPreferencesConstants.EXPOSURE_TIME_MIN, 0)
-        val shootSpeedMax = preferencesHelper.getLong(SharedPreferencesConstants.EXPOSURE_TIME_MAX, 0)
         cameraValues = CameraValues(
             maxWidth,
             maxHeight,
@@ -105,9 +93,7 @@ class CameraParameterStore(private val activity: AppCompatActivity) {
             exposure,
             exposureMin,
             exposureMax,
-            shootSpeed,
-            shootSpeedMin,
-            shootSpeedMax
+            shootSpeed
         )
     }
 

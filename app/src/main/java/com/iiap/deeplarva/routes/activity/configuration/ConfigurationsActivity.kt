@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.databinding.ActivityConfigurationBinding
-import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.utils.PreferencesHelper
 
 class ConfigurationsActivity: AppCompatActivity() {
@@ -23,14 +22,6 @@ class ConfigurationsActivity: AppCompatActivity() {
         }
 
         val helper = PreferencesHelper(this)
-
-        val isActiveCameraV2 = helper.getBoolean(SharedPreferencesConstants.CONFIG_CAMERA_ACTIVITY_V2, false)
-
-        binding.cbCameraV2.isChecked = isActiveCameraV2
-
-        binding.cbCameraV2.setOnCheckedChangeListener { buttonView, isChecked ->
-            helper.saveBoolean(SharedPreferencesConstants.CONFIG_CAMERA_ACTIVITY_V2, isChecked)
-        }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

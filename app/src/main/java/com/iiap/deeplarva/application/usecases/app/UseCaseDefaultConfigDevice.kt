@@ -10,7 +10,7 @@ class UseCaseDefaultConfigDevice(private val preferences: PreferencesHelper) {
             return
         }
 
-        preferences.saveBoolean(SharedPreferencesConstants.CONFIG_CAMERA_ACTIVITY_V2, true)
+        // ADD DEFAULT APP CONFIG
         preferences.saveBoolean(SharedPreferencesConstants.CONFIG_FLAG_INITIAL_CONFIG, true)
     }
 }
