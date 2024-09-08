@@ -1,9 +1,11 @@
 package com.iiap.deeplarva.routes.activity.picture_detail
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.iiap.deeplarva.R
 import com.iiap.deeplarva.databinding.ActivityPictureDetailBinding
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
@@ -49,7 +51,17 @@ class PictureDetailActivity: AppCompatActivity() {
                 onBackPressed()
                 true
             }
+            R.id.action_export -> {
+                view.export()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_picture_detail, menu)
+        return true
     }
 }

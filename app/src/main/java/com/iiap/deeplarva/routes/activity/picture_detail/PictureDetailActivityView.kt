@@ -21,6 +21,12 @@ class PictureDetailActivityView(
     private val activity: PictureDetailActivity,
     private val binding: ActivityPictureDetailBinding,
 ) {
+    private var bitmapFile: Bitmap? = null
+    private var bitmapProcessed: Bitmap? = null
+
+    private lateinit var picture: Picture
+    private lateinit var boxes: List<BoxDetection>
+
     init {
         activity.setContentView(binding.root)
         activity.setSupportActionBar(binding.toolbar)
@@ -33,8 +39,12 @@ class PictureDetailActivityView(
             activity.supportActionBar?.setHomeAsUpIndicator(ThemeUtils.getBackIconDrawable(activity))
         }
     }
-    fun render(picture: Picture, boxes: List<BoxDetection>) {
-        val bitmapFile = BitmapUtils.getBitmapFromPath(picture.filePath)
+    fun render(_picture: Picture, _boxes: List<BoxDetection>) {
+        picture = _picture
+        boxes = _boxes;
+
+
+        bitmapFile = BitmapUtils.getBitmapFromPath(picture.filePath)
         if(bitmapFile == null) {
             return
         }
@@ -42,36 +52,35 @@ class PictureDetailActivityView(
         activity.runOnUiThread {
             binding.imgBasePicture.setImageBitmap(bitmapFile)
         }
-        var bitmapProcessed: Bitmap? = null
         if(picture.hasMetadata) {
             bitmapProcessed = BitmapUtils.getBitmapFromPath(picture.processedFilePath)
             activity.runOnUiThread {
                 binding.imgProcessedPicture.setImageBitmap(bitmapProcessed)
             }
         }
+    }
 
-        binding.btnDemo.setOnClickListener {
-            val dialog = ProgressDialog()
-            dialog.show(activity)
-            GlobalScope.launch {
-                val bmFileStr = if(bitmapFile != null) Base64utils.bitmapToBase64(bitmapFile) else ""
-                val bmProcessedFileStr = if(bitmapProcessed != null) Base64utils.bitmapToBase64(bitmapProcessed) else ""
-                val data = ExportableDataPicture(
-                    ExportableDataPicture.PictureData.build(picture),
-                    ExportableDataPicture.BoxDetectionData.buildList(boxes),
-                    bmFileStr,
-                    bmProcessedFileStr
-                )
-                val dataString = XmlUtils.serializeToXml(data)
-                val fileName = "DL-${picture.uuid}.xml"
-                val file = FileUtils(activity).saveToInternalStorage(fileName, dataString)
-                withContext(Dispatchers.Main) {
-                    dialog.dismiss()
-                    if(file != null) {
-                        FileUtils(activity).shareMultiApp(file)
-                    } else {
-                        Toast.makeText(activity, "File saved as $fileName", Toast.LENGTH_SHORT).show()
-                    }
+    fun export () {
+        val dialog = ProgressDialog()
+        dialog.show(activity)
+        GlobalScope.launch {
+            val bmFileStr = if(bitmapFile != null) Base64utils.bitmapToBase64(bitmapFile!!) else ""
+            val bmProcessedFileStr = if(bitmapProcessed != null) Base64utils.bitmapToBase64(bitmapProcessed!!) else ""
+            val data = ExportableDataPicture(
+                ExportableDataPicture.PictureData.build(picture),
+                ExportableDataPicture.BoxDetectionData.buildList(boxes),
+                bmFileStr,
+                bmProcessedFileStr
+            )
+            val dataString = XmlUtils.serializeToXml(data)
+            val fileName = "DL-${picture.uuid}.xml"
+            val file = FileUtils(activity).saveToInternalStorage(fileName, dataString)
+            withContext(Dispatchers.Main) {
+                dialog.dismiss()
+                if(file != null) {
+                    FileUtils(activity).shareMultiApp(file)
+                } else {
+                    Toast.makeText(activity, "File saved as $fileName", Toast.LENGTH_SHORT).show()
                 }
             }
         }

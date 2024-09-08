@@ -103,12 +103,6 @@
 
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/btnDemo"
-            android:text="Export"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
