@@ -19,13 +19,13 @@ import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.domain.view.BitmapProcessingResult
-import com.iiap.deeplarva.modules.inputHelper.PictureByCameraProHandler
-import com.iiap.deeplarva.modules.inputHelper.PictureByStorageHandler
 import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
 import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
 import com.iiap.deeplarva.infraestructure.services.BackendPictureServices
 import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
 import com.iiap.deeplarva.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.modules.inputHelper.PictureByCameraProHandler
+import com.iiap.deeplarva.modules.inputHelper.PictureByStorageHandler
 import com.iiap.deeplarva.modules.requests.RequestListener
 import com.iiap.deeplarva.routes.activity.configuration.ConfigurationsActivity
 import com.iiap.deeplarva.routes.service.binder.IBoundService
@@ -200,6 +200,12 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
 
     private fun sync() {
         val helper = PreferencesHelper(this)
+        val hasErrorInValues = helper.getBoolean(CloudKeysConstants.ERROR_REQUEST, true)
+        if(hasErrorInValues) {
+            Toast.makeText(this, "Hubo un error al actualizar los datos remotos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val serverUrl = helper.getString(CloudKeysConstants.SERVER_URL, "") ?: ""
         val serverApiKey = helper.getString(CloudKeysConstants.SERVER_API_KEY, "") ?: ""
         if(serverApiKey == "" || serverUrl == "") {
