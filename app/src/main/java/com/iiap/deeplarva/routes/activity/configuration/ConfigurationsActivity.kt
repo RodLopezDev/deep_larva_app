@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.iiap.deeplarva.databinding.ActivityConfigurationBinding
 import com.iiap.deeplarva.domain.constants.ConfigConstants
 import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.utils.ThemeUtils
 
 class ConfigurationsActivity: AppCompatActivity() {
     private lateinit var binding: ActivityConfigurationBinding
@@ -20,6 +21,10 @@ class ConfigurationsActivity: AppCompatActivity() {
             title = "Configuraciones"
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
+        }
+
+        if(ThemeUtils.isDarkTheme(this)) {
+            supportActionBar?.setHomeAsUpIndicator(ThemeUtils.getBackIconDrawable(this))
         }
 
         val helper = PreferencesHelper(this)

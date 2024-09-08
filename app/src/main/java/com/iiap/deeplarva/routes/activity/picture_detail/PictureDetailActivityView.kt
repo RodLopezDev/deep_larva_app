@@ -10,6 +10,7 @@ import com.iiap.deeplarva.ui.widget.progressDialog.ProgressDialog
 import com.iiap.deeplarva.utils.Base64utils
 import com.iiap.deeplarva.utils.BitmapUtils
 import com.iiap.deeplarva.utils.FileUtils
+import com.iiap.deeplarva.utils.ThemeUtils
 import com.iiap.deeplarva.utils.XmlUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -27,6 +28,9 @@ class PictureDetailActivityView(
             title = "Detalle"
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
+        }
+        if(ThemeUtils.isDarkTheme(activity)) {
+            activity.supportActionBar?.setHomeAsUpIndicator(ThemeUtils.getBackIconDrawable(activity))
         }
     }
     fun render(picture: Picture, boxes: List<BoxDetection>) {
