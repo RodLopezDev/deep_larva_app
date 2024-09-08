@@ -73,7 +73,7 @@ class SplashActivity: AppCompatActivity() {
     private fun loadAppLogo() {
         val logo = findViewById<ImageView>(R.id.centered_image)
         if(ThemeUtils.isDarkTheme(this)) {
-            logo.setImageResource(R.drawable.img_splash_screen)
+            logo.setImageResource(R.drawable.img_splash_screen_dark)
         } else {
             logo.setImageResource(R.drawable.img_splash_screen)
         }
