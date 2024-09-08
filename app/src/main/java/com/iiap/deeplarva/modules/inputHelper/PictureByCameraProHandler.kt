@@ -8,7 +8,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.iiap.deeplarva.domain.constants.AppConstants
-import com.iiap.deeplarva.routes.activity.cameraV2.CameraProV2Activity
+import com.iiap.deeplarva.routes.activity.camera.CameraProActivity
 import com.iiap.deeplarva.utils.BitmapUtils
 
 class PictureByCameraProHandler(override val activity: Activity): IPictureReceiverHandler {
@@ -18,7 +18,7 @@ class PictureByCameraProHandler(override val activity: Activity): IPictureReceiv
     }
 
     override fun launch() {
-        val intent = Intent(activity, CameraProV2Activity::class.java)
+        val intent = Intent(activity, CameraProActivity::class.java)
         activity.startActivityForResult(intent, REQUESTCODE)
     }
 

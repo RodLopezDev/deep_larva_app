@@ -1,11 +1,11 @@
-package com.iiap.deeplarva.routes.activity.cameraV2
+package com.iiap.deeplarva.routes.activity.camera
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.time.Duration
 
-class CameraV2Model: ViewModel() {
+class CameraModel: ViewModel() {
 
     private val _iso = MutableLiveData<Int?>()
     private val _interval = MutableLiveData<Duration?>()

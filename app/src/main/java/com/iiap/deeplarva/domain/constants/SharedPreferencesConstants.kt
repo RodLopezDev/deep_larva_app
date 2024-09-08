@@ -16,7 +16,5 @@ class SharedPreferencesConstants {
         const val SENSITIVITY_MAX = "sensor-sensitivity-camera-max"
 
         const val EXPOSURE_TIME_VALUE = "sensor-exposure-time-camera-value"
-
-        const val CONFIG_FLAG_INITIAL_CONFIG = "config_flag"
     }
 }

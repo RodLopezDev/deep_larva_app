@@ -34,11 +34,11 @@
         android:paddingLeft="20dp">
 
         <CheckBox
-            android:id="@+id/cbCameraV2"
+            android:id="@+id/cbManualShutterSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/listTitle"
-            android:text="Ocupar cámara v2" />
+            android:text="Modifcar shutter speed manualmente" />
 
     </LinearLayout>
 

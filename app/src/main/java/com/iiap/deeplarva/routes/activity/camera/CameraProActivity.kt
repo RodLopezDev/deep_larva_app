@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.cameraV2
+package com.iiap.deeplarva.routes.activity.camera
 
 import android.content.Intent
 import android.os.Build
@@ -16,7 +16,7 @@ import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.modules.camerapro.infraestructure.SensitivityProvider
 import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
 import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
-import com.iiap.deeplarva.ui.widget.dialogs.ShooterSpeedDialog
+import com.iiap.deeplarva.ui.widget.dialogs.ShutterSpeedDialog
 import com.iiap.deeplarva.utils.CameraUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.utils.SpeedUtils
@@ -34,14 +34,14 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.time.Duration
 
-class CameraProV2Activity: AppCompatActivity() {
+class CameraProActivity: AppCompatActivity() {
     private var deviceID: String = ""
     private val pictures = mutableListOf<String>()
     private lateinit var binding: ActivityCameraPro2Binding
     private lateinit var files: LocalFileSystem
     private lateinit var haptics: HapticMotor
 
-    private lateinit var viewModel: CameraV2Model
+    private lateinit var viewModel: CameraModel
     private lateinit var cameraStore: CameraParameterAdapter
 
     // Require state
@@ -80,7 +80,7 @@ class CameraProV2Activity: AppCompatActivity() {
 
         cameraStore = CameraParameterAdapter(preferencesHelper, characteristics)
         deviceID = PreferencesHelper(this).getString(SharedPreferencesConstants.DEVICE_ID) ?: ""
-        viewModel = ViewModelProvider(this)[CameraV2Model::class.java]
+        viewModel = ViewModelProvider(this)[CameraModel::class.java]
 
         binding = ActivityCameraPro2Binding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -151,10 +151,14 @@ class CameraProV2Activity: AppCompatActivity() {
         }
 
         binding.containerShutterSpeed.setOnClickListener {
-            val dialog = ShooterSpeedDialog(
+            val preferencesHelper = PreferencesHelper(this)
+            val initialValue = viewModel.shutterSpeed.value!!
+            val dialog = ShutterSpeedDialog(
+                preferencesHelper = preferencesHelper,
+                initialValue = initialValue,
                 title = "Shooter Speed"
-            ) {
-                val selectedValue = SpeedUtils.adjustSpeed(it)
+            ) { value, text ->
+                val selectedValue = SpeedUtils.adjustSpeed(value)
                 val inNanoseconds =  selectedValue * 1000000L
 
                 viewModel.setShutterSpeed(selectedValue)
