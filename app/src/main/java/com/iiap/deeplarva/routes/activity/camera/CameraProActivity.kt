@@ -19,7 +19,6 @@ import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
 import com.iiap.deeplarva.ui.widget.dialogs.ShutterSpeedDialog
 import com.iiap.deeplarva.utils.CameraUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
-import com.iiap.deeplarva.utils.SpeedUtils
 import com.kylecorry.andromeda.camera.ImageCaptureSettings
 import com.kylecorry.andromeda.core.math.DecimalFormatter
 import com.kylecorry.andromeda.core.time.CoroutineTimer
@@ -40,6 +39,9 @@ class CameraProActivity: AppCompatActivity() {
     private lateinit var binding: ActivityCameraPro2Binding
     private lateinit var files: LocalFileSystem
     private lateinit var haptics: HapticMotor
+
+
+    private lateinit var preferencesHelper: PreferencesHelper
 
     private lateinit var viewModel: CameraModel
     private lateinit var cameraStore: CameraParameterAdapter
@@ -75,7 +77,7 @@ class CameraProActivity: AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val preferencesHelper = PreferencesHelper(this)
+        preferencesHelper = PreferencesHelper(this)
         val characteristics = CameraUtils.getMainCameraCharacteristics(this)
 
         cameraStore = CameraParameterAdapter(preferencesHelper, characteristics)
@@ -142,10 +144,10 @@ class CameraProActivity: AppCompatActivity() {
                 } else {
                     sensitivities[selectedItem - 1]
                 }
-                viewModel.setIso(newIso)
                 if(newIso != null) {
                     cameraStore.updateSensitivitySensor(newIso)
                 }
+                viewModel.setIso(newIso)
             }
             dialog.show(supportFragmentManager, "ListSelectionDialog")
         }
@@ -158,11 +160,10 @@ class CameraProActivity: AppCompatActivity() {
                 initialValue = initialValue,
                 title = "Shooter Speed"
             ) { value, text ->
-                val selectedValue = SpeedUtils.adjustSpeed(value)
-                val inNanoseconds =  selectedValue * 1000000L
+                val inNanoseconds =  value * 1000000L
 
-                viewModel.setShutterSpeed(selectedValue)
-                cameraStore.updateShootSpeed(inNanoseconds)
+                cameraStore.updateShootSpeed(inNanoseconds, text)
+                viewModel.setShutterSpeed(value)
             }
             dialog.show(supportFragmentManager, "IntervalPickerDialog")
         }
@@ -185,8 +186,8 @@ class CameraProActivity: AppCompatActivity() {
                     return@SeekDialog
                 }
                 val newInterval = Duration.ofNanos((selectedValue.toFloat() * 1000).toLong())
-                viewModel.setInterval(newInterval)
                 cameraStore.updateExposure(selectedValue)
+                viewModel.setInterval(newInterval)
             }
             dialog.show(supportFragmentManager, "IntervalPickerDialog")
         }
@@ -281,7 +282,8 @@ class CameraProActivity: AppCompatActivity() {
         })
         viewModel.shutterSpeed.observe(this, Observer {
             val shutterSpeed = it ?: 100
-            binding.shutterSpeed.text = SpeedUtils.speedToText(shutterSpeed)
+            val shutterText = preferencesHelper.getString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT) ?: ""
+            binding.shutterSpeed.text = shutterText
 
             val duration = Duration.ofMillis(shutterSpeed.toLong())
             binding.camera.camera?.setExposureTime(duration)

@@ -3,6 +3,7 @@ package com.iiap.deeplarva.application.adapters
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
 import android.util.Size
+import com.iiap.deeplarva.domain.constants.MessagesConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.domain.view.CameraValues
 import com.iiap.deeplarva.utils.PreferencesHelper
@@ -32,7 +33,8 @@ class CameraParameterAdapter(
             !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_VALUE) or
             !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_MIN) or
             !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_MAX) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_VALUE)
+            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_VALUE) or
+            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_TEXT)
         ) {
             val exposureRange = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE)
             val exposureTimeRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
@@ -55,6 +57,7 @@ class CameraParameterAdapter(
             preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MIN, MIN_ISO)
             preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MAX, MAX_ISO)
             preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, minExposureTime)
+            preferencesHelper.saveString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED)
         }
         initValues()
     }
@@ -84,6 +87,7 @@ class CameraParameterAdapter(
         val sensorSensitivityMin = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_MIN, 0)
         val sensorSensitivityMax = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_MAX, 0)
         val shootSpeed = preferencesHelper.getLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, 0)
+        val shootSpeedText = preferencesHelper.getString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, "") ?: ""
         cameraValues = CameraValues(
             maxWidth,
             maxHeight,
@@ -93,7 +97,8 @@ class CameraParameterAdapter(
             exposure,
             exposureMin,
             exposureMax,
-            shootSpeed
+            shootSpeed,
+            shootSpeedText
         )
     }
 
@@ -111,8 +116,9 @@ class CameraParameterAdapter(
         preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_VALUE, value)
     }
 
-    fun updateShootSpeed(value: Long) {
+    fun updateShootSpeed(value: Long, text: String) {
         cameraValues.shootSpeed = value
         preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, value)
+        preferencesHelper.saveString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, text)
     }
 }

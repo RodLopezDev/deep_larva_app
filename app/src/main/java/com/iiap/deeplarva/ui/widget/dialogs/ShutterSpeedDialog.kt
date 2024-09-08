@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.iiap.deeplarva.R
 import com.iiap.deeplarva.domain.constants.ConfigConstants
+import com.iiap.deeplarva.domain.constants.MessagesConstants
 import com.iiap.deeplarva.utils.PreferencesHelper
 
 class ShutterSpeedDialog(
@@ -29,7 +30,7 @@ class ShutterSpeedDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val dialogView = it.layoutInflater.inflate(R.layout.dialog_shutter_speed, null)
-            val btnAuto = dialogView.findViewById<Button>(R.id.btnAuto)
+            val btnOff = dialogView.findViewById<Button>(R.id.btnOff)
             val btn150 = dialogView.findViewById<Button>(R.id.btn1_50)
             val btn160 = dialogView.findViewById<Button>(R.id.btn1_60)
             val btn180 = dialogView.findViewById<Button>(R.id.btn1_80)
@@ -37,8 +38,8 @@ class ShutterSpeedDialog(
             val btn11000 = dialogView.findViewById<Button>(R.id.btn1_1000)
             val etManual = dialogView.findViewById<EditText>(R.id.etManual)
 
-            btnAuto.setOnClickListener {
-                onValueChanged(0, "Auto")
+            btnOff.setOnClickListener {
+                onValueChanged(0, MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED)
                 dialog!!.dismiss()
             }
             btn150.setOnClickListener {
@@ -108,7 +109,7 @@ class ShutterSpeedDialog(
                 builder.setPositiveButton("Yes") { dialog, which ->
                     val value = etManual.text.toString().toIntOrNull()
                     if(value != null && enabled) {
-                        onValueChanged(value, value.toString())
+                        onValueChanged(value, "${value.toString()} ms")
                         dialog!!.dismiss()
                     }
                 }
