@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    namespace = "com.rodrigo.deeplarva"
+    namespace = "com.iiap.deeplarva"
     compileSdk = 34
 
     buildFeatures.buildConfig = true
 
     defaultConfig {
-        applicationId = "com.rodrigo.deeplarva"
+        applicationId = "com.iiap.deeplarva"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
