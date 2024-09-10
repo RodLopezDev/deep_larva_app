@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -76,7 +77,7 @@ class PredictionService: Service() {
         Log.d(TAG, "Service Started")
         this.pictureId = pictureId
         val notificationIntent = Intent(this, PicturesActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         val notification: Notification = NotificationCompat.Builder(this, AppConstants.NOTIFICATION_CHANNEL_ID)
             .setContentTitle("DeepLarva")
@@ -85,7 +86,12 @@ class PredictionService: Service() {
             .setContentIntent(pendingIntent)
             .build()
 
-        startForeground(AppConstants.NOTIFICATION_ID, notification)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            startForeground(AppConstants.NOTIFICATION_ID, notification)
+        } else {
+            startForeground(AppConstants.NOTIFICATION_ID, notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        }
 
         eventPredict(pictureId)
 
