@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.iiap.deeplarva.R
 import com.iiap.deeplarva.application.usecases.app.UseCaseDefaultConfigDevice
+import com.iiap.deeplarva.application.usecases.app.UseCaseGetCameraConfiguration
 import com.iiap.deeplarva.application.usecases.app.UseCaseGetConfigurationFromCloud
 import com.iiap.deeplarva.application.usecases.app.UseCaseRegisterDeviceId
 import com.iiap.deeplarva.domain.constants.PermissionsConstans
@@ -32,6 +33,7 @@ class SplashActivity: AppCompatActivity() {
         setContentView(R.layout.activity_spash_screen)
         loadAppLogo()
 
+
         val preferences = PreferencesHelper(this)
 
         UseCaseRegisterDeviceId(preferences).execute()
@@ -39,7 +41,7 @@ class SplashActivity: AppCompatActivity() {
 
         val version = VersionUtils.getAppVersion(this)
         val requiredCloud = UseCaseGetConfigurationFromCloud(version, preferences, appConfigServices)
-            .execute(::launchActivity)
+            .execute(::getCameraConfig)
         if(requiredCloud) {
             return
         }
@@ -54,6 +56,19 @@ class SplashActivity: AppCompatActivity() {
                 launchActivity()
             }
         }
+    }
+
+    private fun getCameraConfig() {
+        val brand = android.os.Build.BRAND
+        val model = android.os.Build.MODEL
+        val preferences = PreferencesHelper(this)
+        val requiredCloud = UseCaseGetCameraConfiguration(brand, model, preferences, appConfigServices)
+            .execute(::launchActivity)
+        if(requiredCloud) {
+            return
+        }
+
+        launchActivity()
     }
 
     private fun launchActivity() {
