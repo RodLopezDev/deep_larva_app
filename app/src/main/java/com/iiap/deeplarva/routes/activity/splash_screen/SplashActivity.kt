@@ -46,7 +46,7 @@ class SplashActivity: AppCompatActivity() {
             return
         }
 
-        delayToNextActivity()
+        getCameraConfig()
     }
 
     private fun delayToNextActivity() {
@@ -68,7 +68,7 @@ class SplashActivity: AppCompatActivity() {
             return
         }
 
-        launchActivity()
+        delayToNextActivity()
     }
 
     private fun launchActivity() {

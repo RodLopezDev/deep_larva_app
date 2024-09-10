@@ -15,7 +15,7 @@ class UseCaseGetCameraConfiguration(
     private val services: AppConfigurationServices
 ) {
     fun execute(callback: () -> Unit): Boolean {
-        val flag = preferences.getBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG, true)
+        val flag = preferences.getBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG, false)
         if (flag) {
             return false
         }
