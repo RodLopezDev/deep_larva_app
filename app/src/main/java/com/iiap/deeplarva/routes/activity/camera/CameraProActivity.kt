@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.iiap.deeplarva.application.adapters.CameraParameterAdapter
 import com.iiap.deeplarva.databinding.ActivityCameraProBinding
 import com.iiap.deeplarva.domain.constants.AppConstants
+import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.modules.camerapro.infraestructure.SensitivityProvider
 import com.iiap.deeplarva.ui.widget.dialogs.ISODialog
@@ -319,13 +320,25 @@ class CameraProActivity: AppCompatActivity() {
             return
         }
 
-        val initialISO = cameraStore.getCameraValues().sensorSensitivity
-        val initialExposure = cameraStore.getCameraValues().exposure
-        val initialDuration = cameraStore.getCameraValues().shootSpeed / 1000000
+        val hasCloudValues = preferencesHelper.getBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG_EXIST, true)
+        if(hasCloudValues) {
+            val initialISO = preferencesHelper.getInt(CloudKeysConstants.ISO_VALUE, 0)
+            val initialExposure = preferencesHelper.getLong(CloudKeysConstants.EXPOSURE_VALUE, 0L)
+            val initialShutterSpeed = preferencesHelper.getLong(CloudKeysConstants.SHUTTER_SPEED_VALUE, 0L)
 
-        viewModel.setIso(initialISO)
-        viewModel.setExposure(initialExposure)
-        viewModel.setShutterSpeed(initialDuration.toInt())
+            viewModel.setIso(initialISO)
+            viewModel.setExposure(initialExposure.toInt())
+            viewModel.setShutterSpeed(initialShutterSpeed.toInt())
+
+        } else {
+            val initialISO = cameraStore.getCameraValues().sensorSensitivity
+            val initialExposure = cameraStore.getCameraValues().exposure
+            val initialShutterSpeed = cameraStore.getCameraValues().shootSpeed / 1000000
+
+            viewModel.setIso(initialISO)
+            viewModel.setExposure(initialExposure)
+            viewModel.setShutterSpeed(initialShutterSpeed.toInt())
+        }
 
         hasFirstSetting = true
     }
