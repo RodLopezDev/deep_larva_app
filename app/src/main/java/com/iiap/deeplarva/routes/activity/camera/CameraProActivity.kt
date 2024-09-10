@@ -10,12 +10,12 @@ import androidx.camera.core.ImageCapture
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.iiap.deeplarva.application.adapters.CameraParameterAdapter
-import com.iiap.deeplarva.databinding.ActivityCameraPro2Binding
+import com.iiap.deeplarva.databinding.ActivityCameraProBinding
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.modules.camerapro.infraestructure.SensitivityProvider
+import com.iiap.deeplarva.ui.widget.dialogs.ISODialog
 import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
-import com.iiap.deeplarva.ui.widget.dialogs.SelectableDialog
 import com.iiap.deeplarva.ui.widget.dialogs.ShutterSpeedDialog
 import com.iiap.deeplarva.utils.CameraUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
@@ -36,7 +36,7 @@ import java.time.Duration
 class CameraProActivity: AppCompatActivity() {
     private var deviceID: String = ""
     private val pictures = mutableListOf<String>()
-    private lateinit var binding: ActivityCameraPro2Binding
+    private lateinit var binding: ActivityCameraProBinding
     private lateinit var files: LocalFileSystem
     private lateinit var haptics: HapticMotor
 
@@ -84,7 +84,7 @@ class CameraProActivity: AppCompatActivity() {
         deviceID = PreferencesHelper(this).getString(SharedPreferencesConstants.DEVICE_ID) ?: ""
         viewModel = ViewModelProvider(this)[CameraModel::class.java]
 
-        binding = ActivityCameraPro2Binding.inflate(layoutInflater)
+        binding = ActivityCameraProBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         files = LocalFileSystem(this)
@@ -128,26 +128,14 @@ class CameraProActivity: AppCompatActivity() {
         }
 
         binding.containerISO.setOnClickListener {
-            val sensitivityNames =
-                listOf("Auto") + sensitivities.map { it.toString() }
-            val defaultValue = sensitivities.indexOf(viewModel.iso.value) + 1
-
-            val dialog = SelectableDialog(
-                items = sensitivityNames,
-                defaultIndexValue = defaultValue,
+            val initialValue = viewModel.iso.value
+            val dialog = ISODialog(
                 title = "Modificar ISO",
-                okButtonText = "OK",
-                cancelButtonText = "Cancel"
-            ) { selectedItem ->
-                val newIso = if (selectedItem == 0) {
-                    null
-                } else {
-                    sensitivities[selectedItem - 1]
-                }
-                if(newIso != null) {
-                    cameraStore.updateSensitivitySensor(newIso)
-                }
-                viewModel.setIso(newIso)
+                preferencesHelper = preferencesHelper,
+                initialValue = initialValue ?: 0
+            ) {
+                cameraStore.updateSensitivitySensor(it)
+                viewModel.setIso(it)
             }
             dialog.show(supportFragmentManager, "ListSelectionDialog")
         }
@@ -277,6 +265,11 @@ class CameraProActivity: AppCompatActivity() {
     private fun onUpdate() {
         viewModel.iso.observe(this, Observer {
             val iso = it
+            if(iso == 0) {
+                binding.iso.text = "Auto"
+                binding.camera.camera?.setSensitivity(null)
+                return@Observer
+            }
             binding.iso.text = iso?.toString() ?: "Auto"
             binding.camera.camera?.setSensitivity(iso)
         })
@@ -328,7 +321,6 @@ class CameraProActivity: AppCompatActivity() {
 
         val initialISO = cameraStore.getCameraValues().sensorSensitivity
         val initialExposure = cameraStore.getCameraValues().exposure
-//        val initialDuration = Duration.ofNanos((cameraStore.getCameraValues().shootSpeed.toFloat()).toLong())
         val initialDuration = cameraStore.getCameraValues().shootSpeed / 1000000
 
         viewModel.setIso(initialISO)

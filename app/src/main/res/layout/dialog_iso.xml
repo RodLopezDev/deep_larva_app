@@ -18,20 +18,20 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:text="Off"
-                android:id="@+id/btnOff"
+                android:text="Auto"
+                android:id="@+id/btnAuto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
-                android:text="1 / 50"
-                android:id="@+id/btn1_50"
+                android:text="50"
+                android:id="@+id/btn50"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
-                android:text="1 / 60"
-                android:id="@+id/btn1_60"
+                android:text="100"
+                android:id="@+id/btn100"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -45,20 +45,20 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:text="1 / 80"
-                android:id="@+id/btn1_80"
+                android:text="200"
+                android:id="@+id/btn200"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
-                android:text="1 / 100"
-                android:id="@+id/btn1_100"
+                android:text="400"
+                android:id="@+id/btn400"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
-                android:text="1"
-                android:id="@+id/btn1_1000"
+                android:text="800"
+                android:id="@+id/btn800"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -77,7 +77,7 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ingrese valor (Milisegundos)"
+            android:hint="Ingrese ISO"
             android:inputType="number"
             android:maxLength="6"
             android:importantForAccessibility="yes"/>

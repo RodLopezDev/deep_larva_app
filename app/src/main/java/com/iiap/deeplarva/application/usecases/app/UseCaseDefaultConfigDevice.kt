@@ -12,6 +12,7 @@ class UseCaseDefaultConfigDevice(private val preferences: PreferencesHelper) {
 
         // ADD DEFAULT APP CONFIG
         preferences.saveBoolean(ConfigConstants.CONFIG_SHOW_SHUTTER_SPEED_CUSTOM, false)
+        preferences.saveBoolean(ConfigConstants.CONFIG_SHOW_ISO_CUSTOM, false)
         preferences.saveBoolean(ConfigConstants.CONFIG_FLAG_INITIAL_CONFIG, true)
     }
 }

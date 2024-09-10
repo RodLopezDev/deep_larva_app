@@ -34,6 +34,12 @@ class ConfigurationsActivity: AppCompatActivity() {
         binding.cbManualShutterSpeed.setOnCheckedChangeListener { buttonView, isChecked ->
             helper.saveBoolean(ConfigConstants.CONFIG_SHOW_SHUTTER_SPEED_CUSTOM, isChecked)
         }
+
+        val showManualISO = helper.getBoolean(ConfigConstants.CONFIG_SHOW_ISO_CUSTOM)
+        binding.cbManualISO.isChecked = showManualISO
+        binding.cbManualISO.setOnCheckedChangeListener { buttonView, isChecked ->
+            helper.saveBoolean(ConfigConstants.CONFIG_SHOW_ISO_CUSTOM, isChecked)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
