@@ -34,6 +34,14 @@
         android:paddingLeft="20dp">
 
         <CheckBox
+            android:id="@+id/cbManualISO"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/listTitle"
+            android:buttonTint="@color/deepLarva"
+            android:text="Modifcar ISO manualmente" />
+
+        <CheckBox
             android:id="@+id/cbManualShutterSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
