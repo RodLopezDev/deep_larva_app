@@ -265,6 +265,11 @@ class CameraProActivity: AppCompatActivity() {
     private fun onUpdate() {
         viewModel.iso.observe(this, Observer {
             val iso = it
+            if(iso == 0) {
+                binding.iso.text = "Auto"
+                binding.camera.camera?.setSensitivity(null)
+                return@Observer
+            }
             binding.iso.text = iso?.toString() ?: "Auto"
             binding.camera.camera?.setSensitivity(iso)
         })

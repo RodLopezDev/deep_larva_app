@@ -206,7 +206,7 @@ class CameraView(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     }
 
     init {
-        inflate(context, R.layout.view_camera_pro2, this)
+        inflate(context, R.layout.view_camera_pro, this)
         preview = findViewById(R.id.camera_preview)
         torchBtn = findViewById(R.id.camera_torch)
         zoomSeek = findViewById(R.id.camera_zoom)

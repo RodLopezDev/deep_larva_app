@@ -41,6 +41,10 @@
             android:buttonTint="@color/deepLarva"
             android:text="Modifcar ISO manualmente" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+
         <CheckBox
             android:id="@+id/cbManualShutterSpeed"
             android:layout_width="wrap_content"
