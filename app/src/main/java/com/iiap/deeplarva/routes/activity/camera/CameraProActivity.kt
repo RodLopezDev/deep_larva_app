@@ -14,8 +14,8 @@ import com.iiap.deeplarva.databinding.ActivityCameraProBinding
 import com.iiap.deeplarva.domain.constants.AppConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.modules.camerapro.infraestructure.SensitivityProvider
+import com.iiap.deeplarva.ui.widget.dialogs.ExposureDialog
 import com.iiap.deeplarva.ui.widget.dialogs.ISODialog
-import com.iiap.deeplarva.ui.widget.dialogs.SeekDialog
 import com.iiap.deeplarva.ui.widget.dialogs.ShutterSpeedDialog
 import com.iiap.deeplarva.utils.CameraUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
@@ -38,7 +38,6 @@ class CameraProActivity: AppCompatActivity() {
     private lateinit var binding: ActivityCameraProBinding
     private lateinit var files: LocalFileSystem
     private lateinit var haptics: HapticMotor
-
 
     private lateinit var preferencesHelper: PreferencesHelper
 
@@ -73,6 +72,7 @@ class CameraProActivity: AppCompatActivity() {
     private val delayedPhotoTimer = CoroutineTimer {
         takePhoto()
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,7 +136,7 @@ class CameraProActivity: AppCompatActivity() {
                 cameraStore.updateSensitivitySensor(it)
                 viewModel.setIso(it)
             }
-            dialog.show(supportFragmentManager, "ListSelectionDialog")
+            dialog.show(supportFragmentManager, "IsoPickerDialog")
         }
 
         binding.containerShutterSpeed.setOnClickListener {
@@ -150,16 +150,16 @@ class CameraProActivity: AppCompatActivity() {
                 cameraStore.updateShootSpeed(value, text)
                 viewModel.setShutterSpeed(value)
             }
-            dialog.show(supportFragmentManager, "IntervalPickerDialog")
+            dialog.show(supportFragmentManager, "ShutterSpeedPickerDialog")
         }
 
         binding.containerExposure.setOnClickListener {
             val initial = viewModel.exposure.value ?: 0
-            val dialog = SeekDialog(
+            val dialog = ExposureDialog(
                 minValue = CameraParameterAdapter.EXPOSURE_MIN,
                 maxValue = CameraParameterAdapter.EXPOSURE_MAX,
                 initialValue = initial,
-                title = "Modificar exposicióm"
+                title = "Modificar exposición"
             ) { selectedValue ->
                 viewModel.setExposure(selectedValue)
                 cameraStore.updateExposure(selectedValue)
@@ -265,7 +265,7 @@ class CameraProActivity: AppCompatActivity() {
         viewModel.exposure.observe(this, Observer {
             val exposure = it
             if(exposure != null) {
-                binding.exposure.text = (exposure / 10F).toString()
+                binding.exposure.text = exposure.toString()
                 binding.camera.camera?.setExposure(exposure)
             }
         })

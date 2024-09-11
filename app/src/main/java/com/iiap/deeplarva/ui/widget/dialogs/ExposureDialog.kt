@@ -10,14 +10,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.iiap.deeplarva.R
 
-class SeekDialog(
+class ExposureDialog(
     private val minValue: Int,
     private val maxValue: Int,
     private val initialValue: Int,
     private val title: String = "",
     private val onValueChanged: (Int) -> Unit
 ) : DialogFragment() {
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -27,14 +26,13 @@ class SeekDialog(
 
             seekBar.min = minValue
             seekBar.max = maxValue
-            seekBar.progress = initialValue - minValue
+            seekBar.progress = initialValue
 
             valueTextView.text = initialValue.toString()
 
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    val value = minValue + progress
-                    valueTextView.text = value.toString()
+                    valueTextView.text = progress.toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) { }
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
@@ -44,7 +42,7 @@ class SeekDialog(
             builder.setTitle(title)
                 .setView(dialogView)
                 .setPositiveButton("OK") { dialog, _ ->
-                    val finalValue = minValue + seekBar.progress
+                    val finalValue = seekBar.progress
                     onValueChanged(finalValue)
                     dialog.dismiss()
                 }

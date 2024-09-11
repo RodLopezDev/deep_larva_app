@@ -50,7 +50,7 @@ class ConfigurationsActivity: AppCompatActivity() {
 
             binding.tvCloudCameraValues.text = "\t\tConfiguración de cámara disponible\n\n" +
                     "ISO: ${isoValue}\n" +
-                    "Exposición: ${exposureValue / 10F}\n" +
+                    "Exposición: ${exposureValue}\n" +
                     "Speed: ${shutterSpeedValue}\n"
         } else {
             binding.tvCloudCameraValues.text = "Configuración de cámara NO disponible"
