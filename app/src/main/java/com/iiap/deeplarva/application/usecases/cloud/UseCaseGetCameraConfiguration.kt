@@ -7,6 +7,7 @@ import com.iiap.deeplarva.domain.response.CameraConfigurationResponse
 import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
 import com.iiap.deeplarva.modules.requests.RequestListener
 import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.utils.SpeedUtils
 
 class UseCaseGetCameraConfiguration(
     private val brand: String,
@@ -37,6 +38,7 @@ class UseCaseGetCameraConfiguration(
                 preferences.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, result.iso)
                 preferences.saveInt(SharedPreferencesConstants.EXPOSURE_VALUE, formattedExpo)
                 preferences.saveInt(SharedPreferencesConstants.SHUTTER_SPEED_TIME_VALUE, result.shutterSpeed)
+                preferences.saveString(SharedPreferencesConstants.SHUTTER_SPEED_TIME_TEXT, SpeedUtils.shutterMlToString(result.shutterSpeed))
                 callback()
             }
             override fun onFailure() {

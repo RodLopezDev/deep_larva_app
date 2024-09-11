@@ -2,21 +2,23 @@ package com.iiap.deeplarva.utils
 
 class SpeedUtils {
     companion object {
-//        fun adjustSpeed(value: Int): Int {
-//            return ((value + 5) / 10) * 10
-//        }
-//        fun speedToText(value: Int): String {
-//            if(value == 0) {
-//                return "Auto"
-//            }
-//
-//            val fraction = value.toDouble() / 1000
-//
-//            val denominator = 10.0.pow(-log10(fraction)).toInt()
-//            val adjustedDenominator = adjustSpeed(denominator)
-//
-//            val numerator = (fraction * adjustedDenominator).toInt()
-//            return if (numerator == 1) "1 / $adjustedDenominator" else "$numerator / $adjustedDenominator"
-//        }
+        fun shutterMlToString(value: Int): String {
+            if(value == 17) {
+                return "1 / 60"
+            }
+            if(value == 20) {
+                return "1 / 50"
+            }
+            if(value == 13) {
+                return "1 / 80"
+            }
+            if(value == 10) {
+                return "1 / 100"
+            }
+            if(value == 1) {
+                return "1 / 1000"
+            }
+            return "$value ms"
+        }
     }
 }
