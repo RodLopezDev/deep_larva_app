@@ -15,10 +15,11 @@ class CameraParameterAdapter(
     private val cameraCharacteristics: CameraCharacteristics
 ) {
     companion object {
-        const val MAX_ISO = 3200
-        const val MIN_ISO = 100
-
-        const val MIN_SHOOT_SPEED = 100000L
+        const val DEFAULT_EXPOSURE = 0
+        const val EXPOSURE_MIN = -20
+        const val EXPOSURE_MAX = 20
+        const val DEFAULT_ISO = 0
+        const val DEFAULT_SHUTTER_SPEED = 0
     }
 
     private lateinit var cameraValues: CameraValues
@@ -26,16 +27,8 @@ class CameraParameterAdapter(
     init {
         if(
             !preferencesHelper.exists(SharedPreferencesConstants.RESOLUTION_MAX_WIDTH) or
-            !preferencesHelper.exists(SharedPreferencesConstants.RESOLUTION_MAX_HEIGHT) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_VALUE) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_MIN) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_MAX) or
-            !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_VALUE) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_VALUE) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_TEXT)
+            !preferencesHelper.exists(SharedPreferencesConstants.RESOLUTION_MAX_HEIGHT)
         ) {
-            val exposureRange = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE)
-            val exposureTimeRange = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)
             val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             val availableDimensions = streamConfigurationMap?.getOutputSizes(ImageFormat.JPEG)
             val dimsWith916 = getDimension916(availableDimensions!!)
@@ -44,17 +37,20 @@ class CameraParameterAdapter(
             val maxWidth = if(largest916Size!!.width > largest916Size.height) { largest916Size.height } else { largest916Size.width }
             val maxHeight = if(largest916Size!!.width > largest916Size.height) { largest916Size.width } else { largest916Size.height }
 
-            val minExposureTime = exposureTimeRange?.lower ?: MIN_SHOOT_SPEED
-
             preferencesHelper.saveInt(SharedPreferencesConstants.RESOLUTION_MAX_WIDTH, maxWidth)
             preferencesHelper.saveInt(SharedPreferencesConstants.RESOLUTION_MAX_HEIGHT, maxHeight)
-            preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_VALUE, 0)
-            preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MIN, exposureRange!!.lower)
-            preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MAX, exposureRange.upper)
-            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, MIN_ISO)
-            preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, minExposureTime)
-            preferencesHelper.saveString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED)
         }
+        if(!preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_VALUE)) {
+            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, DEFAULT_ISO)
+        }
+        if(!preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_VALUE)) {
+            preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_VALUE, DEFAULT_EXPOSURE)
+        }
+        if(!preferencesHelper.exists(SharedPreferencesConstants.SHUTTER_SPEED_TIME_VALUE)) {
+            preferencesHelper.saveInt(SharedPreferencesConstants.SHUTTER_SPEED_TIME_VALUE, DEFAULT_SHUTTER_SPEED)
+            preferencesHelper.saveString(SharedPreferencesConstants.SHUTTER_SPEED_TIME_TEXT, MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED)
+        }
+
         initValues()
     }
 
@@ -77,18 +73,14 @@ class CameraParameterAdapter(
         val maxWidth = preferencesHelper.getInt(SharedPreferencesConstants.RESOLUTION_MAX_WIDTH, 0)
         val maxHeight = preferencesHelper.getInt(SharedPreferencesConstants.RESOLUTION_MAX_HEIGHT, 0)
         val exposure = preferencesHelper.getInt(SharedPreferencesConstants.EXPOSURE_VALUE, 0)
-        val exposureMin = preferencesHelper.getInt(SharedPreferencesConstants.EXPOSURE_MIN, 0)
-        val exposureMax = preferencesHelper.getInt(SharedPreferencesConstants.EXPOSURE_MAX, 0)
         val sensorSensitivity = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_VALUE, 0)
-        val shootSpeed = preferencesHelper.getLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, 0)
-        val shootSpeedText = preferencesHelper.getString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, "") ?: ""
+        val shootSpeed = preferencesHelper.getInt(SharedPreferencesConstants.SHUTTER_SPEED_TIME_VALUE, 0)
+        val shootSpeedText = preferencesHelper.getString(SharedPreferencesConstants.SHUTTER_SPEED_TIME_TEXT, MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED) ?:MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED
         cameraValues = CameraValues(
             maxWidth,
             maxHeight,
             sensorSensitivity,
             exposure,
-            exposureMin,
-            exposureMax,
             shootSpeed,
             shootSpeedText
         )
@@ -108,9 +100,9 @@ class CameraParameterAdapter(
         preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_VALUE, value)
     }
 
-    fun updateShootSpeed(value: Long, text: String) {
+    fun updateShootSpeed(value: Int, text: String) {
         cameraValues.shootSpeed = value
-        preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, value)
-        preferencesHelper.saveString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, text)
+        preferencesHelper.saveInt(SharedPreferencesConstants.SHUTTER_SPEED_TIME_VALUE, value)
+        preferencesHelper.saveString(SharedPreferencesConstants.SHUTTER_SPEED_TIME_TEXT, text)
     }
 }

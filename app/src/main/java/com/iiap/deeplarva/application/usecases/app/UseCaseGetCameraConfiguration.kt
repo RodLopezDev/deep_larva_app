@@ -27,10 +27,16 @@ class UseCaseGetCameraConfiguration(
         services.getCameraConfiguration(request, object:
             RequestListener<CameraConfigurationResponse> {
             override fun onComplete(result: CameraConfigurationResponse) {
+                val formattedExpo = (result.exposure * 10F).toInt()
+
                 preferences.saveBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG_EXIST, true)
                 preferences.saveInt(CloudKeysConstants.ISO_VALUE, result.iso)
-                preferences.saveLong(CloudKeysConstants.EXPOSURE_VALUE, result.exposure.toLong())
-                preferences.saveLong(CloudKeysConstants.SHUTTER_SPEED_VALUE, result.shutterSpeed)
+                preferences.saveInt(CloudKeysConstants.EXPOSURE_VALUE,formattedExpo)
+                preferences.saveInt(CloudKeysConstants.SHUTTER_SPEED_VALUE, result.shutterSpeed)
+
+                preferences.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, result.iso)
+                preferences.saveInt(SharedPreferencesConstants.EXPOSURE_VALUE, formattedExpo)
+                preferences.saveInt(SharedPreferencesConstants.SHUTTER_SPEED_TIME_VALUE, result.shutterSpeed)
                 callback()
             }
             override fun onFailure() {

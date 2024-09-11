@@ -147,9 +147,7 @@ class CameraProActivity: AppCompatActivity() {
                 initialValue = initialValue,
                 title = "Shooter Speed"
             ) { value, text ->
-                val inNanoseconds =  value * 1000000L
-
-                cameraStore.updateShootSpeed(inNanoseconds, text)
+                cameraStore.updateShootSpeed(value, text)
                 viewModel.setShutterSpeed(value)
             }
             dialog.show(supportFragmentManager, "IntervalPickerDialog")
@@ -158,8 +156,8 @@ class CameraProActivity: AppCompatActivity() {
         binding.containerExposure.setOnClickListener {
             val initial = viewModel.exposure.value ?: 0
             val dialog = SeekDialog(
-                minValue = cameraStore.getCameraValues().exposureMin,
-                maxValue = cameraStore.getCameraValues().exposureMax,
+                minValue = CameraParameterAdapter.EXPOSURE_MIN,
+                maxValue = CameraParameterAdapter.EXPOSURE_MAX,
                 initialValue = initial,
                 title = "Modificar exposicióm"
             ) { selectedValue ->
@@ -251,7 +249,7 @@ class CameraProActivity: AppCompatActivity() {
         })
         viewModel.shutterSpeed.observe(this, Observer {
             val shutterSpeed = it ?: 100
-            val shutterText = preferencesHelper.getString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT) ?: ""
+            val shutterText = preferencesHelper.getString(SharedPreferencesConstants.SHUTTER_SPEED_TIME_TEXT) ?: ""
             binding.shutterSpeed.text = shutterText
 
             val duration = Duration.ofMillis(shutterSpeed.toLong())
@@ -267,7 +265,7 @@ class CameraProActivity: AppCompatActivity() {
         viewModel.exposure.observe(this, Observer {
             val exposure = it
             if(exposure != null) {
-                binding.exposure.text = exposure.toString()
+                binding.exposure.text = (exposure / 10F).toString()
                 binding.camera.camera?.setExposure(exposure)
             }
         })
@@ -279,8 +277,11 @@ class CameraProActivity: AppCompatActivity() {
 
         val initialISO = cameraStore.getCameraValues().sensorSensitivity
         val initialExposure = cameraStore.getCameraValues().exposure
-        val initialShutterSpeed = cameraStore.getCameraValues().shootSpeed / 1000000L
-        viewModel.updateBatch(initialISO, initialExposure, initialShutterSpeed.toInt())
+        val initialShutterSpeed = cameraStore.getCameraValues().shootSpeed
+
+        viewModel.setIso(initialISO)
+        viewModel.setExposure(initialExposure)
+        viewModel.setShutterSpeed(initialShutterSpeed)
 
         hasFirstSetting = true
     }
