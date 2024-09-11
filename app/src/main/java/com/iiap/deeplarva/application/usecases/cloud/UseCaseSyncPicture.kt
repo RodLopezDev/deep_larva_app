@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.application.usecases
+package com.iiap.deeplarva.application.usecases.cloud
 
 import com.iiap.deeplarva.domain.entity.Picture
 import com.iiap.deeplarva.domain.requests.SyncPictureRequest

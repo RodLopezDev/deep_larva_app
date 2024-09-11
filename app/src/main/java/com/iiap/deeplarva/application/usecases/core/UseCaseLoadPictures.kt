@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.application.usecases
+package com.iiap.deeplarva.application.usecases.core
 
 import com.iiap.deeplarva.domain.view.PictureListEntity
 import com.iiap.deeplarva.infraestructure.services.PicturesServices

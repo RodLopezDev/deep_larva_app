@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.application.usecases.app
+package com.iiap.deeplarva.application.usecases.cloud
 
 import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants

@@ -11,9 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.iiap.deeplarva.R
-import com.iiap.deeplarva.application.usecases.UseCaseLoadPictures
-import com.iiap.deeplarva.application.usecases.UseCaseLoadPicturesProcessesRunning
-import com.iiap.deeplarva.application.usecases.UseCaseSyncPicture
+import com.iiap.deeplarva.application.usecases.core.UseCaseLoadPictures
+import com.iiap.deeplarva.application.usecases.core.UseCaseLoadPicturesProcessesRunning
+import com.iiap.deeplarva.application.usecases.cloud.UseCaseSyncPicture
 import com.iiap.deeplarva.databinding.ActivityPicturesBinding
 import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants

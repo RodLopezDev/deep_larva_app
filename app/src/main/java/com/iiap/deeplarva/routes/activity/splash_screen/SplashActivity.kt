@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.iiap.deeplarva.R
 import com.iiap.deeplarva.application.usecases.app.UseCaseDefaultConfigDevice
-import com.iiap.deeplarva.application.usecases.app.UseCaseGetCameraConfiguration
-import com.iiap.deeplarva.application.usecases.app.UseCaseGetConfigurationFromCloud
+import com.iiap.deeplarva.application.usecases.cloud.UseCaseGetCameraConfiguration
+import com.iiap.deeplarva.application.usecases.cloud.UseCaseGetConfigurationFromCloud
 import com.iiap.deeplarva.application.usecases.app.UseCaseRegisterDeviceId
 import com.iiap.deeplarva.domain.constants.PermissionsConstans
 import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
