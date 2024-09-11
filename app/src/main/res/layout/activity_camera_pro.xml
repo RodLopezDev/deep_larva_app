@@ -66,40 +66,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/containerInterval"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <LinearLayout
-                android:id="@+id/llInterval"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Interval"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="8dp" />
-
-                <TextView
-                    android:id="@+id/interval"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAlignment="center"
-                    android:textColor="@color/white" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/containerExposure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
