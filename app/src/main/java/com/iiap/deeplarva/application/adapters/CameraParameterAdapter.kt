@@ -31,8 +31,6 @@ class CameraParameterAdapter(
             !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_MIN) or
             !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_MAX) or
             !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_VALUE) or
-            !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_MIN) or
-            !preferencesHelper.exists(SharedPreferencesConstants.SENSITIVITY_MAX) or
             !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_VALUE) or
             !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_TIME_TEXT)
         ) {
@@ -54,8 +52,6 @@ class CameraParameterAdapter(
             preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MIN, exposureRange!!.lower)
             preferencesHelper.saveInt(SharedPreferencesConstants.EXPOSURE_MAX, exposureRange.upper)
             preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_VALUE, MIN_ISO)
-            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MIN, MIN_ISO)
-            preferencesHelper.saveInt(SharedPreferencesConstants.SENSITIVITY_MAX, MAX_ISO)
             preferencesHelper.saveLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, minExposureTime)
             preferencesHelper.saveString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED)
         }
@@ -84,16 +80,12 @@ class CameraParameterAdapter(
         val exposureMin = preferencesHelper.getInt(SharedPreferencesConstants.EXPOSURE_MIN, 0)
         val exposureMax = preferencesHelper.getInt(SharedPreferencesConstants.EXPOSURE_MAX, 0)
         val sensorSensitivity = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_VALUE, 0)
-        val sensorSensitivityMin = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_MIN, 0)
-        val sensorSensitivityMax = preferencesHelper.getInt(SharedPreferencesConstants.SENSITIVITY_MAX, 0)
         val shootSpeed = preferencesHelper.getLong(SharedPreferencesConstants.EXPOSURE_TIME_VALUE, 0)
         val shootSpeedText = preferencesHelper.getString(SharedPreferencesConstants.EXPOSURE_TIME_TEXT, "") ?: ""
         cameraValues = CameraValues(
             maxWidth,
             maxHeight,
             sensorSensitivity,
-            sensorSensitivityMin,
-            sensorSensitivityMax,
             exposure,
             exposureMin,
             exposureMax,

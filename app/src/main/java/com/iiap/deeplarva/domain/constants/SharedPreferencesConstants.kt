@@ -12,8 +12,6 @@ class SharedPreferencesConstants {
         const val EXPOSURE_MAX = "exposure-camera-max"
 
         const val SENSITIVITY_VALUE = "sensor-sensitivity-camera-value"
-        const val SENSITIVITY_MIN = "sensor-sensitivity-camera-min"
-        const val SENSITIVITY_MAX = "sensor-sensitivity-camera-max"
 
         const val EXPOSURE_TIME_VALUE = "sensor-exposure-time-camera-value"
         const val EXPOSURE_TIME_TEXT = "sensor-exposure-time-camera-text"

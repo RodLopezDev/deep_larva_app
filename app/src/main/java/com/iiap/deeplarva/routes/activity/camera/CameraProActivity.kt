@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.iiap.deeplarva.application.adapters.CameraParameterAdapter
 import com.iiap.deeplarva.databinding.ActivityCameraProBinding
 import com.iiap.deeplarva.domain.constants.AppConstants
-import com.iiap.deeplarva.domain.constants.CloudKeysConstants
 import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
 import com.iiap.deeplarva.modules.camerapro.infraestructure.SensitivityProvider
 import com.iiap.deeplarva.ui.widget.dialogs.ISODialog
@@ -21,7 +20,6 @@ import com.iiap.deeplarva.ui.widget.dialogs.ShutterSpeedDialog
 import com.iiap.deeplarva.utils.CameraUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
 import com.kylecorry.andromeda.camera.ImageCaptureSettings
-import com.kylecorry.andromeda.core.math.DecimalFormatter
 import com.kylecorry.andromeda.core.time.CoroutineTimer
 import com.kylecorry.andromeda.files.LocalFileSystem
 import com.kylecorry.andromeda.haptics.HapticFeedbackType
@@ -157,29 +155,6 @@ class CameraProActivity: AppCompatActivity() {
             dialog.show(supportFragmentManager, "IntervalPickerDialog")
         }
 
-        binding.containerInterval.setOnClickListener {
-            val initial = if(viewModel.interval.value != null) {
-                viewModel.interval.value!!.toSeconds().toInt()
-            } else {
-                0
-            }
-            val dialog = SeekDialog(
-                minValue = 0,
-                maxValue = 10,
-                initialValue = initial,
-                title = "Modificar Interval"
-            ) { selectedValue ->
-                if (selectedValue == null) {
-                    viewModel.setInterval(null)
-                    cameraStore.updateExposure(0)
-                    return@SeekDialog
-                }
-                val newInterval = Duration.ofNanos((selectedValue.toFloat() * 1000).toLong())
-                cameraStore.updateExposure(selectedValue)
-                viewModel.setInterval(newInterval)
-            }
-            dialog.show(supportFragmentManager, "IntervalPickerDialog")
-        }
         binding.containerExposure.setOnClickListener {
             val initial = viewModel.exposure.value ?: 0
             val dialog = SeekDialog(
@@ -296,49 +271,16 @@ class CameraProActivity: AppCompatActivity() {
                 binding.camera.camera?.setExposure(exposure)
             }
         })
-        viewModel.interval.observe(this, Observer {
-            val interval = it
-            binding.interval.text =
-                interval?.let { DecimalFormatter.format(interval.toMillis() / 1000f, 2) }
-                    ?: "Off"
-            if (interval != null) {
-                turnOffDuringInterval = interval > Duration.ofSeconds(2)
-                intervalometer.interval(interval)
-            } else {
-                val wasRunning = turnOffDuringInterval
-                intervalometer.stop()
-                hasPendingPhoto = false
-                turnOffDuringInterval = false
-                if (wasRunning) {
-                    restartCamera()
-                }
-            }
-        })
     }
     private fun defineInitialValues() {
         if(hasFirstSetting) {
             return
         }
 
-        val hasCloudValues = preferencesHelper.getBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG_EXIST, true)
-        if(hasCloudValues) {
-            val initialISO = preferencesHelper.getInt(CloudKeysConstants.ISO_VALUE, 0)
-            val initialExposure = preferencesHelper.getLong(CloudKeysConstants.EXPOSURE_VALUE, 0L)
-            val initialShutterSpeed = preferencesHelper.getLong(CloudKeysConstants.SHUTTER_SPEED_VALUE, 0L)
-
-            viewModel.setIso(initialISO)
-            viewModel.setExposure(initialExposure.toInt())
-            viewModel.setShutterSpeed(initialShutterSpeed.toInt())
-
-        } else {
-            val initialISO = cameraStore.getCameraValues().sensorSensitivity
-            val initialExposure = cameraStore.getCameraValues().exposure
-            val initialShutterSpeed = cameraStore.getCameraValues().shootSpeed / 1000000
-
-            viewModel.setIso(initialISO)
-            viewModel.setExposure(initialExposure)
-            viewModel.setShutterSpeed(initialShutterSpeed.toInt())
-        }
+        val initialISO = cameraStore.getCameraValues().sensorSensitivity
+        val initialExposure = cameraStore.getCameraValues().exposure
+        val initialShutterSpeed = cameraStore.getCameraValues().shootSpeed / 1000000L
+        viewModel.updateBatch(initialISO, initialExposure, initialShutterSpeed.toInt())
 
         hasFirstSetting = true
     }

@@ -29,7 +29,7 @@ class UseCaseGetCameraConfiguration(
             override fun onComplete(result: CameraConfigurationResponse) {
                 preferences.saveBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG_EXIST, true)
                 preferences.saveInt(CloudKeysConstants.ISO_VALUE, result.iso)
-                preferences.saveLong(CloudKeysConstants.EXPOSURE_VALUE, result.exposure)
+                preferences.saveLong(CloudKeysConstants.EXPOSURE_VALUE, result.exposure.toLong())
                 preferences.saveLong(CloudKeysConstants.SHUTTER_SPEED_VALUE, result.shutterSpeed)
                 callback()
             }
