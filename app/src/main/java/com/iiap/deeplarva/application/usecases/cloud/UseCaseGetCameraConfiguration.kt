@@ -6,6 +6,7 @@ import com.iiap.deeplarva.domain.requests.CameraConfigurationRequest
 import com.iiap.deeplarva.domain.response.CameraConfigurationResponse
 import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
 import com.iiap.deeplarva.modules.requests.RequestListener
+import com.iiap.deeplarva.utils.ExposureUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
 import com.iiap.deeplarva.utils.SpeedUtils
 
@@ -28,7 +29,7 @@ class UseCaseGetCameraConfiguration(
         services.getCameraConfiguration(request, object:
             RequestListener<CameraConfigurationResponse> {
             override fun onComplete(result: CameraConfigurationResponse) {
-                val formattedExpo = (result.exposure * 10F).toInt()
+                val formattedExpo = ExposureUtils.convertServerToValue(result.exposure)
 
                 preferences.saveBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG_EXIST, true)
                 preferences.saveInt(CloudKeysConstants.ISO_VALUE, result.iso)
