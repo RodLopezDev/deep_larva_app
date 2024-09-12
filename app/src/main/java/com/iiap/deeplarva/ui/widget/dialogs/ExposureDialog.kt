@@ -26,7 +26,7 @@ class ExposureDialog(
 
             seekBar.min = minValue
             seekBar.max = maxValue
-            seekBar.progress = initialValue
+            seekBar.progress = initialValue.toInt()
 
             valueTextView.text = (initialValue * 5F / 10F).toString()
 
