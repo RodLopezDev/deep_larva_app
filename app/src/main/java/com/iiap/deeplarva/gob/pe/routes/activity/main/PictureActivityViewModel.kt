@@ -1,9 +1,9 @@
-package com.iiap.deeplarva.routes.activity.main
+package com.iiap.deeplarva.gob.pe.routes.activity.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.iiap.deeplarva.domain.view.PictureListEntity
+import com.iiap.deeplarva.gob.pe.domain.view.PictureListEntity
 
 class PictureActivityViewModel : ViewModel() {
     private val _pictures = MutableLiveData<List<PictureListEntity>>().apply {

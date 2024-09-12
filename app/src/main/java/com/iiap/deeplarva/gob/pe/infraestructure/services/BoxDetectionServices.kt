@@ -1,7 +1,7 @@
-package com.iiap.deeplarva.infraestructure.services
+package com.iiap.deeplarva.gob.pe.infraestructure.services
 
-import com.iiap.deeplarva.domain.entity.BoxDetection
-import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
+import com.iiap.deeplarva.gob.pe.domain.entity.BoxDetection
+import com.iiap.deeplarva.gob.pe.infraestructure.internal.driver.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

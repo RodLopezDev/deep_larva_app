@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.camerapro.view
+package com.iiap.deeplarva.gob.pe.modules.camerapro.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,7 +24,7 @@ import com.kylecorry.andromeda.camera.ImageCaptureSettings
 import com.kylecorry.andromeda.core.bitmap.BitmapUtils.toBitmap
 import com.kylecorry.andromeda.core.ui.setOnProgressChangeListener
 import com.kylecorry.sol.math.SolMath
-import com.iiap.deeplarva.R
+import com.iiap.deeplarva.gob.pe.R
 import java.io.File
 
 class CameraView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {

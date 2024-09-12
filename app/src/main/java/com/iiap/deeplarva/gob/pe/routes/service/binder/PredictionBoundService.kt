@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.service.binder
+package com.iiap.deeplarva.gob.pe.routes.service.binder
 
 import android.content.ComponentName
 import android.content.Context
@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.routes.service.PredictionService
+import com.iiap.deeplarva.gob.pe.routes.service.PredictionService
 
 class PredictionBoundService(private val activity:AppCompatActivity, private val IBoundService: IBoundService) {
 

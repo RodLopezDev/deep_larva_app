@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.prediction
+package com.iiap.deeplarva.gob.pe.modules.prediction
 
 import android.graphics.Bitmap
 

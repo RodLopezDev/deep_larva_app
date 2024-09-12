@@ -1,13 +1,13 @@
-package com.iiap.deeplarva.application.usecases.cloud
+package com.iiap.deeplarva.gob.pe.application.usecases.cloud
 
-import com.iiap.deeplarva.domain.constants.CloudKeysConstants
-import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.domain.requests.AppConfigurationRequest
-import com.iiap.deeplarva.domain.response.AppConfigurationResponse
-import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
-import com.iiap.deeplarva.modules.requests.RequestListener
-import com.iiap.deeplarva.utils.DateUtils
-import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.domain.constants.CloudKeysConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.SharedPreferencesConstants
+import com.iiap.deeplarva.gob.pe.domain.requests.AppConfigurationRequest
+import com.iiap.deeplarva.gob.pe.domain.response.AppConfigurationResponse
+import com.iiap.deeplarva.gob.pe.infraestructure.services.AppConfigurationServices
+import com.iiap.deeplarva.gob.pe.modules.requests.RequestListener
+import com.iiap.deeplarva.gob.pe.utils.DateUtils
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
 
 class UseCaseGetConfigurationFromCloud(
     private val version: String,

@@ -1,12 +1,12 @@
-package com.iiap.deeplarva.application.usecases.cloud
+package com.iiap.deeplarva.gob.pe.application.usecases.cloud
 
-import com.iiap.deeplarva.domain.entity.Picture
-import com.iiap.deeplarva.domain.requests.SyncPictureRequest
-import com.iiap.deeplarva.domain.response.NewPictureResponse
-import com.iiap.deeplarva.infraestructure.services.BackendPictureServices
-import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
-import com.iiap.deeplarva.infraestructure.services.PicturesServices
-import com.iiap.deeplarva.modules.requests.RequestListener
+import com.iiap.deeplarva.gob.pe.domain.entity.Picture
+import com.iiap.deeplarva.gob.pe.domain.requests.SyncPictureRequest
+import com.iiap.deeplarva.gob.pe.domain.response.NewPictureResponse
+import com.iiap.deeplarva.gob.pe.infraestructure.services.BackendPictureServices
+import com.iiap.deeplarva.gob.pe.infraestructure.services.BoxDetectionServices
+import com.iiap.deeplarva.gob.pe.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.gob.pe.modules.requests.RequestListener
 import java.io.File
 
 class UseCaseSyncPicture(

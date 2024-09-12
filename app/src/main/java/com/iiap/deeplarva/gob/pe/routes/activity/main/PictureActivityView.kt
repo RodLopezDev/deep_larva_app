@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.main
+package com.iiap.deeplarva.gob.pe.routes.activity.main
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -7,18 +7,18 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import com.iiap.deeplarva.R
-import com.iiap.deeplarva.databinding.ActivityPicturesBinding
-import com.iiap.deeplarva.domain.constants.AppConstants
-import com.iiap.deeplarva.domain.constants.PermissionsConstans
-import com.iiap.deeplarva.domain.view.PictureListEntity
-import com.iiap.deeplarva.modules.inputHelper.PictureInputHelper
-import com.iiap.deeplarva.routes.activity.picture_detail.PictureDetailActivity
-import com.iiap.deeplarva.ui.adapter.PictureAdapterList
-import com.iiap.deeplarva.ui.adapter.PictureItemListListener
-import com.iiap.deeplarva.ui.widget.listHandler.ListEventListener
-import com.iiap.deeplarva.ui.widget.listHandler.ListHandlerView
-import com.iiap.deeplarva.utils.UserUtils
+import com.iiap.deeplarva.gob.pe.R
+import com.iiap.deeplarva.gob.pe.databinding.ActivityPicturesBinding
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.PermissionsConstans
+import com.iiap.deeplarva.gob.pe.domain.view.PictureListEntity
+import com.iiap.deeplarva.gob.pe.modules.inputHelper.PictureInputHelper
+import com.iiap.deeplarva.gob.pe.routes.activity.picture_detail.PictureDetailActivity
+import com.iiap.deeplarva.gob.pe.ui.adapter.PictureAdapterList
+import com.iiap.deeplarva.gob.pe.ui.adapter.PictureItemListListener
+import com.iiap.deeplarva.gob.pe.ui.widget.listHandler.ListEventListener
+import com.iiap.deeplarva.gob.pe.ui.widget.listHandler.ListHandlerView
+import com.iiap.deeplarva.gob.pe.utils.UserUtils
 
 
 class PictureActivityView(

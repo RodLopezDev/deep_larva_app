@@ -1,14 +1,14 @@
-package com.iiap.deeplarva.application.usecases.cloud
+package com.iiap.deeplarva.gob.pe.application.usecases.cloud
 
-import com.iiap.deeplarva.domain.constants.CloudKeysConstants
-import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.domain.requests.CameraConfigurationRequest
-import com.iiap.deeplarva.domain.response.CameraConfigurationResponse
-import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
-import com.iiap.deeplarva.modules.requests.RequestListener
-import com.iiap.deeplarva.utils.ExposureUtils
-import com.iiap.deeplarva.utils.PreferencesHelper
-import com.iiap.deeplarva.utils.SpeedUtils
+import com.iiap.deeplarva.gob.pe.domain.constants.CloudKeysConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.SharedPreferencesConstants
+import com.iiap.deeplarva.gob.pe.domain.requests.CameraConfigurationRequest
+import com.iiap.deeplarva.gob.pe.domain.response.CameraConfigurationResponse
+import com.iiap.deeplarva.gob.pe.infraestructure.services.AppConfigurationServices
+import com.iiap.deeplarva.gob.pe.modules.requests.RequestListener
+import com.iiap.deeplarva.gob.pe.utils.ExposureUtils
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.utils.SpeedUtils
 
 class UseCaseGetCameraConfiguration(
     private val brand: String,

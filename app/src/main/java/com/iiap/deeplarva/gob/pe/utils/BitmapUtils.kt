@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.utils
+package com.iiap.deeplarva.gob.pe.utils
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,13 +9,13 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import com.iiap.deeplarva.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.UUID
-import com.iiap.deeplarva.modules.prediction.Detect640x640_recorte_imagen_region_interes
+import com.iiap.deeplarva.gob.pe.modules.prediction.Detect640x640_recorte_imagen_region_interes
 
 class BitmapUtils {
     companion object {

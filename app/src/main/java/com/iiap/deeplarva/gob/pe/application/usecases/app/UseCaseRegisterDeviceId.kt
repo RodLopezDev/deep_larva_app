@@ -1,7 +1,7 @@
-package com.iiap.deeplarva.application.usecases.app
+package com.iiap.deeplarva.gob.pe.application.usecases.app
 
-import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.domain.constants.SharedPreferencesConstants
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
 import java.util.UUID
 
 class UseCaseRegisterDeviceId(private val preferences: PreferencesHelper) {

@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.inputHelper
+package com.iiap.deeplarva.gob.pe.modules.inputHelper
 
 import android.app.Activity
 import android.content.Intent
@@ -8,9 +8,9 @@ import android.media.ExifInterface
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.iiap.deeplarva.domain.constants.AppConstants
-import com.iiap.deeplarva.routes.activity.camera.CameraProActivity
-import com.iiap.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.routes.activity.camera.CameraProActivity
+import com.iiap.deeplarva.gob.pe.utils.BitmapUtils
 import java.io.File
 import java.io.IOException
 

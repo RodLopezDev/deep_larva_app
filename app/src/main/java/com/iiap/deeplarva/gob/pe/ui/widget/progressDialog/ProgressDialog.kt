@@ -1,10 +1,10 @@
-package com.iiap.deeplarva.ui.widget.progressDialog
+package com.iiap.deeplarva.gob.pe.ui.widget.progressDialog
 
 import android.app.AlertDialog
 import android.content.Context
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import com.iiap.deeplarva.R
+import com.iiap.deeplarva.gob.pe.R
 
 class ProgressDialog {
     private var progressDialog: AlertDialog? = null

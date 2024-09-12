@@ -1,17 +1,17 @@
-package com.iiap.deeplarva.routes.activity.picture_detail
+package com.iiap.deeplarva.gob.pe.routes.activity.picture_detail
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.R
-import com.iiap.deeplarva.databinding.ActivityPictureDetailBinding
-import com.iiap.deeplarva.domain.constants.AppConstants
-import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
-import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
-import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
-import com.iiap.deeplarva.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.gob.pe.R
+import com.iiap.deeplarva.gob.pe.databinding.ActivityPictureDetailBinding
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.infraestructure.internal.driver.AppDatabase
+import com.iiap.deeplarva.gob.pe.infraestructure.internal.driver.DbBuilder
+import com.iiap.deeplarva.gob.pe.infraestructure.services.BoxDetectionServices
+import com.iiap.deeplarva.gob.pe.infraestructure.services.PicturesServices
 import kotlin.properties.Delegates
 
 class PictureDetailActivity: AppCompatActivity() {

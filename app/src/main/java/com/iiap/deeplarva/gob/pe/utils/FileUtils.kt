@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.utils
+package com.iiap.deeplarva.gob.pe.utils
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -8,7 +8,7 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.iiap.deeplarva.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

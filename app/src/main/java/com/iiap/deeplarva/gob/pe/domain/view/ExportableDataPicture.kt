@@ -1,7 +1,7 @@
-package com.iiap.deeplarva.domain.view
+package com.iiap.deeplarva.gob.pe.domain.view
 
-import com.iiap.deeplarva.domain.entity.BoxDetection
-import com.iiap.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.gob.pe.domain.entity.BoxDetection
+import com.iiap.deeplarva.gob.pe.domain.entity.Picture
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root

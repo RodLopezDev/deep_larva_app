@@ -1,6 +1,6 @@
-package com.iiap.deeplarva.utils
+package com.iiap.deeplarva.gob.pe.utils
 
-import com.iiap.deeplarva.application.adapters.CameraParameterAdapter
+import com.iiap.deeplarva.gob.pe.application.adapters.CameraParameterAdapter
 
 class ExposureUtils {
     companion object {

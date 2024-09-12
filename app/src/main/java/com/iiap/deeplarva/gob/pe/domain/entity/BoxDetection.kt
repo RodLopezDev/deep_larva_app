@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.domain.entity
+package com.iiap.deeplarva.gob.pe.domain.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

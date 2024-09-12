@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.camerapro.view
+package com.iiap.deeplarva.gob.pe.modules.camerapro.view
 
 import android.content.Context
 import android.util.AttributeSet

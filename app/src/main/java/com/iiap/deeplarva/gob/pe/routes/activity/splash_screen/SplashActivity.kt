@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.splash_screen
+package com.iiap.deeplarva.gob.pe.routes.activity.splash_screen
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -6,18 +6,18 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.iiap.deeplarva.R
-import com.iiap.deeplarva.application.usecases.app.UseCaseDefaultConfigDevice
-import com.iiap.deeplarva.application.usecases.cloud.UseCaseGetCameraConfiguration
-import com.iiap.deeplarva.application.usecases.cloud.UseCaseGetConfigurationFromCloud
-import com.iiap.deeplarva.application.usecases.app.UseCaseRegisterDeviceId
-import com.iiap.deeplarva.domain.constants.PermissionsConstans
-import com.iiap.deeplarva.infraestructure.services.AppConfigurationServices
-import com.iiap.deeplarva.routes.activity.main.PicturesActivity
-import com.iiap.deeplarva.routes.activity.permissions.PermissionsHandlerActivity
-import com.iiap.deeplarva.utils.PreferencesHelper
-import com.iiap.deeplarva.utils.ThemeUtils
-import com.iiap.deeplarva.utils.VersionUtils
+import com.iiap.deeplarva.gob.pe.R
+import com.iiap.deeplarva.gob.pe.application.usecases.app.UseCaseDefaultConfigDevice
+import com.iiap.deeplarva.gob.pe.application.usecases.cloud.UseCaseGetCameraConfiguration
+import com.iiap.deeplarva.gob.pe.application.usecases.cloud.UseCaseGetConfigurationFromCloud
+import com.iiap.deeplarva.gob.pe.application.usecases.app.UseCaseRegisterDeviceId
+import com.iiap.deeplarva.gob.pe.domain.constants.PermissionsConstans
+import com.iiap.deeplarva.gob.pe.infraestructure.services.AppConfigurationServices
+import com.iiap.deeplarva.gob.pe.routes.activity.main.PicturesActivity
+import com.iiap.deeplarva.gob.pe.routes.activity.permissions.PermissionsHandlerActivity
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.utils.ThemeUtils
+import com.iiap.deeplarva.gob.pe.utils.VersionUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

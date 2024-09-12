@@ -1,9 +1,9 @@
-package com.iiap.deeplarva.infraestructure.internal.driver
+package com.iiap.deeplarva.gob.pe.infraestructure.internal.driver
 
 import android.content.Context
 import androidx.annotation.NonNull
 import androidx.room.Room
-import com.iiap.deeplarva.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
 
 class DbBuilder {
     companion object {

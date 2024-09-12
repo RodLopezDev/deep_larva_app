@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.ui.widget.dialogs
+package com.iiap.deeplarva.gob.pe.ui.widget.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -11,10 +11,10 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import com.iiap.deeplarva.R
-import com.iiap.deeplarva.domain.constants.ConfigConstants
-import com.iiap.deeplarva.domain.constants.MessagesConstants
-import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.R
+import com.iiap.deeplarva.gob.pe.domain.constants.ConfigConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.MessagesConstants
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
 
 class ShutterSpeedDialog(
     private val preferencesHelper: PreferencesHelper,

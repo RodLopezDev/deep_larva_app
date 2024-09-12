@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.domain.constants
+package com.iiap.deeplarva.gob.pe.domain.constants
 
 class ConfigConstants {
     companion object {

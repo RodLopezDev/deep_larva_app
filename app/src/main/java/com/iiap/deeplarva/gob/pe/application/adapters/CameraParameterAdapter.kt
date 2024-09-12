@@ -1,12 +1,12 @@
-package com.iiap.deeplarva.application.adapters
+package com.iiap.deeplarva.gob.pe.application.adapters
 
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
 import android.util.Size
-import com.iiap.deeplarva.domain.constants.MessagesConstants
-import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.domain.view.CameraValues
-import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.domain.constants.MessagesConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.SharedPreferencesConstants
+import com.iiap.deeplarva.gob.pe.domain.view.CameraValues
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
 

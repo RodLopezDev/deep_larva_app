@@ -1,7 +1,7 @@
-package com.iiap.deeplarva.application.usecases.core
+package com.iiap.deeplarva.gob.pe.application.usecases.core
 
-import com.iiap.deeplarva.domain.view.PictureListEntity
-import com.iiap.deeplarva.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.gob.pe.domain.view.PictureListEntity
+import com.iiap.deeplarva.gob.pe.infraestructure.services.PicturesServices
 
 class UseCaseLoadPicturesProcessesRunning(
     private val picturesServices: PicturesServices

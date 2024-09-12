@@ -1,8 +1,8 @@
-package com.iiap.deeplarva.routes.service.broadcast
+package com.iiap.deeplarva.gob.pe.routes.service.broadcast
 
 import android.app.Service
 import android.content.Intent
-import com.iiap.deeplarva.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
 
 class PredictionBroadcastSender(private val service: Service) {
 

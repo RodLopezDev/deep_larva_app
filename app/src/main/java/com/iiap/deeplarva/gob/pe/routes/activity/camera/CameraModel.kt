@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.camera
+package com.iiap.deeplarva.gob.pe.routes.activity.camera
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

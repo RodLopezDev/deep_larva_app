@@ -1,11 +1,11 @@
-package com.iiap.deeplarva.utils
+package com.iiap.deeplarva.gob.pe.utils
 
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import com.iiap.deeplarva.R
+import com.iiap.deeplarva.gob.pe.R
 
 class ThemeUtils {
     companion object {

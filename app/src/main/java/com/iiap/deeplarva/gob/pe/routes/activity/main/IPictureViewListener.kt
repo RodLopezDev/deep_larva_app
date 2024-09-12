@@ -1,6 +1,6 @@
-package com.iiap.deeplarva.routes.activity.main
+package com.iiap.deeplarva.gob.pe.routes.activity.main
 
-import com.iiap.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.gob.pe.domain.entity.Picture
 
 interface IPictureViewListener {
     fun onRemovePicture(picture: Picture)

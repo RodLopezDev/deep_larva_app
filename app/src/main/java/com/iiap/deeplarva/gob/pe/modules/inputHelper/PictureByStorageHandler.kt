@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.inputHelper
+package com.iiap.deeplarva.gob.pe.modules.inputHelper
 
 import android.app.Activity
 import android.content.Intent
@@ -7,8 +7,8 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.domain.constants.PermissionsConstans
-import com.iiap.deeplarva.utils.BitmapUtils
+import com.iiap.deeplarva.gob.pe.domain.constants.PermissionsConstans
+import com.iiap.deeplarva.gob.pe.utils.BitmapUtils
 
 
 class PictureByStorageHandler(override val activity: AppCompatActivity): IPictureReceiverHandler {

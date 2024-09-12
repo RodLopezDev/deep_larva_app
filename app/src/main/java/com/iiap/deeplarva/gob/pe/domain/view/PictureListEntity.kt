@@ -1,6 +1,6 @@
-package com.iiap.deeplarva.domain.view
+package com.iiap.deeplarva.gob.pe.domain.view
 
-import com.iiap.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.gob.pe.domain.entity.Picture
 
 data class PictureListEntity (
     var picture: Picture,

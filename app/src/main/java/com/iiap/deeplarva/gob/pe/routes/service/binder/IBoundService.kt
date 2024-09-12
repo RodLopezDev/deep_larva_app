@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.service.binder
+package com.iiap.deeplarva.gob.pe.routes.service.binder
 
 interface IBoundService {
     fun onBindToService()

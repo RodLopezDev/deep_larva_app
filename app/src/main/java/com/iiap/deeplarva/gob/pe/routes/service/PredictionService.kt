@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.service
+package com.iiap.deeplarva.gob.pe.routes.service
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -14,16 +14,16 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.iiap.deeplarva.R
-import com.iiap.deeplarva.domain.constants.AppConstants
-import com.iiap.deeplarva.domain.entity.Picture
-import com.iiap.deeplarva.infraestructure.internal.driver.AppDatabase
-import com.iiap.deeplarva.infraestructure.internal.driver.DbBuilder
-import com.iiap.deeplarva.infraestructure.services.BoxDetectionServices
-import com.iiap.deeplarva.infraestructure.services.PicturesServices
-import com.iiap.deeplarva.modules.prediction.BackgroundTaskPredict
-import com.iiap.deeplarva.routes.activity.main.PicturesActivity
-import com.iiap.deeplarva.routes.service.broadcast.PredictionBroadcastSender
+import com.iiap.deeplarva.gob.pe.R
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.domain.entity.Picture
+import com.iiap.deeplarva.gob.pe.infraestructure.internal.driver.AppDatabase
+import com.iiap.deeplarva.gob.pe.infraestructure.internal.driver.DbBuilder
+import com.iiap.deeplarva.gob.pe.infraestructure.services.BoxDetectionServices
+import com.iiap.deeplarva.gob.pe.infraestructure.services.PicturesServices
+import com.iiap.deeplarva.gob.pe.modules.prediction.BackgroundTaskPredict
+import com.iiap.deeplarva.gob.pe.routes.activity.main.PicturesActivity
+import com.iiap.deeplarva.gob.pe.routes.service.broadcast.PredictionBroadcastSender
 
 class PredictionService: Service() {
     private val TAG = "DEEP_LARVA::PredictionService"

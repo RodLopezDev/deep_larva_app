@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.modules.camerapro.view
+package com.iiap.deeplarva.gob.pe.modules.camerapro.view
 
 import android.content.Context
 import android.graphics.Color
@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import com.kylecorry.andromeda.canvas.CanvasView
 import com.kylecorry.andromeda.core.system.Resources
 import com.kylecorry.sol.math.SolMath
-import com.iiap.deeplarva.modules.camerapro.ui.CustomUiUtils.getPrimaryColor
+import com.iiap.deeplarva.gob.pe.modules.camerapro.ui.CustomUiUtils.getPrimaryColor
 import kotlin.math.min
 
 class ShutterButton(context: Context, attrs: AttributeSet? = null) : CanvasView(context, attrs) {

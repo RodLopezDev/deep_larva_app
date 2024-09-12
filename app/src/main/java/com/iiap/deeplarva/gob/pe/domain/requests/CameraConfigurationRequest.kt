@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.domain.requests
+package com.iiap.deeplarva.gob.pe.domain.requests
 
 data class CameraConfigurationRequest (
     val deviceId: String,

@@ -1,13 +1,13 @@
-package com.iiap.deeplarva.routes.activity.configuration
+package com.iiap.deeplarva.gob.pe.routes.activity.configuration
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.iiap.deeplarva.databinding.ActivityConfigurationBinding
-import com.iiap.deeplarva.domain.constants.CloudKeysConstants
-import com.iiap.deeplarva.domain.constants.ConfigConstants
-import com.iiap.deeplarva.utils.PreferencesHelper
-import com.iiap.deeplarva.utils.ThemeUtils
+import com.iiap.deeplarva.gob.pe.databinding.ActivityConfigurationBinding
+import com.iiap.deeplarva.gob.pe.domain.constants.CloudKeysConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.ConfigConstants
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.utils.ThemeUtils
 
 class ConfigurationsActivity: AppCompatActivity() {
     private lateinit var binding: ActivityConfigurationBinding

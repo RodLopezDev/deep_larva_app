@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.routes.activity.camera
+package com.iiap.deeplarva.gob.pe.routes.activity.camera
 
 import android.content.Intent
 import android.os.Build
@@ -9,17 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.iiap.deeplarva.application.adapters.CameraParameterAdapter
-import com.iiap.deeplarva.databinding.ActivityCameraProBinding
-import com.iiap.deeplarva.domain.constants.AppConstants
-import com.iiap.deeplarva.domain.constants.SharedPreferencesConstants
-import com.iiap.deeplarva.modules.camerapro.infraestructure.SensitivityProvider
-import com.iiap.deeplarva.ui.widget.dialogs.ExposureDialog
-import com.iiap.deeplarva.ui.widget.dialogs.ISODialog
-import com.iiap.deeplarva.ui.widget.dialogs.ShutterSpeedDialog
-import com.iiap.deeplarva.utils.CameraUtils
-import com.iiap.deeplarva.utils.ExposureUtils
-import com.iiap.deeplarva.utils.PreferencesHelper
+import com.iiap.deeplarva.gob.pe.application.adapters.CameraParameterAdapter
+import com.iiap.deeplarva.gob.pe.databinding.ActivityCameraProBinding
+import com.iiap.deeplarva.gob.pe.domain.constants.AppConstants
+import com.iiap.deeplarva.gob.pe.domain.constants.SharedPreferencesConstants
+import com.iiap.deeplarva.gob.pe.modules.camerapro.infraestructure.SensitivityProvider
+import com.iiap.deeplarva.gob.pe.ui.widget.dialogs.ExposureDialog
+import com.iiap.deeplarva.gob.pe.ui.widget.dialogs.ISODialog
+import com.iiap.deeplarva.gob.pe.ui.widget.dialogs.ShutterSpeedDialog
+import com.iiap.deeplarva.gob.pe.utils.CameraUtils
+import com.iiap.deeplarva.gob.pe.utils.ExposureUtils
+import com.iiap.deeplarva.gob.pe.utils.PreferencesHelper
 import com.kylecorry.andromeda.camera.ImageCaptureSettings
 import com.kylecorry.andromeda.core.time.CoroutineTimer
 import com.kylecorry.andromeda.files.LocalFileSystem

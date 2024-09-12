@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.infraestructure.internal.repository
+package com.iiap.deeplarva.gob.pe.infraestructure.internal.repository
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 
-import com.iiap.deeplarva.domain.entity.Picture
+import com.iiap.deeplarva.gob.pe.domain.entity.Picture
 
 
 @Dao

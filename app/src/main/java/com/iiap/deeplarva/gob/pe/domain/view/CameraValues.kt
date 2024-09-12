@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.domain.view
+package com.iiap.deeplarva.gob.pe.domain.view
 
 data class CameraValues (
     val maxWidth: Int,

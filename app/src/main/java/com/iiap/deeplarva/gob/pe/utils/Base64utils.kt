@@ -1,4 +1,4 @@
-package com.iiap.deeplarva.utils
+package com.iiap.deeplarva.gob.pe.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
