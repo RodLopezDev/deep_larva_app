@@ -38,7 +38,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <com.iiap.deeplarva.ui.widget.zoomImageVIew.ZoomImageView
+            <com.iiap.deeplarva.gob.pe.ui.widget.zoomImageVIew.ZoomImageView
                 android:id="@+id/imgBasePicture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -70,7 +70,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <com.iiap.deeplarva.ui.widget.zoomImageVIew.ZoomImageView
+            <com.iiap.deeplarva.gob.pe.ui.widget.zoomImageVIew.ZoomImageView
                 android:id="@+id/imgProcessedPicture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
