@@ -18,6 +18,7 @@ import com.iiap.deeplarva.ui.widget.dialogs.ExposureDialog
 import com.iiap.deeplarva.ui.widget.dialogs.ISODialog
 import com.iiap.deeplarva.ui.widget.dialogs.ShutterSpeedDialog
 import com.iiap.deeplarva.utils.CameraUtils
+import com.iiap.deeplarva.utils.ExposureUtils
 import com.iiap.deeplarva.utils.PreferencesHelper
 import com.kylecorry.andromeda.camera.ImageCaptureSettings
 import com.kylecorry.andromeda.core.time.CoroutineTimer
@@ -265,7 +266,7 @@ class CameraProActivity: AppCompatActivity() {
         viewModel.exposure.observe(this, Observer {
             val exposure = it
             if(exposure != null) {
-                binding.exposure.text = exposure.toString()
+                binding.exposure.text = ExposureUtils.convertLocalToLabel(exposure).toString()
                 binding.camera.camera?.setExposure(exposure)
             }
         })

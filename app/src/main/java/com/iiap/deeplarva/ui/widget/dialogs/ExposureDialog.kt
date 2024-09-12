@@ -26,13 +26,13 @@ class ExposureDialog(
 
             seekBar.min = minValue
             seekBar.max = maxValue
-            seekBar.progress = initialValue
+            seekBar.progress = initialValue.toInt()
 
-            valueTextView.text = initialValue.toString()
+            valueTextView.text = (initialValue * 5F / 10F).toString()
 
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    valueTextView.text = progress.toString()
+                    valueTextView.text = ((progress * 5F) / 10F).toString()
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) { }
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
