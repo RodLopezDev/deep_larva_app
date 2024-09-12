@@ -265,7 +265,7 @@ class CameraProActivity: AppCompatActivity() {
         viewModel.exposure.observe(this, Observer {
             val exposure = it
             if(exposure != null) {
-                binding.exposure.text = exposure.toString()
+                binding.exposure.text = "${exposure * 5F / 10F}"
                 binding.camera.camera?.setExposure(exposure)
             }
         })

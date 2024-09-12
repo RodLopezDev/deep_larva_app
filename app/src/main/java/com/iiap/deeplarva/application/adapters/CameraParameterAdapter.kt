@@ -16,8 +16,8 @@ class CameraParameterAdapter(
 ) {
     companion object {
         const val DEFAULT_EXPOSURE = 0
-        const val EXPOSURE_MIN = -20
-        const val EXPOSURE_MAX = 20
+        const val EXPOSURE_MIN = -4//-20
+        const val EXPOSURE_MAX = 4//20
         const val DEFAULT_ISO = 0
         const val DEFAULT_SHUTTER_SPEED = 0
     }
