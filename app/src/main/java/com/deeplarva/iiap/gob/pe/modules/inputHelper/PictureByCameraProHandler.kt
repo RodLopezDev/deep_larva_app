@@ -35,7 +35,7 @@ class PictureByCameraProHandler(override val activity: Activity): IPictureReceiv
                 val bitmap = BitmapUtils.getBitmapFromPath(it)
 
                 // get metadata
-                //val metadata = getMetadataFromBitmap(File(it))
+                val metadata = getMetadataFromBitmap(File(it))
 
                 // Corregir la orientación del bitmap
                 val rotatedBitmap = bitmap?.let { it1 -> BitmapUtils.correctBitmapOrientation(it1, it) }

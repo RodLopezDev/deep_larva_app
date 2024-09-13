@@ -32,6 +32,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.time.Duration
+import kotlin.math.floor
 
 class CameraProActivity: AppCompatActivity() {
     private var deviceID: String = ""
@@ -155,11 +156,15 @@ class CameraProActivity: AppCompatActivity() {
         }
 
         binding.containerExposure.setOnClickListener {
+            val stepValue = preferencesHelper.getFloat(SharedPreferencesConstants.EXPOSURE_STEP, 0F)
+            val fixedStep = floor(stepValue * 10.0F)
+
             val initial = viewModel.exposure.value ?: 0
             val dialog = ExposureDialog(
                 minValue = CameraParameterAdapter.EXPOSURE_MIN,
                 maxValue = CameraParameterAdapter.EXPOSURE_MAX,
                 initialValue = initial,
+                step = fixedStep,
                 title = "Modificar exposición"
             ) { selectedValue ->
                 viewModel.setExposure(selectedValue)
@@ -266,7 +271,9 @@ class CameraProActivity: AppCompatActivity() {
         viewModel.exposure.observe(this, Observer {
             val exposure = it
             if(exposure != null) {
-                binding.exposure.text = ExposureUtils.convertLocalToLabel(exposure).toString()
+                val stepValue = preferencesHelper.getFloat(SharedPreferencesConstants.EXPOSURE_STEP, 0F)
+                val fixedStep = floor(stepValue * 10.0).toFloat()
+                binding.exposure.text = ExposureUtils.convertLocalToLabel(exposure, fixedStep)
                 binding.camera.camera?.setExposure(exposure)
             }
         })

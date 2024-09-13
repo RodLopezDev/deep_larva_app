@@ -9,11 +9,13 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.deeplarva.iiap.gob.pe.R
+import com.deeplarva.iiap.gob.pe.utils.ExposureUtils
 
 class ExposureDialog(
     private val minValue: Int,
     private val maxValue: Int,
     private val initialValue: Int,
+    private val step: Float,
     private val title: String = "",
     private val onValueChanged: (Int) -> Unit
 ) : DialogFragment() {
@@ -28,11 +30,12 @@ class ExposureDialog(
             seekBar.max = maxValue
             seekBar.progress = initialValue.toInt()
 
-            valueTextView.text = (initialValue * 5F / 10F).toString()
+            valueTextView.text = ExposureUtils.convertLocalToLabel(initialValue, step)
 
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    valueTextView.text = ((progress * 5F) / 10F).toString()
+                    //valueTextView.text = ((progress * 5F) / 10F).toString()
+                    valueTextView.text = ExposureUtils.convertLocalToLabel(progress, step)
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) { }
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
