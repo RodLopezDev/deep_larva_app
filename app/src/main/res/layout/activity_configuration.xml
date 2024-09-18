@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/activityBg"
-    tools:context=".routes.activity.main.PicturesActivity">
+    tools:context=".routes.activity.configuration.ConfigurationsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarSubSample"
@@ -24,43 +24,107 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="?attr/actionBarSize"
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp" >
-
-        <CheckBox
-            android:id="@+id/cbManualISO"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/listTitle"
-            android:buttonTint="@color/deepLarva"
-            android:text="Modifcar ISO manualmente" />
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="12dp" />
-
-        <CheckBox
-            android:id="@+id/cbManualShutterSpeed"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/listTitle"
-            android:buttonTint="@color/deepLarva"
-            android:text="Modifcar shutter speed manualmente" />
+            android:orientation="vertical"
+            android:padding="20dp" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="12dp" />
+            <CheckBox
+                android:id="@+id/cbManualISO"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/listTitle"
+                android:buttonTint="@color/deepLarva"
+                android:text="Modifcar ISO manualmente" />
 
-        <TextView
-            android:id="@+id/tvCloudCameraValues"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
 
-    </LinearLayout>
+            <CheckBox
+                android:id="@+id/cbManualShutterSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/listTitle"
+                android:buttonTint="@color/deepLarva"
+                android:text="Modifcar shutter speed manualmente" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
+
+            <CheckBox
+                android:id="@+id/cbShowPreferences"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/listTitle"
+                android:buttonTint="@color/deepLarva"
+                android:text="Mostrar preferencias" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
+
+            <TextView
+                android:id="@+id/tvCloudCameraValues"
+                android:textColor="@color/simpleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
+
+            <TextView
+                android:text="Preferencias"
+                android:id="@+id/tvTitlePreferences"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/simpleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <HorizontalScrollView
+                android:id="@+id/svPreferences"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TableLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/tbPreferences"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="1"
+                    android:padding="16dp" >
+
+                    <TableRow>
+                        <TextView
+                            android:text="Key"
+                            android:textStyle="bold"
+                            android:textColor="@color/simpleText"
+                            android:layout_marginEnd="16dp"/>
+                        <TextView
+                            android:text="Value"
+                            android:textColor="@color/simpleText"
+                            android:textStyle="bold"/>
+                    </TableRow>
+
+                </TableLayout>
+
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

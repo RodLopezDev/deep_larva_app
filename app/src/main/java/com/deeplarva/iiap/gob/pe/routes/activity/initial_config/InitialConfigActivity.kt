@@ -1,4 +1,4 @@
-package com.deeplarva.iiap.gob.pe.routes.activity.splash_screen
+package com.deeplarva.iiap.gob.pe.routes.activity.initial_config
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,9 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.deeplarva.iiap.gob.pe.R
 import com.deeplarva.iiap.gob.pe.application.usecases.app.UseCaseDefaultConfigDevice
+import com.deeplarva.iiap.gob.pe.application.usecases.app.UseCaseRegisterDeviceId
 import com.deeplarva.iiap.gob.pe.application.usecases.cloud.UseCaseGetCameraConfiguration
 import com.deeplarva.iiap.gob.pe.application.usecases.cloud.UseCaseGetConfigurationFromCloud
-import com.deeplarva.iiap.gob.pe.application.usecases.app.UseCaseRegisterDeviceId
+import com.deeplarva.iiap.gob.pe.databinding.ActivityInitialConfigBinding
 import com.deeplarva.iiap.gob.pe.domain.constants.PermissionsConstans
 import com.deeplarva.iiap.gob.pe.infraestructure.services.AppConfigurationServices
 import com.deeplarva.iiap.gob.pe.routes.activity.main.PicturesActivity
@@ -18,23 +19,19 @@ import com.deeplarva.iiap.gob.pe.routes.activity.permissions.PermissionsHandlerA
 import com.deeplarva.iiap.gob.pe.utils.PreferencesHelper
 import com.deeplarva.iiap.gob.pe.utils.ThemeUtils
 import com.deeplarva.iiap.gob.pe.utils.VersionUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class SplashActivity: AppCompatActivity() {
-    private val splashScreenTime: Long = 2000
+class InitialConfigActivity: AppCompatActivity() {
+    private lateinit var binding: ActivityInitialConfigBinding
+
     private val appConfigServices = AppConfigurationServices()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_spash_screen)
-        loadAppLogo()
-
+        binding = ActivityInitialConfigBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val preferences = PreferencesHelper(this)
+        binding.tvInfo.text = "Configurando aplicación"
 
         UseCaseRegisterDeviceId(preferences).execute()
         UseCaseDefaultConfigDevice(preferences).execute()
@@ -43,19 +40,13 @@ class SplashActivity: AppCompatActivity() {
         val requiredCloud = UseCaseGetConfigurationFromCloud(version, preferences, appConfigServices)
             .execute(::getCameraConfig)
         if(requiredCloud) {
+            runOnUiThread {
+                binding.tvInfo.text = "Cargando configuración..."
+            }
             return
         }
 
         getCameraConfig()
-    }
-
-    private fun delayToNextActivity() {
-        GlobalScope.launch {
-            delay(splashScreenTime)
-            withContext(Dispatchers.Main) {
-                launchActivity()
-            }
-        }
     }
 
     private fun getCameraConfig() {
@@ -65,28 +56,31 @@ class SplashActivity: AppCompatActivity() {
         val requiredCloud = UseCaseGetCameraConfiguration(brand, model, preferences, appConfigServices)
             .execute(::launchActivity)
         if(requiredCloud) {
+            runOnUiThread {
+                binding.tvInfo.text = "Obteniendo parámetros de camara..."
+            }
             return
         }
 
-        delayToNextActivity()
+        launchActivity()
     }
 
     private fun launchActivity() {
         val nextActivity = if (grantedPermissions()) PicturesActivity::class.java else PermissionsHandlerActivity::class.java
-        var intent = Intent(this@SplashActivity, nextActivity)
+        var intent = Intent(this@InitialConfigActivity, nextActivity)
         startActivity(intent)
         finish()
     }
 
     private fun grantedPermissions (): Boolean {
         val requiredPermissions = PermissionsConstans.getPermissionsList().filter {
-            ContextCompat.checkSelfPermission(this@SplashActivity, it)  != PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(this@InitialConfigActivity, it)  != PackageManager.PERMISSION_GRANTED
         }
         return requiredPermissions.isEmpty()
     }
 
     private fun loadAppLogo() {
-        val logo = findViewById<ImageView>(R.id.centered_image)
+        val logo = ImageView(this)
         if(ThemeUtils.isDarkTheme(this)) {
             logo.setImageResource(R.drawable.img_splash_screen_dark)
         } else {
