@@ -2,10 +2,16 @@ package com.deeplarva.iiap.gob.pe.utils
 
 import com.deeplarva.iiap.gob.pe.application.adapters.CameraParameterAdapter
 import kotlin.math.floor
-import kotlin.math.round
 
 class ExposureUtils {
     companion object {
+        fun expoStepToValidStep(value: Float): Float {
+            val isHonor = android.os.Build.BRAND == "HONOR"
+            if(isHonor){
+                return value * 100;
+            }
+            return value * 10;
+        }
         // -2 to 2
         fun convertServerToValue(value: Float): Int {
             if(value > CameraParameterAdapter.EXPOSURE_MAX ||

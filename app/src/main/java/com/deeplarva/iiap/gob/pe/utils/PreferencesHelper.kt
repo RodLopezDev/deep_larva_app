@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 
 class PreferencesHelper(context: Context) {
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("DeepLarva-MyPreferences", Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("DeepLarva-Preferences", Context.MODE_PRIVATE)
 
     fun saveString(key: String, value: String) {
         val editor = sharedPreferences.edit()

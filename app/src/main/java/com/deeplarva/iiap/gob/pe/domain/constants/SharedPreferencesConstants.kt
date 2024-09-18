@@ -8,6 +8,7 @@ class SharedPreferencesConstants {
         const val RESOLUTION_MAX_HEIGHT = "camera-resolution-max-height"
 
         const val EXPOSURE_STEP = "exposure-camera-step"
+        const val EXPOSURE_VALID_STEP = "exposure-camera-valid-step"
 
         const val EXPOSURE_VALUE = "exposure-camera-value"
 

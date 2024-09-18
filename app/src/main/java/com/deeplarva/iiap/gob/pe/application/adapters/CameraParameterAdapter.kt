@@ -6,6 +6,7 @@ import android.util.Size
 import com.deeplarva.iiap.gob.pe.domain.constants.MessagesConstants
 import com.deeplarva.iiap.gob.pe.domain.constants.SharedPreferencesConstants
 import com.deeplarva.iiap.gob.pe.domain.view.CameraValues
+import com.deeplarva.iiap.gob.pe.utils.ExposureUtils
 import com.deeplarva.iiap.gob.pe.utils.PreferencesHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -30,7 +31,8 @@ class CameraParameterAdapter(
         if(
             !preferencesHelper.exists(SharedPreferencesConstants.RESOLUTION_MAX_WIDTH) or
             !preferencesHelper.exists(SharedPreferencesConstants.RESOLUTION_MAX_HEIGHT) or
-            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_STEP)
+            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_STEP) or
+            !preferencesHelper.exists(SharedPreferencesConstants.EXPOSURE_VALID_STEP)
         ) {
             val streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             val exposureCompensationStep = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP)
@@ -43,8 +45,10 @@ class CameraParameterAdapter(
             val maxHeight = if(largest916Size!!.width > largest916Size.height) { largest916Size.width } else { largest916Size.height }
 
             val exposureStep = exposureCompensationStep?.toFloat() ?: 0F
+            val exposureValidStep = ExposureUtils.expoStepToValidStep(exposureStep)
 
             preferencesHelper.saveFloat(SharedPreferencesConstants.EXPOSURE_STEP, exposureStep)
+            preferencesHelper.saveFloat(SharedPreferencesConstants.EXPOSURE_VALID_STEP, exposureValidStep)
             preferencesHelper.saveInt(SharedPreferencesConstants.RESOLUTION_MAX_WIDTH, maxWidth)
             preferencesHelper.saveInt(SharedPreferencesConstants.RESOLUTION_MAX_HEIGHT, maxHeight)
         }
@@ -86,12 +90,14 @@ class CameraParameterAdapter(
         val shootSpeedText = preferencesHelper.getString(SharedPreferencesConstants.SHUTTER_SPEED_TIME_TEXT, MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED) ?:MessagesConstants.DEFAULT_VALUE_SHUTTER_SPEED
 
         val exposureStep = preferencesHelper.getFloat(SharedPreferencesConstants.EXPOSURE_STEP)
+        val exposureValidStep = preferencesHelper.getFloat(SharedPreferencesConstants.EXPOSURE_VALID_STEP)
 
         cameraValues = CameraValues(
             maxWidth,
             maxHeight,
             sensorSensitivity,
             exposureStep,
+            exposureValidStep,
             exposure,
             shootSpeed,
             shootSpeedText
