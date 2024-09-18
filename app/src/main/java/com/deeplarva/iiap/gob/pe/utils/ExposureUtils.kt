@@ -6,7 +6,7 @@ import kotlin.math.floor
 class ExposureUtils {
     companion object {
         fun expoStepToValidStep(value: Float): Float {
-            val isHonor = android.os.Build.BRAND == "HONOR"
+            val isHonor = android.os.Build.BRAND == "XIAOMI"
             if(isHonor){
                 return value * 100;
             }
