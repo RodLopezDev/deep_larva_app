@@ -1,12 +1,12 @@
 package com.deeplarva.iiap.gob.pe.utils
 
 import com.deeplarva.iiap.gob.pe.application.adapters.CameraParameterAdapter
-import kotlin.math.floor
+import com.deeplarva.iiap.gob.pe.domain.constants.CornerCasesConstants
 
 class ExposureUtils {
     companion object {
         fun expoStepToValidStep(value: Float): Float {
-            val cornerCase = android.os.Build.BRAND == "XIAOMI"
+            val cornerCase = CornerCasesConstants.BRAND_CORNER_CASES_EXPOSURE_STEP.indexOf(android.os.Build.BRAND) != -1
             if(cornerCase){
                 return value * 100;
             }
@@ -22,14 +22,11 @@ class ExposureUtils {
             val value2 = value * 2
             return value2.toInt()
         }
-        // -4 to 4
+        // Input: -4 to 4
         fun convertLocalToLabel(value: Int, fixedStep: Float): String {
-//            return value * 5F / 10F // -2.0, 2.0
-            return "${floor(value * fixedStep).toInt()} / 10"
-        }
-        // -4 to 4
-        fun convertLocalToCameraValue(value: Int, maxExposure: Int): Int {
-            return value * (maxExposure / CameraParameterAdapter.EXPOSURE_FACTOR) // -2.0, 2.0
+            // Show values between -2 and 2
+            return (value / 2F).toString()
+            //return "${floor(value * fixedStep).toInt()} / 10"
         }
     }
 }

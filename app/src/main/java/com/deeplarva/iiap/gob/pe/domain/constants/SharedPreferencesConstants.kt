@@ -3,6 +3,8 @@ package com.deeplarva.iiap.gob.pe.domain.constants
 class SharedPreferencesConstants {
     companion object {
         const val DEVICE_ID = "DEVICE-IDENTIFIER"
+        const val DEVICE_BRAND = "DEVICE-BRAND"
+        const val DEVICE_MODEL = "DEVICE-MODEL"
 
         const val RESOLUTION_MAX_WIDTH = "camera-resolution-max-width"
         const val RESOLUTION_MAX_HEIGHT = "camera-resolution-max-height"
