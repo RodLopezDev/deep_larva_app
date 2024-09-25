@@ -34,7 +34,6 @@ class ExposureDialog(
 
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    //valueTextView.text = ((progress * 5F) / 10F).toString()
                     valueTextView.text = ExposureUtils.convertLocalToLabel(progress, step)
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) { }
