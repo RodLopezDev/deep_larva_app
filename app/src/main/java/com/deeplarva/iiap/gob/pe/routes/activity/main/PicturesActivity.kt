@@ -11,9 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.deeplarva.iiap.gob.pe.R
+import com.deeplarva.iiap.gob.pe.application.usecases.cloud.UseCaseSyncPicture
 import com.deeplarva.iiap.gob.pe.application.usecases.core.UseCaseLoadPictures
 import com.deeplarva.iiap.gob.pe.application.usecases.core.UseCaseLoadPicturesProcessesRunning
-import com.deeplarva.iiap.gob.pe.application.usecases.cloud.UseCaseSyncPicture
 import com.deeplarva.iiap.gob.pe.databinding.ActivityPicturesBinding
 import com.deeplarva.iiap.gob.pe.domain.constants.CloudKeysConstants
 import com.deeplarva.iiap.gob.pe.domain.constants.SharedPreferencesConstants
@@ -89,7 +89,7 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_info -> {
+            R.id.action_device_info -> {
                 view.showInfoDialog()
                 true
             }
@@ -99,6 +99,10 @@ class PicturesActivity: BoundedActivity(), IPictureViewListener, IBoundService {
             }
             R.id.action_config -> {
                 goToConfig()
+                true
+            }
+            R.id.action_aboutus -> {
+                Toast.makeText(this, "Acerca de", Toast.LENGTH_SHORT).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

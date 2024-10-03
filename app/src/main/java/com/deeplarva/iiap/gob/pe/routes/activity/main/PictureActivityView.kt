@@ -45,7 +45,7 @@ class PictureActivityView(
         activity.setSupportActionBar(binding.toolbar)
 
         activity.supportActionBar?.apply {
-            title = "Muestras"
+            title = activity.getString(R.string.title_main)
         }
 
         binding.btnLoadPic.setOnClickListener {
