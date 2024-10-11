@@ -1,5 +1,6 @@
 package com.deeplarva.iiap.gob.pe.ui.widget.dialogs
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Build
@@ -17,6 +18,7 @@ import com.deeplarva.iiap.gob.pe.domain.constants.MessagesConstants
 import com.deeplarva.iiap.gob.pe.utils.PreferencesHelper
 
 class ShutterSpeedDialog(
+    private val activity: Activity,
     private val preferencesHelper: PreferencesHelper,
     private val title: String = "",
     private val initialValue: Int = 0,
@@ -73,14 +75,17 @@ class ShutterSpeedDialog(
                             val value = input.toInt()
                             enabled = false
                             if (value < MIN_VALUE) {
-                                etManual.error = "Value must be at least $MIN_VALUE"
+                                val labelBase = activity.getString(R.string.input_msg_min_value)
+                                etManual.error = "${labelBase}${MIN_VALUE}"
                             } else if (value > MAX_VALUE) {
-                                etManual.error = "Value must not exceed $MAX_VALUE"
+                                val labelBase = activity.getString(R.string.input_msg_max_value)
+                                etManual.error = "${labelBase}${MAX_VALUE}"
                             } else {
                                 enabled = true
                             }
                         } catch (e: NumberFormatException) {
-                            etManual.error = "Invalid input"
+                            val labelBase = activity.getString(R.string.input_msg_invalid)
+                            etManual.error = labelBase
                         }
                     }
                 }

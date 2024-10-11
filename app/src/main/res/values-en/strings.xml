@@ -25,4 +25,14 @@
     <string name="msg_bootstrap_config_app">Setting app...</string>
     <string name="msg_bootstrap_config_remote">Loading app from cloud...</string>
     <string name="msg_bootstrap_config_camera">Loading camera parameters...</string>
+
+    <!--INPUT_MSG-->
+    <string name="input_msg_min_value">Value must be at least </string>
+    <string name="input_msg_max_value">Value must not exceed </string>
+    <string name="input_msg_invalid">Invalid input</string>
+
+    <!--INPUT_MSG-->
+    <string name="option_iso_manually">Modify ISO manually</string>
+    <string name="option_shutter_manually">Modify Shutter Speed manually</string>
+    <string name="option_preferences">Show preferences</string>
 </resources>
