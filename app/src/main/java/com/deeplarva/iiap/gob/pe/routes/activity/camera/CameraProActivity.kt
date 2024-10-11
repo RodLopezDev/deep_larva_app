@@ -145,6 +145,7 @@ class CameraProActivity: AppCompatActivity() {
             val preferencesHelper = PreferencesHelper(this)
             val initialValue = viewModel.shutterSpeed.value!!
             val dialog = ShutterSpeedDialog(
+                activity = this,
                 preferencesHelper = preferencesHelper,
                 initialValue = initialValue,
                 title = "Shooter Speed"
