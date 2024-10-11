@@ -10,7 +10,19 @@
 
     <!--TOOLBAR TITLES-->
     <string name="title_main">Samples</string>
+    <string name="title_configuration">Settings</string>
+
+    <!--DIALOG TITLES-->
+    <string name="dialog_title_iso">Modify ISO</string>
+    <string name="dialog_title_exposure">Modify exposure</string>
 
     <!--MESSAGES-->
     <string name="msg_no_samples_list">No samples</string>
+    <string name="msg_running_prediction">Running prediction</string>
+    <string name="msg_running_yet">Prediction is running yet</string>
+    <string name="msg_config_available">Camera setting:</string>
+    <string name="msg_config_not_available">Camera setting not available</string>
+    <string name="msg_bootstrap_config_app">Setting app...</string>
+    <string name="msg_bootstrap_config_remote">Loading app from cloud...</string>
+    <string name="msg_bootstrap_config_camera">Loading camera parameters...</string>
 </resources>

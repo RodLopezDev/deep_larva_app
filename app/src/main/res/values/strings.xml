@@ -8,10 +8,21 @@
     <string name="action_config">Configuraciones</string>
     <string name="action_export">Exportar</string>
 
-
     <!--TOOLBAR TITLES-->
     <string name="title_main">Muestras</string>
+    <string name="title_configuration">Configuraciones</string>
+
+    <!--DIALOG TITLES-->
+    <string name="dialog_title_iso">Modificar ISO</string>
+    <string name="dialog_title_exposure">Modificar exposición</string>
 
     <!--MESSAGES-->
     <string name="msg_no_samples_list">No hay muestras registradas</string>
+    <string name="msg_running_prediction">Ejecutando conteo</string>
+    <string name="msg_running_yet">El conteo se está ejecutando</string>
+    <string name="msg_config_available">Configuración de cámara:</string>
+    <string name="msg_config_not_available">Configuración de cámara NO disponible</string>
+    <string name="msg_bootstrap_config_app">Configurando aplicación...</string>
+    <string name="msg_bootstrap_config_remote">Cargando configuración de servidor...</string>
+    <string name="msg_bootstrap_config_camera">Obteniendo parámetros de camara...</string>
 </resources>

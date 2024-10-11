@@ -31,7 +31,7 @@ class InitialConfigActivity: AppCompatActivity() {
         setContentView(binding.root)
 
         val preferences = PreferencesHelper(this)
-        binding.tvInfo.text = "Configurando aplicación"
+        binding.tvInfo.text = getString(R.string.msg_bootstrap_config_app)
 
         UseCaseRegisterDeviceId(preferences).execute()
         UseCaseDefaultConfigDevice(preferences).execute()
@@ -41,7 +41,7 @@ class InitialConfigActivity: AppCompatActivity() {
             .execute(::getCameraConfig)
         if(requiredCloud) {
             runOnUiThread {
-                binding.tvInfo.text = "Cargando configuración..."
+                binding.tvInfo.text = getString(R.string.msg_bootstrap_config_remote)
             }
             return
         }
@@ -57,7 +57,7 @@ class InitialConfigActivity: AppCompatActivity() {
             .execute(::launchActivity)
         if(requiredCloud) {
             runOnUiThread {
-                binding.tvInfo.text = "Obteniendo parámetros de camara..."
+                binding.tvInfo.text = getString(R.string.msg_bootstrap_config_camera)
             }
             return
         }

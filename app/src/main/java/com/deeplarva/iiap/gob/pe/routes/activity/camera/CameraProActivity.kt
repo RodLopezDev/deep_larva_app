@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.deeplarva.iiap.gob.pe.R
 import com.deeplarva.iiap.gob.pe.application.adapters.CameraParameterAdapter
 import com.deeplarva.iiap.gob.pe.databinding.ActivityCameraProBinding
 import com.deeplarva.iiap.gob.pe.domain.constants.AppConstants
@@ -130,7 +131,7 @@ class CameraProActivity: AppCompatActivity() {
         binding.containerISO.setOnClickListener {
             val initialValue = viewModel.iso.value
             val dialog = ISODialog(
-                title = "Modificar ISO",
+                title = getString(R.string.dialog_title_iso),
                 preferencesHelper = preferencesHelper,
                 initialValue = initialValue ?: 0
             ) {
@@ -163,7 +164,7 @@ class CameraProActivity: AppCompatActivity() {
                 maxValue = CameraParameterAdapter.EXPOSURE_MAX,
                 initialValue = initial,
                 step = stepValue,
-                title = "Modificar exposición"
+                title = getString(R.string.dialog_title_exposure),
             ) { selectedValue ->
                 viewModel.setExposure(selectedValue)
                 cameraStore.updateExposure(selectedValue)
