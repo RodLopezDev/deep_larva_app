@@ -1,16 +1,38 @@
 <resources>
     <string name="app_name">DeepLarva</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_info">Info</string>
-    <string name="action_sync">Sync</string>
-    <string name="action_config">Config</string>
+
+    <!--MAIN MENU-->
+    <string name="action_device_info">Info. Dispositivo</string>
+    <string name="action_about_us">Acerca de</string>
+    <string name="action_sync">Sincronizar</string>
+    <string name="action_config">Configuraciones</string>
     <string name="action_export">Exportar</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <!--TOOLBAR TITLES-->
+    <string name="title_main">Muestras</string>
+    <string name="title_configuration">Configuraciones</string>
+
+    <!--DIALOG TITLES-->
+    <string name="dialog_title_iso">Modificar ISO</string>
+    <string name="dialog_title_exposure">Modificar exposición</string>
+
+    <!--MESSAGES-->
+    <string name="msg_no_samples_list">No hay muestras registradas</string>
+    <string name="msg_running_prediction">Ejecutando conteo</string>
+    <string name="msg_running_yet">El conteo se está ejecutando</string>
+    <string name="msg_config_available">Configuración de cámara:</string>
+    <string name="msg_config_not_available">Configuración de cámara NO disponible</string>
+    <string name="msg_bootstrap_config_app">Configurando aplicación...</string>
+    <string name="msg_bootstrap_config_remote">Cargando configuración de servidor...</string>
+    <string name="msg_bootstrap_config_camera">Obteniendo parámetros de camara...</string>
+
+    <!--INPUT_MSG-->
+    <string name="input_msg_min_value">Valor debe ser por lo menos </string>
+    <string name="input_msg_max_value">Valor no debe ser mayor de </string>
+    <string name="input_msg_invalid">Entrada no válida</string>
+
+    <!--INPUT_MSG-->
+    <string name="option_iso_manually">Modifcar ISO manualmente</string>
+    <string name="option_shutter_manually">Modifcar shutter speed manualmentee</string>
+    <string name="option_preferences">Mostrar preferencias</string>
 </resources>

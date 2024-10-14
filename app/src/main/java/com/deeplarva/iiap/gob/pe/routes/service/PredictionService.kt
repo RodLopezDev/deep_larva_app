@@ -90,7 +90,7 @@ class PredictionService: Service() {
             startForeground(AppConstants.NOTIFICATION_ID, notification)
         } else {
             startForeground(AppConstants.NOTIFICATION_ID, notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         }
 
         eventPredict(pictureId)

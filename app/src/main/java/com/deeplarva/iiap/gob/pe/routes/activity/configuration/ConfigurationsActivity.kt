@@ -28,7 +28,7 @@ class ConfigurationsActivity: AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
-            title = "Configuraciones"
+            title = getString(R.string.title_configuration)
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
         }
@@ -57,12 +57,12 @@ class ConfigurationsActivity: AppCompatActivity() {
             val exposureValue = preferences.getInt(CloudKeysConstants.EXPOSURE_VALUE, 0)
             val shutterSpeedValue = preferences.getInt(CloudKeysConstants.SHUTTER_SPEED_VALUE, 0)
 
-            binding.tvCloudCameraValues.text = "\t\tConfiguración de cámara disponible\n\n" +
+            binding.tvCloudCameraValues.text = "\t\t" + getString(R.string.msg_config_available) + "\n\n" +
                     "ISO: ${isoValue}\n" +
-                    "Exposición: ${exposureValue}\n" +
+                    "Exposure: ${exposureValue}\n" +
                     "Speed: ${shutterSpeedValue}\n"
         } else {
-            binding.tvCloudCameraValues.text = "Configuración de cámara NO disponible"
+            binding.tvCloudCameraValues.text = getString(R.string.msg_config_not_available)
         }
 
         val showPreferences = preferences.getBoolean(ConfigConstants.CONFIG_SHOW_PREFERENCES, false)

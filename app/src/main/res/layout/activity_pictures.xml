@@ -46,7 +46,7 @@
             <TextView
                 android:id="@+id/tv_emptyPicturesList"
                 android:layout_marginTop="?attr/actionBarSize"
-                android:text="No hay muestras registradas"
+                android:text="@string/msg_no_samples_list"
                 android:layout_width="match_parent"
                 android:padding="8dp"
                 android:gravity="center"

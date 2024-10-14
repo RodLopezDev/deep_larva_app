@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">DeepLarva</string>
+
+    <!--MAIN MENU-->
+    <string name="action_device_info">Device Info</string>
+    <string name="action_about_us">About us</string>
+    <string name="action_sync">Sync</string>
+    <string name="action_config">Settings</string>
+    <string name="action_export">Export</string>
+
+    <!--TOOLBAR TITLES-->
+    <string name="title_main">Samples</string>
+    <string name="title_configuration">Settings</string>
+
+    <!--DIALOG TITLES-->
+    <string name="dialog_title_iso">Modify ISO</string>
+    <string name="dialog_title_exposure">Modify exposure</string>
+
+    <!--MESSAGES-->
+    <string name="msg_no_samples_list">No samples</string>
+    <string name="msg_running_prediction">Running prediction</string>
+    <string name="msg_running_yet">Prediction is running yet</string>
+    <string name="msg_config_available">Camera setting:</string>
+    <string name="msg_config_not_available">Camera setting not available</string>
+    <string name="msg_bootstrap_config_app">Setting app...</string>
+    <string name="msg_bootstrap_config_remote">Loading app from cloud...</string>
+    <string name="msg_bootstrap_config_camera">Loading camera parameters...</string>
+
+    <!--INPUT_MSG-->
+    <string name="input_msg_min_value">Value must be at least </string>
+    <string name="input_msg_max_value">Value must not exceed </string>
+    <string name="input_msg_invalid">Invalid input</string>
+
+    <!--INPUT_MSG-->
+    <string name="option_iso_manually">Modify ISO manually</string>
+    <string name="option_shutter_manually">Modify Shutter Speed manually</string>
+    <string name="option_preferences">Show preferences</string>
+</resources>
