@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">DeepLarva</string>
+
+    <!--MAIN MENU-->
+    <string name="action_device_info">Informação do dispositivo</string>
+    <string name="action_about_us">Sobre nós</string>
+    <string name="action_sync">Sincronizar</string>
+    <string name="action_config">Configurações</string>
+    <string name="action_export">Exportar</string>
+
+    <!--TOOLBAR TITLES-->
+    <string name="title_main">Amostras</string>
+    <string name="title_configuration">Configurações</string>
+
+    <!--DIALOG TITLES-->
+    <string name="dialog_title_iso">Modificar ISO</string>
+    <string name="dialog_title_exposure">Modificar exposição</string>
+
+    <!--MESSAGES-->
+    <string name="msg_no_samples_list">Sem amostras</string>
+    <string name="msg_running_prediction">Executando previsão</string>
+    <string name="msg_running_yet">A previsão ainda está em execução</string>
+    <string name="msg_config_available">Configuração da câmera:</string>
+    <string name="msg_config_not_available">Configuração da câmera não disponível</string>
+    <string name="msg_bootstrap_config_app">Configurando o aplicativo...</string>
+    <string name="msg_bootstrap_config_remote">Carregando aplicativo da nuvem...</string>
+    <string name="msg_bootstrap_config_camera">Carregando parâmetros da câmera...</string>
+
+    <!--INPUT_MSG-->
+    <string name="input_msg_min_value">O valor deve ser no mínimo </string>
+    <string name="input_msg_max_value">O valor não deve exceder </string>
+    <string name="input_msg_invalid">Entrada inválida</string>
+
+    <!--INPUT_MSG-->
+    <string name="option_iso_manually">Modificar ISO manualmente</string>
+    <string name="option_shutter_manually">Modificar velocidade do obturador manualmente</string>
+    <string name="option_preferences">Mostrar preferências</string>
+</resources>
