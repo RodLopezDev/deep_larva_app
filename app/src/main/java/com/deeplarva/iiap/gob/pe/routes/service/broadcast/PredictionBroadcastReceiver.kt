@@ -25,7 +25,11 @@ class PredictionBroadcastReceiver (private val activity: AppCompatActivity){
             }
         }
         val filter = IntentFilter(AppConstants.BROADCAST_ACTION)
-        activity.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+        } else {
+            activity.registerReceiver(receiver, filter)
+        }
     }
 
     fun unregister() {
