@@ -78,7 +78,6 @@ class RequestManager {
                 .url(url)
                 .addHeader("x-api-key", headerKey)
                 .addHeader("x-app-id", "deep-larva-01")
-                .addHeader("x-app-version", "1.0.0")
                 .post(json.toRequestBody("application/json; charset=utf-8".toMediaType()))
 
             val request= requestPreBuild.build()
