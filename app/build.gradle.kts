@@ -9,16 +9,16 @@ plugins {
 
 android {
     namespace = "com.deeplarva.iiap.gob.pe"
-    compileSdk = 34
+    compileSdk = 36
 
     buildFeatures.buildConfig = true
 
     defaultConfig {
         applicationId = "com.deeplarva.iiap.gob.pe"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 3
-        versionName = "1.0.2"
+        targetSdk = 36
+        versionCode = 4
+        versionName = "1.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val properties = Properties()
