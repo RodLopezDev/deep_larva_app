@@ -19,7 +19,7 @@ class BackendPictureServices(
         val jsonAdapter = moshi.adapter(SyncPictureRequest::class.java)
 
         val json = jsonAdapter.toJson(payload)
-        val url = "${serverUrl}/picture";
+        val url = "${serverUrl}/v1/picture";
         RequestManager.basePost(url, "x-api-key", serverApiKey, json, listener)
     }
     fun uploadFile(response: NewPictureResponse, file: File, listener: RequestListener<Boolean>){

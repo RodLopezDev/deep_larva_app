@@ -19,29 +19,25 @@ class AppConfigurationServices {
 
         val json = jsonAdapter.toJson(request)
 
-        val url = "${AppConstants.SERVICE_BASE_URL}/api/v1/deep-larva"
-        RequestManager.basePost(
+        val url = "${AppConstants.SERVICE_BASE_URL}/v1/mobile/config"
+        RequestManager.basePostV2(
             url,
-            "x-api-key",
             AppConstants.SERVICE_API_KEY,
             json,
             listener
         )
     }
-    fun getCameraConfiguration(request: CameraConfigurationRequest, listener: RequestListener<CameraConfigurationResponse>) {
+    fun getCameraConfiguration(baseUrl: String, apiKey: String, request: CameraConfigurationRequest, listener: RequestListener<CameraConfigurationResponse>) {
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
         val jsonAdapter = moshi.adapter(CameraConfigurationRequest::class.java)
 
-        val json = jsonAdapter.toJson(request)
-
-        val url = "${AppConstants.SERVICE_BASE_URL}/api/v2/deep-larva/camera-config"
-        RequestManager.basePost(
+        val url = "${baseUrl}/v1/camera/${request.brand}/${request.model}/config"
+        RequestManager.baseGet(
             url,
             "x-api-key",
-            AppConstants.SERVICE_API_KEY,
-            json,
+            apiKey,
             listener
         )
     }

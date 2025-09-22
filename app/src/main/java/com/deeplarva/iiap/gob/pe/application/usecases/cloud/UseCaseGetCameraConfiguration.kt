@@ -24,9 +24,12 @@ class UseCaseGetCameraConfiguration(
 
         preferences.saveBoolean(CloudKeysConstants.FLAG_CAMERA_CONFIG, true)
 
+        val serverUrl = preferences.getString(CloudKeysConstants.SERVER_URL, "") ?: ""
+        val serverApiKey = preferences.getString(CloudKeysConstants.SERVER_API_KEY, "") ?: ""
+
         val deviceId = preferences.getString(SharedPreferencesConstants.DEVICE_ID) ?: ""
         val request = CameraConfigurationRequest(deviceId, brand, model)
-        services.getCameraConfiguration(request, object:
+        services.getCameraConfiguration(serverUrl, serverApiKey, request, object:
             RequestListener<CameraConfigurationResponse> {
             override fun onComplete(result: CameraConfigurationResponse) {
                 val formattedExpo = ExposureUtils.convertServerToValue(result.exposure)
