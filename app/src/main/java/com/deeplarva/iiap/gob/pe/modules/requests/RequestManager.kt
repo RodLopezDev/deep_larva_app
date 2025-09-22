@@ -72,6 +72,38 @@ class RequestManager {
                 }
             })
         }
+        inline fun <reified T> basePostV2(url: String, headerKey: String, json: String, listener: RequestListener<T>) {
+            val client = OkHttpClient()
+            val requestPreBuild = Request.Builder()
+                .url(url)
+                .addHeader("x-api-key", headerKey)
+                .addHeader("x-app-id", "deep-larva-01")
+                .addHeader("x-app-version", "1.0.0")
+                .post(json.toRequestBody("application/json; charset=utf-8".toMediaType()))
+
+            val request= requestPreBuild.build()
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    listener.onFailure()
+                }
+                @Throws(IOException::class)
+                override fun onResponse(call: Call, response: Response) {
+                    if (response.isSuccessful) {
+                        val body = response.body?.string()
+                        val moshi = Moshi.Builder()
+                            .add(KotlinJsonAdapterFactory())
+                            .build()
+                        val responseAdapter = moshi.adapter(T::class.java)
+                        val response = responseAdapter.fromJson(body!!)
+                        if(response != null){
+                            listener.onComplete(response)
+                            return
+                        }
+                    }
+                    listener.onFailure()
+                }
+            })
+        }
         fun putToS3(s3Url: String, file: File, listener: RequestListener<Boolean>) {
             val client = OkHttpClient()
             val requestBody = file.asRequestBody("application/octet-stream".toMediaTypeOrNull())
