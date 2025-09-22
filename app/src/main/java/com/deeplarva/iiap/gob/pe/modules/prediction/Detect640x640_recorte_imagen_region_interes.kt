@@ -101,7 +101,7 @@ class Detect640x640_recorte_imagen_region_interes(private val activity: Context)
         customConfidenceThreshold: Float
     ): Map<String, Any>? {
 
-        val mutableImage: Bitmap = image.copy(image.config, true)
+        val mutableImage: Bitmap = image.copy(image.config ?: Bitmap.Config.ARGB_8888, true)
         val imageWidth = mutableImage.width
         val imageHeight = mutableImage.height
 
