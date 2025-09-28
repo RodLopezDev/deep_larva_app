@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.deeplarva.iiap.gob.pe"
-    compileSdk = 36
+    compileSdk = 36 
 
     buildFeatures.buildConfig = true
 
@@ -17,7 +17,7 @@ android {
         applicationId = "com.deeplarva.iiap.gob.pe"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
+        versionCode = 10
         versionName = "1.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -75,6 +75,8 @@ android {
     lint {
         abortOnError = false
     }
+    buildToolsVersion = "34.0.0"
+    ndkVersion = "25.1.8937393"
 }
 
 dependencies {
